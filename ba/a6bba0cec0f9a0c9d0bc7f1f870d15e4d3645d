@@ -1,0 +1,138 @@
+.gitignore
+  h_cdd764b4030252 1-15
+apps/bot/package.json
+  h_cdd764b4030252 1-26
+apps/bot/src/api/webhook/telegram.ts
+  h_cdd764b4030252 1-37
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 1-153
+apps/bot/src/worker.ts
+  h_cdd764b4030252 1-132
+apps/bot/test/worker.test.ts
+  h_cdd764b4030252 1-107
+apps/bot/tsconfig.json
+  h_cdd764b4030252 1-9
+apps/bot/wrangler.jsonc
+  h_cdd764b4030252 1-21
+apps/web/package.json
+  h_cdd764b4030252 1-26
+apps/web/src/server.ts
+  h_cdd764b4030252 1-141
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 1-399
+apps/web/test/server.test.ts
+  h_cdd764b4030252 1-67
+apps/web/tsconfig.json
+  h_cdd764b4030252 1-8
+docs/AGENT_LEDGER.md
+  h_cdd764b4030252 1-37
+docs/ARCHITECTURE.md
+  h_cdd764b4030252 1-69
+docs/ARTAS_V4_AUDIT.md
+  h_cdd764b4030252 1-35
+docs/THOS_HANDOVER_HEX_AIM.md
+  h_cdd764b4030252 1-151
+docs/THOUGHT_PARTNER_PUSHBACK.md
+  h_cdd764b4030252 1-85
+docs/agent-prompts/UNIVERSAL_EXECUTOR_DNA.md
+  h_cdd764b4030252 1-48
+docs/agent_ledger.jsonl
+  h_cdd764b4030252 1-7
+manifest/asten_college_curriculum.json
+  h_cdd764b4030252 1-94
+manifest/booklet.html
+  h_cdd764b4030252 1-771
+manifest/dad_master.html
+  h_cdd764b4030252 1-646
+manifest/father_guide.html
+  h_cdd764b4030252 1-719
+manifest/lara_review.html
+  h_cdd764b4030252 1-592
+manifest/maya_quest.html
+  h_cdd764b4030252 1-612
+manifest/students.json
+  h_cdd764b4030252 1-98
+manifest/test.html
+  h_cdd764b4030252 1-15
+package.json
+  h_cdd764b4030252 1-20
+packages/adapters/package.json
+  h_cdd764b4030252 1-23
+packages/adapters/src/index.ts
+  h_cdd764b4030252 1-20
+packages/adapters/src/messaging/MessagingFactory.ts
+  h_cdd764b4030252 1-36
+packages/adapters/src/messaging/MockMessagingAdapter.ts
+  h_cdd764b4030252 1-30
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 1-83
+packages/adapters/src/queue/DirectExecutionQueueAdapter.ts
+  h_cdd764b4030252 1-35
+packages/adapters/src/queue/QStashQueueAdapter.ts
+  h_cdd764b4030252 1-34
+packages/adapters/src/queue/QueueFactory.ts
+  h_cdd764b4030252 1-40
+packages/adapters/src/storage/GitStateStorageAdapter.ts
+  h_cdd764b4030252 1-146
+packages/adapters/src/storage/InMemoryStorageAdapter.ts
+  h_cdd764b4030252 1-107
+packages/adapters/src/storage/StorageFactory.ts
+  h_cdd764b4030252 1-50
+packages/adapters/src/storage/UpstashRedisStorageAdapter.ts
+  h_cdd764b4030252 1-132
+packages/adapters/src/vision/GeminiVisionAdapter.ts
+  h_cdd764b4030252 1-144
+packages/adapters/src/vision/MockVisionAdapter.ts
+  h_cdd764b4030252 1-52
+packages/adapters/src/vision/VisionFactory.ts
+  h_cdd764b4030252 1-36
+packages/adapters/test/adapters.test.ts
+  h_cdd764b4030252 1-103
+packages/adapters/tsconfig.json
+  h_cdd764b4030252 1-8
+packages/core/package.json
+  h_cdd764b4030252 1-20
+packages/core/src/compilers/AdaptiveSprintCompiler.ts
+  h_cdd764b4030252 1-430
+packages/core/src/compilers/SocraticGuideCompiler.ts
+  h_cdd764b4030252 1-301
+packages/core/src/dedup/CanonicalDeduplicator.ts
+  h_cdd764b4030252 1-94
+packages/core/src/index.ts
+  h_cdd764b4030252 1-4
+packages/core/src/settings/SettingsManager.ts
+  h_cdd764b4030252 1-81
+packages/core/test/compilers.test.ts
+  h_cdd764b4030252 1-150
+packages/core/tsconfig.json
+  h_cdd764b4030252 1-8
+packages/types/package.json
+  h_cdd764b4030252 1-14
+packages/types/src/index.ts
+  h_cdd764b4030252 1-258
+packages/types/tsconfig.json
+  h_cdd764b4030252 1-8
+packages/vision/cer.py
+  h_cdd764b4030252 1-77
+packages/vision/rico_lessons.json
+  h_cdd764b4030252 1-90
+pnpm-lock.yaml
+  h_cdd764b4030252 1-2263
+pnpm-workspace.yaml
+  h_cdd764b4030252 1-10
+tests/fixtures/students.json
+  h_cdd764b4030252 1-98
+tsconfig.json
+  h_cdd764b4030252 1-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "baa6bba0cec0f9a0c9d0bc7f1f870d15e4d3645d",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
