@@ -16,8 +16,17 @@ export interface Env {
 }
 
 export default {
-  async fetch(request: Request, _env: Env, _ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+
+    // Bind Worker Secrets & Env into SettingsManager
+    const settings = SettingsManager.getInstance();
+    if (env.TELEGRAM_BOT_TOKEN) settings.set('TELEGRAM_BOT_TOKEN', env.TELEGRAM_BOT_TOKEN);
+    if (env.UPSTASH_REDIS_REST_URL) settings.set('UPSTASH_REDIS_REST_URL', env.UPSTASH_REDIS_REST_URL);
+    if (env.UPSTASH_REDIS_REST_TOKEN) settings.set('UPSTASH_REDIS_REST_TOKEN', env.UPSTASH_REDIS_REST_TOKEN);
+    if (env.QSTASH_TOKEN) settings.set('QSTASH_TOKEN', env.QSTASH_TOKEN);
+    if (env.GEMINI_API_KEY) settings.set('GEMINI_API_KEY', env.GEMINI_API_KEY);
+    MessagingFactory.reset(); // refresh with dynamic token
 
     // Health check
     if (url.pathname === '/health' || url.pathname === '/') {
