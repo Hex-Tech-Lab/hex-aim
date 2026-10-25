@@ -1,0 +1,26 @@
+{
+  "name": "@hex-aim/web",
+  "version": "0.1.0",
+  "description": "Adaptive Individualized Mastery Web Console & Analytics Dashboard",
+  "main": "./dist/server.js",
+  "type": "module",
+  "types": "./dist/server.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/server.ts",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@hex-aim/types": "workspace:*",
+    "@hex-aim/core": "workspace:*",
+    "@hex-aim/adapters": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.0"
+  }
+}

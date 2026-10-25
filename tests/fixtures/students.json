@@ -1,0 +1,70 @@
+[
+  {
+    "id": "student_001",
+    "name": "Student A",
+    "schoolId": "asten-college",
+    "yearGroup": "Y4",
+    "curriculumTrack": "british",
+    "siblingStudentIds": ["student_002"],
+    "neuroProfile": {
+      "hasAdhdTraits": true,
+      "hasDyslexiaTraits": true,
+      "workingMemoryCapacity": "vulnerable_under_time_pressure",
+      "optimalSprintDurationMins": 8
+    },
+    "strengths": [
+      "Exceptional spatial reasoning and number decomposition",
+      "High verbal conscientiousness",
+      "Thrives with visual place-value room models"
+    ],
+    "identifiedGaps": [
+      {
+        "id": "gap_pv_zero_guard",
+        "conceptCode": "Y4.MATH.NPV.EMPTY_COLUMNS",
+        "errorClass": "ERR_PHANTOM_ZERO",
+        "description": "Omitting zeros in unmentioned place-value rooms",
+        "firstObserved": "2026-10-08",
+        "status": "active_priority",
+        "recurrence": 3
+      },
+      {
+        "id": "gap_neg_magnitude",
+        "conceptCode": "Y4.MATH.NPV.NEGATIVE_NUMBERS",
+        "errorClass": "ERR_NEGATIVE_MAGNITUDE_INVERSION",
+        "description": "Applying positive intuition to negatives",
+        "firstObserved": "2026-10-15",
+        "status": "progressing",
+        "recurrence": 2
+      }
+    ]
+  },
+  {
+    "id": "student_002",
+    "name": "Student B",
+    "schoolId": "asten-college",
+    "yearGroup": "Y4",
+    "curriculumTrack": "british",
+    "siblingStudentIds": ["student_001"],
+    "neuroProfile": {
+      "hasAdhdTraits": false,
+      "hasDyslexiaTraits": false,
+      "workingMemoryCapacity": "standard",
+      "optimalSprintDurationMins": 10
+    },
+    "strengths": [
+      "Steady linguistic processing and verbal retention",
+      "Methodical step-by-step problem execution"
+    ],
+    "identifiedGaps": [
+      {
+        "id": "gap_number_line_scale",
+        "conceptCode": "Y4.MATH.NPV.NUMBER_LINE_SCALES",
+        "errorClass": "ERR_INTERVAL_DECODE",
+        "description": "Counting tick marks by 1s instead of decoding jump size",
+        "firstObserved": "2026-10-24",
+        "status": "progressing",
+        "recurrence": 1
+      }
+    ]
+  }
+]

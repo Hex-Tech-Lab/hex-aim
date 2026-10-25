@@ -1,0 +1,10 @@
+packages:
+  - 'packages/*'
+  - 'apps/*'
+allowBuilds:
+  esbuild: true
+  "@rolldown/binding-linux-x64-gnu": true
+  "@astryxdesign/core": true
+  unrs-resolver: true
+  sharp: true
+  workerd: true

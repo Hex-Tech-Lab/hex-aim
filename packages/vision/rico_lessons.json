@@ -1,0 +1,90 @@
+{
+ "folio_formats_seen": [],
+ "seal_shapes_seen": [],
+ "seal_colors_seen": [],
+ "notes": [],
+ "human_continuity_protocol": {
+  "source": "user session 2026-09-10, verbatim method",
+  "steps": [
+   "1. VISUAL PRE-ATTENTION: 'I've seen something similar to that before' - same paper, color, typeset triggers the hypothesis that two pages belong together.",
+   "2. ZOOM & CHECK TELLS: 'I zoom in and I check a few things' - seals, stamps, margins, handwriting identity.",
+   "3. READ THE BEGINNING OF THE PAGE: does it start mid-sentence/mid-clause (continuation) or fresh?",
+   "4. READ THE ENDING OF THE PAGE: does it end with a colon, an incomplete construction ('with the following and a column'), or a full stop?",
+   "5. SEMANTIC LINKING: page 1 ends with '...the following:' and page 2 opens with a numbered list (1. Mr. XYZ, 2. Miss Jane Doe) -> the list completes the sentence -> same document. Semantic completion outranks everything.",
+   "6. FOLIO ARITHMETIC AS CONFIRMATION ONLY: 'I see the page numbers sequential. This is 1 over 6, so this has to be 2 over 6, it cannot be 3 over 6, unless page 2 ends with a colon and page 3 continues' - sequence is a cross-check, never the discovery signal."
+  ],
+  "rule": "The engine must mimic THIS order: visual hypothesis -> tells -> begin/end reading -> semantic linking -> folio confirmation. A regex folio scan is step 6, not step 1.",
+  "v2_header_first": "Stage 3 refined: the HEADER (same or ~99% close) is the primary family key; body begin/end links pages WITHIN that family; topic continuity second. Tolerances: skew, low quality, different camera/page color acceptable when header + topic match."
+ },
+ "research_findings": [
+  {
+   "source": "Surya 2 (Datalab, Apache-2.0, 0.65B OCR VLM)",
+   "verified": true,
+   "relevance": "Canonical 'PageHeader' layout label + per-block reading_order - the header-first grouping key is codified in SOTA tooling",
+   "hard_truth": "OldScan benchmark pass = 41.8% (old scans are the hardest case even SOTA); Arabic OCR = 72.7% (industry-wide weak spot - matches our bake-off)"
+  },
+  {
+   "source": "arXiv 2607.01018 'Reading Order Inference for Complex Document Layouts' (2026, Dershowitz et al. - Tel Aviv, HISTORICAL MANUSCRIPTS)",
+   "verified": true,
+   "relevance": "Training-free: OCR text lines -> directed candidate-transition graph -> edges scored by LANGUAGE-MODEL signals (causal LM likelihood + BERT next-sentence prediction) -> global order as path cover. 95% vs 50% (XY-cut) on historical wrap-around layouts",
+   "validation": "This IS the user's colon->list continuity inference, formalized: LM-scored transitions between segments is published state of the art for historical documents"
+  },
+  {
+   "source": "Transkribus (READ-COOP, EU sovereign, GDPR, 200M+ pages)",
+   "verified": true,
+   "relevance": "The established platform for centuries-old handwritten legal/consular records; 300+ community HTR models; REST API",
+   "adoption": "Candidate specialized HTR tier for handwritten Arabic/Greek legal records - community models beat generalist VLMs on character error rate for cursive scripts"
+  },
+  {
+   "source": "TextTiling (Hearst 1997) - lexical cohesion segmentation",
+   "verified": false,
+   "note": "classic prior art for the semantic-linking step; from knowledge, not re-verified"
+  }
+ ],
+ "adoptions": [
+  "engine.header_family(): deterministic header-key grouping (implemented)",
+  "T5 continuity prompt rewritten in protocol order with header-family first",
+  "Future tier: Transkribus/Surya HTR pass for handwritten pages (decision pending)"
+ ],
+ "research_sweep_2026-09-12": {
+  "tools_used": [
+   "Brave Search API",
+   "Exa API",
+   "SerpAPI",
+   "arXiv API",
+   "GitHub API"
+  ],
+  "key_findings": [
+   {
+    "finding": "KITAB-Bench (ACL 2025, MBZUAI): Arabic OCR benchmark, 8,809 samples, includes HANDWRITTEN + legal/financial domains",
+    "numbers": "Arabic CER: Gemini-2.0 13.0% (best) | GPT-4o 31.0% | Qwen-2.5 49.2% | Tesseract 54.0% | EasyOCR 58.0%",
+    "validation": "Our bake-off chose Gemini family for Arabic transcription tier - independently validated by peer-reviewed benchmark",
+    "adoption": "Use KITAB-Bench harness to MEASURE our transcription quality; prefer Gemini models for Arabic tier (confirmed)"
+   },
+   {
+    "finding": "imagededup (idealo, ★5.7k) adopted and validated",
+    "numbers": "27 suspect pairs found on 119 archive files; T6 adjudication confirmed 3 real dupes -> retired",
+    "adoption": "Replaces hand-rolled dhash as candidate generator; CNN mode pending (needs TF) for angle-variant re-photographs"
+   },
+   {
+    "finding": "Near-duplicate scanned photos: arXiv 2410.19437 (Transductive Learning for NDID in scanned photos)",
+    "note": "reference for CNN tier tuning"
+   },
+   {
+    "finding": "Page-order repos: ale-grassi/riordino, kayurachann/docreconstruct, chrisspen/photos2pdf",
+    "note": "reference patterns for photo-stack -> ordered document"
+   },
+   {
+    "finding": "GLM-OCR '94.62' claim (ofox.ai blog)",
+    "note": "UNVERIFIED - blog benchmark, treat with caution"
+   },
+   {
+    "finding": "OmniDocBench (CVPR 2025) + LocalLLaMA community VLM test for Arabic extraction",
+    "note": "second opinion sources queued"
+   }
+  ],
+  "engine_model_choice": {
+   "arabic_transcription": "google/gemini-3.5-flash-lite + 3.8-flash escalation (KITAB-validated family)"
+  }
+ }
+}
