@@ -17,6 +17,12 @@
     print-color-adjust: exact;
   }
 
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
+
   body {
     font-family: 'Nunito', 'Cairo', sans-serif;
     color: #1e293b;
@@ -128,6 +134,20 @@
 </style>
 </head>
 <body>
+
+<div class="no-print" style="position: sticky; top: 0; z-index: 999; background: #0f172a; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-bottom: 2px solid #06b6d4;">
+  <div style="font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+    <span style="color: #06b6d4;">AIM</span> • <span>Parent Socratic Coaching Guide</span>
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <button onclick="window.print()" style="background: #06b6d4; color: #0f172a; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+      🖨️ Download / Print PDF
+    </button>
+    <a href="/" style="background: #334155; color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px;">
+      Console
+    </a>
+  </div>
+</div>
 
   <!-- PAGE 1: COACHING PHILOSOPHY & WARMUP SCRIPTS -->
   <div class="page">

@@ -190,6 +190,7 @@ export interface RemediationSprint {
   targetGaps: CognitiveGap[];
   htmlContent: string;
   pdfUrl?: string;
+  pdfBuffer?: Uint8Array | ArrayBuffer;
 }
 
 export interface CoachingGuide {
@@ -200,6 +201,7 @@ export interface CoachingGuide {
   language: 'en' | 'ar' | 'bilingual';
   htmlContent: string;
   pdfUrl?: string;
+  pdfBuffer?: Uint8Array | ArrayBuffer;
 }
 
 /* =========================================================================
@@ -235,6 +237,11 @@ export interface IStoragePort {
   hasSeenFileHash(guardianId: string, hash: string): Promise<boolean>;
   recordFileHash(guardianId: string, hash: string, metadata: { filename?: string; sprintId?: string; timestamp: string }): Promise<void>;
   getSeenFileMetadata(guardianId: string, hash: string): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null>;
+
+  // Multi-Image Album / Batch Buffer Methods
+  addIntakeBatchItem?(batchId: string, item: { url: string; fileUniqueId: string; messageId?: number }): Promise<void>;
+  getIntakeBatchItems?(batchId: string): Promise<Array<{ url: string; fileUniqueId: string; messageId?: number }>>;
+  clearIntakeBatch?(batchId: string): Promise<void>;
 }
 
 export interface IVisionExtractionPort {
@@ -273,6 +280,10 @@ export interface IMessagingPort {
     detectedWeek: string;
   }): Promise<void>;
   sendDocument(chatId: string, doc: { buffer?: Uint8Array | ArrayBuffer; url?: string; filename: string; caption?: string }): Promise<void>;
+  sendBatchIntakeSummary?(chatId: string, summary: {
+    totalPhotos: number;
+    students: Array<{ name: string; subject: string; week: number; pageCount: number; score?: string }>;
+  }): Promise<void>;
   deliverRemediationPacks(chatId: string, packs: {
     studentPackHtml?: string;
     studentPackPdf?: string | Uint8Array | ArrayBuffer;

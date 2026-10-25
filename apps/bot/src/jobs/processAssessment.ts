@@ -7,7 +7,8 @@ import {
 import {
   CanonicalDeduplicator,
   AdaptiveSprintCompiler,
-  SocraticGuideCompiler
+  SocraticGuideCompiler,
+  PdfPackCompiler
 } from '@hex-aim/core';
 import type {
   CognitiveGap,
@@ -161,13 +162,24 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
     }
   }
 
-  // 5. Compile 4-Page Print Sprint & Parent Socratic Guide
+  // 5. Compile 4-Page Print Sprint & Parent Socratic Guide (HTML + Direct PDF Binary)
   const sprint = AdaptiveSprintCompiler.compile(student, targetGaps, {
     subjectTitle: resolvedSubjectId.toUpperCase(),
+    sprintNumber: resolvedWeek,
   });
+  const sprintPdfBytes = await PdfPackCompiler.compileSprintPdf(student, targetGaps, {
+    subjectTitle: resolvedSubjectId.toUpperCase(),
+    week: resolvedWeek,
+  });
+  sprint.pdfBuffer = sprintPdfBytes;
   await storage.saveRemediationSprint(sprint);
 
   const guide = SocraticGuideCompiler.compile(student, targetGaps, guardian || undefined);
+  const guidePdfBytes = await PdfPackCompiler.compileGuidePdf(student, targetGaps, guardian || undefined, {
+    subjectTitle: resolvedSubjectId.toUpperCase(),
+    week: resolvedWeek,
+  });
+  guide.pdfBuffer = guidePdfBytes;
   await storage.saveCoachingGuide(guide);
 
   // 6. Deliver Links & Documents via Telegram
@@ -184,18 +196,29 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
       `🔁 <b>Practice Run Recognized: ${student.name} (${resolvedSubjectId.toUpperCase()} Week ${resolvedWeek}, Score: ${extraction.rawScore}/${extraction.totalScore})</b>\n\n` +
       `We noticed this assessment matches ${student.name}'s existing Week ${resolvedWeek} score. ` +
       `This has been logged as a <b>Practice Run</b> to protect baseline mastery data.\n\n` +
-      `📄 <b>Targeted 4-Page Sprint Pack:</b>\n` +
-      `🔗 <a href="${sprintUrl}">Open Printable Student Pack</a>\n\n` +
-      `🧭 <b>Parent Socratic Coaching Guide:</b>\n` +
-      `🔗 <a href="${guideUrl}">Open 8-Minute Coaching Script</a>`
+      `⬇️ <b>Printable PDF attachments are sent below:</b>`
     );
+    try {
+      await messaging.sendDocument(payload.chatId, {
+        buffer: sprintPdfBytes,
+        filename: `${student.name}_${resolvedSubjectId.toUpperCase()}_Week${resolvedWeek}_Sprint.pdf`,
+        caption: `📄 <b>${student.name}'s 4-Page Targeted Sprint</b> (Practice Run • Week ${resolvedWeek})`,
+      });
+      await messaging.sendDocument(payload.chatId, {
+        buffer: guidePdfBytes,
+        filename: `Parent_Guide_${student.name}_${resolvedSubjectId.toUpperCase()}_Week${resolvedWeek}.pdf`,
+        caption: `🧭 <b>Parent Socratic Coaching Guide</b> (Practice Run • Week ${resolvedWeek})`,
+      });
+    } catch (docErr) {
+      console.warn('[processAssessment] Practice run document delivery error:', docErr);
+    }
   } else {
     await messaging.deliverRemediationPacks(payload.chatId, {
       studentPackHtml: sprintUrl,
-      studentPackPdf: sprintUrl,
+      studentPackPdf: sprintPdfBytes,
       coachingGuideHtml: guideUrl,
-      coachingGuidePdf: guideUrl,
-      summaryUrl: 'https://go.aim.getvintel.com',
+      coachingGuidePdf: guidePdfBytes,
+      summaryUrl: 'https://aim.getvintel.com',
       studentName: student.name,
       subject: resolvedSubjectId,
       week: resolvedWeek,

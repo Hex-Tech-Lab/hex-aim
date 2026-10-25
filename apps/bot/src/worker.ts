@@ -76,11 +76,42 @@ export default {
           await messaging.sendMessage(chatId, 
             `👋 <b>Welcome to HEX-AIM (Adaptive Individualized Mastery)!</b>\n\n` +
             `We turn weekly school quizzes into <b>targeted 4-page sprints (6–10 mins)</b> for your child.\n\n` +
-            `📸 <b>To begin:</b> Take a clear photo of your child's marked worksheet (or send an album of pages) and send it here!`
+            `📸 <b>To begin:</b> Take a clear photo of your child's marked worksheet (or send an album of pages) and send it here!\n\n` +
+            `📄 <b>Direct PDF delivery:</b> Printable PDFs are generated and delivered directly to your chat.`
           );
           return new Response(JSON.stringify({ ok: true, action: 'welcome_sent' }), {
             headers: { 'Content-Type': 'application/json' },
           });
+        }
+
+        if (text.startsWith('/edit')) {
+          const match = text.match(/\/edit\s+(\w+)\s+(?:week\s+)?(\d+)/i);
+          if (match) {
+            const studentName = match[1]!;
+            const newWeek = Number(match[2]!);
+            const sId = studentName.toLowerCase().includes('maya') ? 'maya' : 'lara';
+            
+            await messaging.sendMessage(chatId, `🔄 <b>Re-generating sprint for ${studentName} (Week ${newWeek})...</b>`);
+            const payload: ProcessAssessmentPayload = {
+              studentId: sId,
+              guardianId: `guardian_${chatId}`,
+              chatId,
+              imageUrls: [],
+              subjectId: 'english',
+              yearGroup: 'Y4',
+              termWeek: newWeek,
+              schoolId: 'asten-college',
+            };
+            await processAssessmentJob(payload);
+            return new Response(JSON.stringify({ ok: true, action: 'recompiled_edited_week' }), {
+              headers: { 'Content-Type': 'application/json' },
+            });
+          } else {
+            await messaging.sendMessage(chatId, `💡 <i>Usage:</i> <code>/edit [Maya|Lara] Week [N]</code>\n<i>Example:</i> <code>/edit Maya Week 3</code>`);
+            return new Response(JSON.stringify({ ok: true, action: 'usage_sent' }), {
+              headers: { 'Content-Type': 'application/json' },
+            });
+          }
         }
 
         // 2. Photo & Document intake (Assessment upload)
@@ -157,25 +188,41 @@ export default {
               timestamp: new Date().toISOString()
             });
 
+            if (storage.addIntakeBatchItem) {
+              await storage.addIntakeBatchItem(albumKey, {
+                url: resolvedImageUrl,
+                fileUniqueId,
+                messageId,
+              });
+            }
+
             if (isFirstPhoto) {
               await storage.recordFileHash('media_album_seen', mediaGroupId, { timestamp: new Date().toISOString() });
 
               // Immediate initial receipt acknowledgment
               await messaging.sendMessage(chatId,
                 `📥 <b>Worksheet Album Received!</b>\n` +
-                `⚡ <i>Assembling pages and running OpenRouter diagnostic extraction...</i>`,
+                `⚡ <i>Assembling pages and running OpenRouter diagnostic extraction...</i>\n` +
+                `<i>Direct printable PDFs will be attached automatically once ready.</i>`,
                 messageId
               );
 
-              // Background Execution: Debounce 3.5s for all album photos to arrive, then execute ONCE!
+              // Background Execution: Debounce 4.0s for all album photos to arrive, then execute
               const runAlbumBatch = async () => {
                 try {
-                  await new Promise(resolve => setTimeout(resolve, 3500));
+                  await new Promise(resolve => setTimeout(resolve, 4000));
                   
                   // Collect all image URLs for this media group
-                  const albumImages: string[] = [resolvedImageUrl];
-                  // If storage supports scanning or if single batch, ensure resolvedImageUrl is processed
+                  let albumImages: string[] = [resolvedImageUrl];
+                  if (storage.getIntakeBatchItems) {
+                    const items = await storage.getIntakeBatchItems(albumKey);
+                    if (items && items.length > 0) {
+                      albumImages = items.map(it => it.url);
+                    }
+                  }
                   
+                  console.log(`[Worker] Processing album ${mediaGroupId} with ${albumImages.length} images`);
+
                   const payload: ProcessAssessmentPayload = {
                     studentId: 'auto',
                     guardianId,
