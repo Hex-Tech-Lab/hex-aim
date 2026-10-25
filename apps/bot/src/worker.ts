@@ -26,7 +26,6 @@ export default {
     if (env.UPSTASH_REDIS_REST_TOKEN) settings.set('UPSTASH_REDIS_REST_TOKEN', env.UPSTASH_REDIS_REST_TOKEN);
     if (env.QSTASH_TOKEN) settings.set('QSTASH_TOKEN', env.QSTASH_TOKEN);
     if (env.GEMINI_API_KEY) settings.set('GEMINI_API_KEY', env.GEMINI_API_KEY);
-    MessagingFactory.reset(); // refresh with dynamic token
 
     // Health check
     if (url.pathname === '/health' || url.pathname === '/') {
@@ -69,13 +68,35 @@ export default {
           });
         }
 
-        // 2. Photo intake (Assessment upload)
-        if (photos && Array.isArray(photos) && photos.length > 0) {
-          // Select largest photo resolution
-          const largestPhoto = photos[photos.length - 1];
-          const fileId = largestPhoto.file_id;
-          const fileUniqueId = largestPhoto.file_unique_id || fileId;
-          const dummyImageUrl = `https://api.telegram.org/file/bot/placeholder/${fileId}.jpg`;
+        // 2. Photo & Document intake (Assessment upload)
+        const doc = message.document;
+        const hasPhoto = photos && Array.isArray(photos) && photos.length > 0;
+        const hasDoc = doc && (doc.mime_type?.startsWith('image/') || doc.mime_type === 'application/pdf');
+
+        if (hasPhoto || hasDoc) {
+          const fileId = hasPhoto ? photos[photos.length - 1].file_id : doc.file_id;
+          const fileUniqueId = hasPhoto 
+            ? (photos[photos.length - 1].file_unique_id || fileId) 
+            : (doc.file_unique_id || fileId);
+          const fileSize = hasPhoto ? photos[photos.length - 1].file_size : doc.file_size;
+          const fileName = hasDoc ? doc.file_name : `telegram_photo_${fileUniqueId}.jpg`;
+
+          // Resolve real Telegram CDN URL if token is present
+          let resolvedImageUrl = `https://api.telegram.org/file/bot${env.TELEGRAM_BOT_TOKEN || 'mock'}/${fileId}.jpg`;
+          if (env.TELEGRAM_BOT_TOKEN) {
+            try {
+              const fileRes = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/getFile?file_id=${fileId}`);
+              if (fileRes.ok) {
+                const fileData = await fileRes.json() as any;
+                if (fileData?.result?.file_path) {
+                  resolvedImageUrl = `https://api.telegram.org/file/bot${env.TELEGRAM_BOT_TOKEN}/${fileData.result.file_path}`;
+                }
+              }
+            } catch (err) {
+              console.warn('[Worker] Telegram getFile warning:', err);
+            }
+          }
+
           const guardianId = `guardian_${chatId}`;
 
           // Intake Deduplication & Strike Interception Gate
@@ -87,8 +108,8 @@ export default {
               guardianId,
               fileIdentifier: fileUniqueId,
               metadata: {
-                filename: `telegram_photo_${fileUniqueId}.jpg`,
-                fileSize: largestPhoto.file_size,
+                filename: fileName,
+                fileSize,
               },
             },
             storage,
@@ -115,7 +136,7 @@ export default {
             studentId: 'student_001', // Default or derived from guardian session
             guardianId,
             chatId,
-            imageUrls: [dummyImageUrl],
+            imageUrls: [resolvedImageUrl],
             subjectId: 'maths',
             yearGroup: 'Y4',
             termWeek: 3,
@@ -125,7 +146,7 @@ export default {
           // Fast confirmation card (< 100ms)
           await messaging.sendConfirmationCard(chatId, {
             jobId: `job_${Date.now()}`,
-            imageUrl: dummyImageUrl,
+            imageUrl: resolvedImageUrl,
             detectedStudent: 'Student (Year 4)',
             detectedSubject: 'Mathematics',
             detectedWeek: 'Week 3',
