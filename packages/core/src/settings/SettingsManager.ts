@@ -5,7 +5,7 @@ export interface AppConfig {
   storageProvider: 'upstash' | 'neon' | 'memory' | 'git';
   messagingProvider: 'telegram' | 'whatsapp' | 'mock';
   queueProvider: 'qstash' | 'direct';
-  visionProvider: 'gemini' | 'mock';
+  visionProvider: 'openrouter' | 'gemini' | 'mock';
   redisPrefix: string;
   upstashRedisRestUrl?: string;
   upstashRedisRestToken?: string;

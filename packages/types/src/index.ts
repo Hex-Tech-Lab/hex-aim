@@ -247,6 +247,9 @@ export interface IVisionExtractionPort {
     rawScore: number;
     totalScore: number;
     detectedStudentName?: string;
+    detectedSubject?: string;
+    detectedWeek?: number;
+    detectedYearGroup?: string;
   }>;
 }
 
@@ -261,6 +264,7 @@ export interface IVectorPort {
 
 export interface IMessagingPort {
   sendMessage(chatId: string, text: string): Promise<void>;
+  sendReceiptSummary(chatId: string, summary: { photoCount: number; mediaGroupId?: string }): Promise<void>;
   sendConfirmationCard(chatId: string, card: {
     jobId: string;
     imageUrl: string;
@@ -268,11 +272,16 @@ export interface IMessagingPort {
     detectedSubject: string;
     detectedWeek: string;
   }): Promise<void>;
+  sendDocument(chatId: string, doc: { buffer?: Uint8Array | ArrayBuffer; url?: string; filename: string; caption?: string }): Promise<void>;
   deliverRemediationPacks(chatId: string, packs: {
-    studentPackHtml: string;
-    studentPackPdf?: string;
-    coachingGuideHtml: string;
-    coachingGuidePdf?: string;
+    studentPackHtml?: string;
+    studentPackPdf?: string | Uint8Array | ArrayBuffer;
+    coachingGuideHtml?: string;
+    coachingGuidePdf?: string | Uint8Array | ArrayBuffer;
+    summaryUrl?: string;
+    studentName?: string;
+    subject?: string;
+    week?: number;
   }): Promise<void>;
 }
 
