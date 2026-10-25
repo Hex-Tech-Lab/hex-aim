@@ -30,6 +30,12 @@
 | **W6** | **T6.1** | ARTAS v4 32-vector interrogation sweep | COMPLETE | 01:44 | 01:44 | <1m | V01–V32 ✅ |
 | **W6** | **T6.2** | Production build & test gate verification (`pnpm build`, `pnpm test`) | COMPLETE | 01:43 | 01:44 | 1m | V30 ✅ |
 | **W6** | **T6.3** | GitHub repository creation & code deployment (`Hex-Tech-Lab/hex-aim`) | COMPLETE | 01:45 | 01:46 | 1m | All ✅ |
+| **W7** | **T7.1** | Telegram Intake Deduplicator & 3-Strike Penalty Rule (`IntakeDeduplicator.ts`) | COMPLETE | 14:28 | 14:30 | 2m | V03, V06, V23 ✅ |
+| **W7** | **T7.2** | Dub.co link adapter & URL shortening (`DubLinkAdapter.ts`) | COMPLETE | 14:31 | 14:31 | <1m | V02, V10, V20 ✅ |
+| **W7** | **T7.3** | Regional Infrastructure Pinning: `cdg1` (Paris) & `fra1` (Frankfurt) fallback | COMPLETE | 14:32 | 14:35 | 3m | V01, V12, V24 ✅ |
+| **W7** | **T7.4** | Production Web Console Deploy: `aim.getvintel.com` (HTTP 200, SSL Active) | COMPLETE | 14:36 | 14:37 | 1m | V25, V29, V30 ✅ |
+| **W7** | **T7.5** | Edge Intake Worker Deploy: `aim-bot-worker.hex-tech-lab.workers.dev` | COMPLETE | 14:38 | 14:39 | 1m | V01, V02, V12 ✅ |
+| **W7** | **T7.6** | QA-Intel, Architectural Boundary, and Full Test Suite (23/23 Passing) | COMPLETE | 14:33 | 14:34 | 1m | V30, V31, V32 ✅ |
 
 ---
 

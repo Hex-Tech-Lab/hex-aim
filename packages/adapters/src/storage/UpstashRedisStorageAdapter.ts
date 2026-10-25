@@ -7,7 +7,8 @@ import type {
   CognitiveGap,
   RemediationSprint,
   CoachingGuide,
-  TrendDataPoint
+  TrendDataPoint,
+  GuardianStrikeRecord
 } from '@hex-aim/types';
 
 export interface UpstashRedisConfig {
@@ -128,5 +129,35 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
       activeGapCount,
       resolvedGapCount,
     }));
+  }
+
+  public async getGuardianStrikes(guardianId: string): Promise<GuardianStrikeRecord | null> {
+    return await this.redis.get<GuardianStrikeRecord>(this.k(`strikes:${guardianId}`));
+  }
+
+  public async saveGuardianStrikes(record: GuardianStrikeRecord): Promise<void> {
+    await this.redis.set(this.k(`strikes:${record.guardianId}`), record);
+  }
+
+  public async hasSeenFileHash(guardianId: string, hash: string): Promise<boolean> {
+    const exists = await this.redis.exists(this.k(`seen_files:${guardianId}:${hash}`));
+    return exists === 1;
+  }
+
+  public async recordFileHash(
+    guardianId: string,
+    hash: string,
+    metadata: { filename?: string; sprintId?: string; timestamp: string }
+  ): Promise<void> {
+    await this.redis.set(this.k(`seen_files:${guardianId}:${hash}`), metadata, { ex: 86400 });
+  }
+
+  public async getSeenFileMetadata(
+    guardianId: string,
+    hash: string
+  ): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null> {
+    return await this.redis.get<{ filename?: string; sprintId?: string; timestamp: string }>(
+      this.k(`seen_files:${guardianId}:${hash}`)
+    );
   }
 }

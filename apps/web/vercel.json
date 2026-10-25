@@ -1,0 +1,8 @@
+{
+  "framework": null,
+  "buildCommand": "echo 'Static assets ready'",
+  "installCommand": "echo 'No install needed'",
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "regions": ["cdg1"]
+}

@@ -18,6 +18,7 @@ export function renderDashboardHtml(): string {
     --yellow: #f59e0b;
     --orange: #f97316;
     --purple: #a855f7;
+    --red: #ef4444;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,6 +37,8 @@ export function renderDashboardHtml(): string {
     border-bottom: 1px solid var(--card-border);
     padding-bottom: 16px;
     margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .logo-group h1 {
@@ -50,13 +53,25 @@ export function renderDashboardHtml(): string {
   .logo-group h1 span { color: var(--cyan); }
   .logo-group .sub { font-size: 13px; color: var(--muted); }
 
-  .school-tag {
+  .header-badges {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .badge-tag {
     background: #1e293b;
     border: 1px solid #334155;
     padding: 6px 14px;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
+  }
+
+  .badge-region {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: var(--green);
   }
 
   /* Metric Grid */
@@ -86,9 +101,10 @@ export function renderDashboardHtml(): string {
   .m-yellow::before { background: var(--yellow); }
   .m-orange::before { background: var(--orange); }
   .m-purple::before { background: var(--purple); }
+  .m-cyan::before { background: var(--cyan); }
 
-  .metric-card .title { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .metric-card .value { font-size: 28px; font-weight: 800; color: #fff; margin: 4px 0; }
+  .metric-card .title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-card .value { font-size: 26px; font-weight: 800; color: #fff; margin: 4px 0; }
   .metric-card .desc { font-size: 12px; color: var(--muted); }
 
   /* Main Workspace */
@@ -96,6 +112,11 @@ export function renderDashboardHtml(): string {
     display: grid;
     grid-template-columns: 280px 1fr;
     gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 1fr; }
   }
 
   /* Student Roster */
@@ -148,6 +169,8 @@ export function renderDashboardHtml(): string {
     margin-bottom: 16px;
     border-bottom: 1px solid var(--card-border);
     padding-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .card-header h2 { font-size: 16px; font-weight: 700; color: #fff; }
@@ -169,6 +192,7 @@ export function renderDashboardHtml(): string {
   .badge-yellow { background: rgba(245, 158, 11, 0.2); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
   .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
   .badge-purple { background: rgba(168, 85, 247, 0.2); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+  .badge-red { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
 
   /* Actions */
   .btn {
@@ -190,15 +214,42 @@ export function renderDashboardHtml(): string {
   .btn:hover { opacity: 0.9; }
   .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--card-border); }
   .btn-outline:hover { background: #1e293b; }
+  .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.4); }
+
+  /* Dual Grid for Admin Settings & Infra Status */
+  .admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 900px) {
+    .admin-grid { grid-template-columns: 1fr; }
+  }
+
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #1f2937;
+    font-size: 13px;
+  }
+
+  .status-row:last-child { border-bottom: none; }
+  .status-row .key { font-weight: 600; color: #fff; }
+  .status-row .val { color: var(--muted); display: flex; align-items: center; gap: 6px; }
 
   /* Sandbox */
   .sandbox-dropzone {
     border: 2px dashed #374151;
     border-radius: 8px;
-    padding: 24px;
+    padding: 20px;
     text-align: center;
     cursor: pointer;
     transition: border-color 0.2s;
+    background: rgba(17, 24, 39, 0.5);
   }
 
   .sandbox-dropzone:hover { border-color: var(--cyan); }
@@ -209,10 +260,15 @@ export function renderDashboardHtml(): string {
   <header>
     <div class="logo-group">
       <h1>HEX-AIM <span>Mastery Console</span></h1>
-      <div class="sub">Adaptive Individualized Mastery • Cognitive Gap Remediation Engine</div>
+      <div class="sub">Adaptive Individualized Mastery • Cognitive Gap Remediation & Intake Gate</div>
     </div>
-    <div class="school-tag">
-      🏫 Asten College • Year 4 British Primary
+    <div class="header-badges">
+      <div class="badge-tag badge-region">
+        📍 Primary: cdg1 (Paris) • Sec: fra1 (Frankfurt)
+      </div>
+      <div class="badge-tag">
+        🏫 Asten College • Year 4 British Primary
+      </div>
     </div>
   </header>
 
@@ -232,10 +288,10 @@ export function renderDashboardHtml(): string {
       <div class="value" id="val-green">14</div>
       <div class="desc">Fully resolved curriculum targets</div>
     </div>
-    <div class="metric-card m-purple">
-      <div class="title">Emerging (🟣)</div>
-      <div class="value" id="val-purple">1</div>
-      <div class="desc">Newly introduced concepts</div>
+    <div class="metric-card m-cyan">
+      <div class="title">Dedup Gate Savings (🛡️)</div>
+      <div class="value" id="val-savings">9,600</div>
+      <div class="desc">Tokens saved via duplicate test interception</div>
     </div>
   </div>
 
@@ -308,23 +364,97 @@ export function renderDashboardHtml(): string {
           </tbody>
         </table>
       </div>
+    </div>
+  </div>
 
-      <!-- Live Intake Sandbox -->
-      <div class="card">
-        <div class="card-header">
-          <h2>⚡ Live Diagnostic Ingest Sandbox</h2>
-          <button class="btn btn-outline" onclick="triggerSampleDiagnostic()">Run Sample Assessment Diagnostic</button>
-        </div>
-        <div class="sandbox-dropzone" onclick="triggerSampleDiagnostic()">
-          <div style="font-size: 24px; margin-bottom: 8px;">📸</div>
-          <div style="font-weight: 700; color: #fff;">Drop milestone quiz photo here or click to test intake</div>
-          <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Simulates WhatsApp/Telegram webhook intake & QStash asynchronous background processing</div>
-        </div>
+  <!-- Admin & Infra Row -->
+  <div class="admin-grid">
+    <!-- Left: Central Settings Registry & Strike Rules -->
+    <div class="card">
+      <div class="card-header">
+        <h2>⚙️ Central Settings & Intake Strike Rules</h2>
+        <span class="badge badge-green">Registry Active</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Deduplication Gate</span>
+        <span class="val"><span class="badge badge-green">ENABLED</span> (Telegram & WhatsApp)</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Maximum Strike Limit</span>
+        <span class="val"><code>3 Strikes</code> (Before Downgrade)</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Penalty Action on Max Strikes</span>
+        <span class="val"><span class="badge badge-red">Downgrade to Batch Queue</span></span>
+      </div>
+      <div class="status-row">
+        <span class="key">Cooldown Window</span>
+        <span class="val"><code>24 Hours</code> (Rolling Fingerprint TTL)</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Fingerprint Resolution</span>
+        <span class="val">Telegram <code>file_unique_id</code> + Filename + Byte Size</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Shortlink Provider</span>
+        <span class="val"><span class="badge badge-cyan">Dub.co</span> (aim.getvintel.com/s/...)</span>
+      </div>
+    </div>
+
+    <!-- Right: Regional Infrastructure Status -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🌍 Infrastructure & Regional Routing</h2>
+        <span class="badge badge-green">All Systems Operational</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Web & API Console</span>
+        <span class="val">🟢 Vercel Serverless (<code>cdg1</code> Paris Primary / <code>fra1</code> Fallback)</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Telegram Intake Worker</span>
+        <span class="val">🟢 Cloudflare Worker (<code>aim-bot.getvintel.com</code> • EU Edge)</span>
+      </div>
+      <div class="status-row">
+        <span class="key">State Storage</span>
+        <span class="val">🟢 Upstash Redis (Prefix: <code>aim:*</code> • Region: <code>eu-west-3</code>)</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Asynchronous Queue</span>
+        <span class="val">🟢 Upstash QStash (Callback: <code>/jobs/process-assessment</code>)</span>
+      </div>
+      <div class="status-row">
+        <span class="key">Audit Ledger</span>
+        <span class="val">🟢 GitStateStorageAdapter (Private Repo Backup)</span>
       </div>
     </div>
   </div>
 
+  <!-- Interactive Intake & Strike Simulator -->
+  <div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+      <h2>🛡️ Intake Deduplication & Strike Simulator</h2>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-outline" onclick="simulateNewUpload()">Simulate New Quiz Upload (Accept)</button>
+        <button class="btn btn-outline" onclick="simulateDuplicateUpload()">Simulate Duplicate Upload (Strike)</button>
+        <button class="btn btn-danger" onclick="resetSimulatedStrikes()">Reset Guardian Strikes</button>
+      </div>
+    </div>
+    <div class="sandbox-dropzone" onclick="simulateDuplicateUpload()">
+      <div style="font-size: 24px; margin-bottom: 8px;">📸</div>
+      <div style="font-weight: 700; color: #fff;" id="sim-headline">Click to simulate test upload or duplicate submission</div>
+      <div style="font-size: 12px; color: var(--muted); margin-top: 4px;" id="sim-status">
+        Current Guardian: <code>guardian_parent_7788</code> • Strikes: <span id="sim-strikes">0/3</span> • Status: <span class="badge badge-green" id="sim-badge">Active</span>
+      </div>
+    </div>
+    <div id="sim-log" style="margin-top: 14px; font-family: monospace; font-size: 12px; background: #000; padding: 12px; border-radius: 6px; display: none; color: #a5f3fc;"></div>
+  </div>
+
   <script>
+    let simStrikeCount = 0;
+    let simDupCount = 0;
+    let simTokens = 9600;
+
     function selectStudent(id) {
       document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
       event.currentTarget.classList.add('active');
@@ -389,9 +519,48 @@ export function renderDashboardHtml(): string {
       }
     }
 
-    async function triggerSampleDiagnostic() {
-      alert("Triggering simulated assessment diagnostic intake via API... Sprints and coaching guides are dynamically compiled.");
-      window.open('/sprint/preview', '_blank');
+    function simulateNewUpload() {
+      const log = document.getElementById('sim-log');
+      log.style.display = 'block';
+      log.innerHTML = '🟢 [Intake Gate] Unique test file received. Fingerprint registered. Enqueued to QStash (cdg1/eu-west-3) for asynchronous vision extraction. (Tokens spent: Standard)';
+    }
+
+    function simulateDuplicateUpload() {
+      simDupCount += 1;
+      simTokens += 3200;
+      document.getElementById('val-savings').innerText = simTokens.toLocaleString();
+
+      if (simStrikeCount < 3) {
+        simStrikeCount += 1;
+      }
+
+      const log = document.getElementById('sim-log');
+      log.style.display = 'block';
+
+      const badge = document.getElementById('sim-badge');
+      const strikesEl = document.getElementById('sim-strikes');
+      strikesEl.innerText = simStrikeCount + '/3';
+
+      if (simStrikeCount >= 3) {
+        badge.className = 'badge badge-red';
+        badge.innerText = 'Downgraded';
+        log.innerHTML = '🚫 [Intake Intercepted] REPEATED UPLOAD DETECTED (' + simDupCount + ' duplicates). STRIKE 3 APPLIED. Quota downgraded to delayed batch. Zero LLM tokens wasted. Message sent to parent.';
+      } else {
+        badge.className = 'badge badge-yellow';
+        badge.innerText = 'Warned';
+        log.innerHTML = '⚠️ [Intake Intercepted] REPEATED UPLOAD DETECTED. Strike ' + simStrikeCount + ' of 3 recorded. Saved 3,200 vision tokens. Educational warning & previous sprint link dispatched to parent.';
+      }
+    }
+
+    function resetSimulatedStrikes() {
+      simStrikeCount = 0;
+      simDupCount = 0;
+      document.getElementById('sim-strikes').innerText = '0/3';
+      const badge = document.getElementById('sim-badge');
+      badge.className = 'badge badge-green';
+      badge.innerText = 'Active';
+      const log = document.getElementById('sim-log');
+      log.innerHTML = '🟢 Guardian strikes reset to 0/3. Normal priority restored.';
     }
   </script>
 </body>

@@ -72,6 +72,24 @@ export interface Guardian {
   messagingChannel: 'telegram' | 'whatsapp' | 'web';
   chatId: string;
   phoneNumber?: string;
+  status?: 'active' | 'warned' | 'rate_limited' | 'downgraded' | 'blocked';
+}
+
+export interface GuardianStrikeRecord {
+  guardianId: string;
+  strikeCount: number;
+  maxStrikes: number;
+  status: 'active' | 'warned' | 'rate_limited' | 'downgraded' | 'blocked';
+  lastStrikeDate?: string;
+  lastDuplicateFileHash?: string;
+  duplicateUploadCount: number;
+  tokensSavedEstimate: number;
+  history: Array<{
+    timestamp: string;
+    fileIdentifier: string;
+    reason: string;
+    strikeApplied: boolean;
+  }>;
 }
 
 export interface Educator {
@@ -210,6 +228,13 @@ export interface IStoragePort {
   getCoachingGuide(id: string): Promise<CoachingGuide | null>;
 
   getTrends(studentId: string, subjectId?: string): Promise<TrendDataPoint[]>;
+
+  // Deduplication & Strike Management Port Methods
+  getGuardianStrikes(guardianId: string): Promise<GuardianStrikeRecord | null>;
+  saveGuardianStrikes(record: GuardianStrikeRecord): Promise<void>;
+  hasSeenFileHash(guardianId: string, hash: string): Promise<boolean>;
+  recordFileHash(guardianId: string, hash: string, metadata: { filename?: string; sprintId?: string; timestamp: string }): Promise<void>;
+  getSeenFileMetadata(guardianId: string, hash: string): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null>;
 }
 
 export interface IVisionExtractionPort {

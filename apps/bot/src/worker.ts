@@ -1,4 +1,5 @@
-import { QueueFactory, MessagingFactory } from '@hex-aim/adapters';
+import { QueueFactory, MessagingFactory, StorageFactory } from '@hex-aim/adapters';
+import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
 import { processAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
 
 export interface Env {
@@ -64,11 +65,46 @@ export default {
           // Select largest photo resolution
           const largestPhoto = photos[photos.length - 1];
           const fileId = largestPhoto.file_id;
+          const fileUniqueId = largestPhoto.file_unique_id || fileId;
           const dummyImageUrl = `https://api.telegram.org/file/bot/placeholder/${fileId}.jpg`;
+          const guardianId = `guardian_${chatId}`;
+
+          // Intake Deduplication & Strike Interception Gate
+          const storage = StorageFactory.getStorage();
+          const settings = SettingsManager.getInstance();
+
+          const dedupCheck = await IntakeDeduplicator.evaluateUpload(
+            {
+              guardianId,
+              fileIdentifier: fileUniqueId,
+              metadata: {
+                filename: `telegram_photo_${fileUniqueId}.jpg`,
+                fileSize: largestPhoto.file_size,
+              },
+            },
+            storage,
+            settings
+          );
+
+          if (dedupCheck.isDuplicate) {
+            // Intercepted at Edge Gate: Zero LLM / Vision Tokens burned
+            if (dedupCheck.userMessage) {
+              await messaging.sendMessage(chatId, dedupCheck.userMessage);
+            }
+            return new Response(JSON.stringify({
+              ok: true,
+              dedup_action: 'intercepted_duplicate',
+              strikeCount: dedupCheck.strikeCount,
+              status: dedupCheck.status,
+              tokensSaved: dedupCheck.tokensSaved,
+            }), {
+              headers: { 'Content-Type': 'application/json' },
+            });
+          }
 
           const payload: ProcessAssessmentPayload = {
             studentId: 'student_001', // Default or derived from guardian session
-            guardianId: `guardian_${chatId}`,
+            guardianId,
             chatId,
             imageUrls: [dummyImageUrl],
             subjectId: 'maths',

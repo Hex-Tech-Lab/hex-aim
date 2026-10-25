@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
+    "qa-intel": "pnpm --filter @hex-aim/web exec tsx ../../scripts/qa-intel.ts",
     "dev:web": "pnpm --filter @hex-aim/web dev",
     "dev:bot": "pnpm --filter @hex-aim/bot dev"
   },
