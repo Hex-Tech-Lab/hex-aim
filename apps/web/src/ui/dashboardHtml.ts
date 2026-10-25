@@ -308,10 +308,6 @@ export function renderDashboardHtml(): string {
           <div class="name">Maya (Y4)</div>
           <div class="meta">Verbal execution • 10 min target</div>
         </li>
-        <li class="student-item" onclick="selectStudent('student_003')">
-          <div class="name">Omar (Y4)</div>
-          <div class="meta">Standard working memory • 10 min target</div>
-        </li>
       </ul>
     </div>
 
@@ -481,18 +477,6 @@ export function renderDashboardHtml(): string {
             <td><code>Y4.MATH.NPV.5DIGIT_ORDERING</code></td>
             <td><code>ERR_SHARED_PREFIX_ORDERING</code></td>
             <td>Difficulty sequencing 5-digit numbers that share leading digits</td>
-            <td>1x</td>
-            <td><span class="badge badge-orange">Active Priority</span></td>
-          </tr>
-        \`;
-      } else if (id === 'student_003') {
-        document.getElementById('active-student-title').innerText = "Omar's Cognitive Gap Ledger";
-        document.getElementById('active-student-meta').innerText = "Target: 10 min sprint • Standard working memory";
-        document.getElementById('gaps-tbody').innerHTML = \`
-          <tr>
-            <td><code>Y4.MATH.NPV.ROUNDING</code></td>
-            <td><code>ERR_PLACE_VALUE_ALIGNMENT</code></td>
-            <td>Rounding to nearest 1,000 using tens digit instead of hundreds</td>
             <td>1x</td>
             <td><span class="badge badge-orange">Active Priority</span></td>
           </tr>

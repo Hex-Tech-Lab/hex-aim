@@ -1,3 +1,5 @@
+import { SettingsManager } from '@hex-aim/core';
+
 export interface DubLinkConfig {
   apiKey?: string;
   domain?: string;
@@ -8,8 +10,9 @@ export class DubLinkAdapter {
   private domain: string;
 
   constructor(config?: DubLinkConfig) {
-    this.apiKey = config?.apiKey || process.env.DUB_API_KEY || null;
-    this.domain = config?.domain || process.env.DUB_DOMAIN || 'aim.getvintel.com';
+    const settings = SettingsManager.getInstance();
+    this.apiKey = config?.apiKey || settings.get<string>('DUB_API_KEY', process.env.DUB_API_KEY || '');
+    this.domain = config?.domain || settings.get<string>('DUB_DOMAIN', process.env.DUB_DOMAIN || 'link.getmytestdrive.com');
   }
 
   /**
@@ -30,7 +33,7 @@ export class DubLinkAdapter {
         body: JSON.stringify({
           url: targetUrl,
           key: key || undefined,
-          domain: this.domain,
+          domain: this.domain || undefined,
         }),
       });
 
