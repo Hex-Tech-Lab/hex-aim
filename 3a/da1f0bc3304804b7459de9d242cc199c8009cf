@@ -1,0 +1,64 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 4-5,136-142
+apps/bot/src/worker.ts
+  h_cdd764b4030252 1-2,68,70-103,107
+apps/bot/test/dedup_intake.test.ts
+  h_cdd764b4030252 1-117
+apps/bot/wrangler.jsonc
+  h_cdd764b4030252 4,10
+apps/web/.gitignore
+  h_cdd764b4030252 1-2
+apps/web/api/guide.ts
+  h_cdd764b4030252 1-44
+apps/web/api/health.ts
+  h_cdd764b4030252 1-11
+apps/web/api/sprint.ts
+  h_cdd764b4030252 1-54
+apps/web/public/.gitignore
+  h_cdd764b4030252 1
+apps/web/public/index.html
+  h_cdd764b4030252 1-566
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 21,40-41,56-62,67,71-76,104,106-107,115-119,172-173,195,217-242,248,252,263,265-271,291-294,367-368,370-447,450,454-457,522-563
+apps/web/test/server.test.ts
+  h_cdd764b4030252 32,41-43
+apps/web/vercel.json
+  h_cdd764b4030252 1-8
+docs/AGENT_LEDGER.md
+  h_cdd764b4030252 33-38
+docs/agent_ledger.jsonl
+  h_cdd764b4030252 9
+package.json
+  h_cdd764b4030252 9
+packages/adapters/src/index.ts
+  h_cdd764b4030252 16
+packages/adapters/src/messaging/DubLinkAdapter.ts
+  h_cdd764b4030252 1-47
+packages/adapters/src/storage/GitStateStorageAdapter.ts
+  h_cdd764b4030252 11-12,147-174
+packages/adapters/src/storage/InMemoryStorageAdapter.ts
+  h_cdd764b4030252 9-10,20-21,110-136
+packages/adapters/src/storage/UpstashRedisStorageAdapter.ts
+  h_cdd764b4030252 10-11,133-162
+packages/core/src/dedup/IntakeDeduplicator.ts
+  h_cdd764b4030252 1-158
+packages/core/src/index.ts
+  h_cdd764b4030252 5
+packages/core/test/dedup.test.ts
+  h_cdd764b4030252 1-139
+packages/types/src/index.ts
+  h_cdd764b4030252 75-92,231-237
+scripts/qa-intel.ts
+  h_cdd764b4030252 1-122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3ada1f0bc3304804b7459de9d242cc199c8009cf",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
