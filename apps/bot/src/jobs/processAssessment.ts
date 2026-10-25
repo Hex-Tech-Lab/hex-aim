@@ -15,19 +15,21 @@ import type {
 } from '@hex-aim/types';
 
 export interface ProcessAssessmentPayload {
-  studentId: string;
+  studentId?: string;
   guardianId?: string;
   chatId: string;
   imageUrls: string[];
-  subjectId: string;
-  yearGroup: string;
-  termWeek: number;
+  subjectId?: string;
+  yearGroup?: string;
+  termWeek?: number;
   schoolId?: string;
 }
 
 export async function processAssessmentJob(payload: ProcessAssessmentPayload): Promise<{
   sprintId: string;
   guideId: string;
+  studentId: string;
+  subjectId: string;
   score: { raw: number; total: number; percentage: number };
 }> {
   const storage = StorageFactory.getStorage();
@@ -35,46 +37,69 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
   const messaging = MessagingFactory.getMessaging();
 
   const schoolId = payload.schoolId || 'asten-college';
-  const student = (await storage.getStudent(payload.studentId)) || {
-    id: payload.studentId,
-    name: 'Student',
-    schoolId,
-    yearGroup: payload.yearGroup,
-    curriculumTrack: 'british' as const,
-    neuroProfile: {
-      hasAdhdTraits: true,
-      hasDyslexiaTraits: false,
-      workingMemoryCapacity: 'vulnerable_under_time_pressure' as const,
-      optimalSprintDurationMins: 8,
-    },
-  } as Student;
 
-  const guardian = payload.guardianId ? await storage.getGuardian(payload.guardianId) : null;
-
-  // 1. Run Vision Extraction
+  // 1. Run Vision Extraction (OpenRouter AI Multimodal)
   const extraction = await vision.extractAssessment(payload.imageUrls, {
-    studentId: payload.studentId,
-    subjectId: payload.subjectId,
-    yearGroup: payload.yearGroup,
+    studentId: payload.studentId || 'auto',
+    subjectId: payload.subjectId || 'auto',
+    yearGroup: payload.yearGroup || 'Y4',
   });
 
+  // 2. Resolve Dynamic Classification from Vision (Lara vs. Maya, English vs. Maths)
+  let resolvedStudentId = 'lara';
+  if (extraction.detectedStudentName) {
+    const lower = extraction.detectedStudentName.toLowerCase();
+    if (lower.includes('maya')) resolvedStudentId = 'maya';
+    else if (lower.includes('lara')) resolvedStudentId = 'lara';
+  } else if (payload.studentId && payload.studentId !== 'auto') {
+    resolvedStudentId = payload.studentId.toLowerCase();
+  }
+
+  const resolvedSubjectId = (extraction.detectedSubject || payload.subjectId || 'english').toLowerCase();
+  const resolvedWeek = (typeof extraction.detectedWeek === 'number' && extraction.detectedWeek > 0)
+    ? extraction.detectedWeek
+    : (payload.termWeek || 3);
+  const resolvedYearGroup = extraction.detectedYearGroup || payload.yearGroup || 'Y4';
+
+  console.log(`[processAssessment] Classified assessment: Student=${resolvedStudentId}, Subject=${resolvedSubjectId}, Week=${resolvedWeek}`);
+
+  // Fetch or construct student profile
+  let student = await storage.getStudent(resolvedStudentId);
+  if (!student) {
+    const isMaya = resolvedStudentId === 'maya';
+    student = {
+      id: resolvedStudentId,
+      name: isMaya ? 'Maya' : 'Lara',
+      schoolId,
+      yearGroup: resolvedYearGroup,
+      curriculumTrack: 'british' as const,
+      neuroProfile: {
+        hasAdhdTraits: !isMaya,
+        hasDyslexiaTraits: !isMaya,
+        workingMemoryCapacity: isMaya ? 'standard' : 'vulnerable_under_time_pressure',
+        optimalSprintDurationMins: isMaya ? 10 : 8,
+      },
+    } as Student;
+  }
+
+  const guardian = payload.guardianId ? await storage.getGuardian(payload.guardianId) : null;
   const percentage = Math.round((extraction.rawScore / Math.max(1, extraction.totalScore)) * 100);
 
-  // 2. Check for Duplicate Assessment / Practice Run
-  const priorAssessments = await storage.getStudentAssessments(payload.studentId, payload.subjectId);
+  // 3. Check for Duplicate Assessment / Practice Run (Strictly Scoped to Same Student & Subject & Week)
+  const priorAssessments = await storage.getStudentAssessments(resolvedStudentId, resolvedSubjectId);
   const isDuplicateMilestone = priorAssessments.some(a => 
-    a.termWeek === payload.termWeek && (a.rawScore === extraction.rawScore || Math.abs(a.percentage - percentage) < 3)
+    a.termWeek === resolvedWeek && (a.rawScore === extraction.rawScore || Math.abs(a.percentage - percentage) < 3)
   );
 
   const dedupContext = {
     schoolId,
-    yearGroup: payload.yearGroup,
-    subjectId: payload.subjectId,
-    termWeek: payload.termWeek,
+    yearGroup: resolvedYearGroup,
+    subjectId: resolvedSubjectId,
+    termWeek: resolvedWeek,
   };
 
   const { submission } = CanonicalDeduplicator.processSubmission(null, dedupContext, {
-    studentId: payload.studentId,
+    studentId: resolvedStudentId,
     guardianId: payload.guardianId,
     rawScore: extraction.rawScore,
     totalScore: extraction.totalScore,
@@ -85,9 +110,9 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
 
   await storage.saveAssessment(submission);
 
-  // 3. Update Cognitive Gap Ledger (Only if NOT a repeated duplicate milestone)
+  // 4. Update Cognitive Gap Ledger
   let targetGaps: CognitiveGap[] = [];
-  const existingGaps = await storage.getStudentGaps(payload.studentId);
+  const existingGaps = await storage.getStudentGaps(resolvedStudentId);
 
   if (!isDuplicateMilestone) {
     const gapMap = new Map<string, CognitiveGap>();
@@ -106,8 +131,8 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
           existing.status = 'active_priority';
         } else {
           gapMap.set(item.conceptCode, {
-            id: `gap_${payload.studentId}_${item.conceptCode}_${Date.now()}`,
-            studentId: payload.studentId,
+            id: `gap_${resolvedStudentId}_${item.conceptCode}_${Date.now()}`,
+            studentId: resolvedStudentId,
             conceptCode: item.conceptCode,
             errorClass: item.errorClass,
             description: `Identified error ${item.errorClass} in Question ${item.qNum}`,
@@ -115,7 +140,7 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
             lastObservedDate: nowStr,
             recurrenceCount: 1,
             status: 'active_priority',
-            socraticHint: 'Guide the student to check place value columns with the elevator model.',
+            socraticHint: 'Guide the student through socratic prompt questions.',
           });
         }
       } else if (item.status === 'pass') {
@@ -127,56 +152,61 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
     }
 
     const updatedGaps = Array.from(gapMap.values());
-    await storage.saveStudentGaps(payload.studentId, updatedGaps);
+    await storage.saveStudentGaps(resolvedStudentId, updatedGaps);
     targetGaps = updatedGaps.filter(g => g.status === 'active_priority');
   } else {
-    // Practice run: use active priority gaps without skewing recurrence counts
     targetGaps = existingGaps.filter(g => g.status === 'active_priority');
     if (targetGaps.length === 0) {
       targetGaps = existingGaps.slice(0, 3);
     }
   }
 
-  // 4. Compile 4-Page Print Sprint & Parent Socratic Guide
+  // 5. Compile 4-Page Print Sprint & Parent Socratic Guide
   const sprint = AdaptiveSprintCompiler.compile(student, targetGaps, {
-    subjectTitle: payload.subjectId.toUpperCase(),
+    subjectTitle: resolvedSubjectId.toUpperCase(),
   });
   await storage.saveRemediationSprint(sprint);
 
   const guide = SocraticGuideCompiler.compile(student, targetGaps, guardian || undefined);
   await storage.saveCoachingGuide(guide);
 
-  // 5. Deliver Links via Messaging Port (Telegram / WhatsApp) with Dub.co tracking
+  // 6. Deliver Links & Documents via Telegram
   const rawSprintUrl = `https://aim.getvintel.com/sprint/preview?id=${sprint.id}`;
   const rawGuideUrl = `https://aim.getvintel.com/guide/preview?id=${guide.id}`;
 
   const dub = new DubLinkAdapter();
+  // Attempt Dub link, but if quota exhausted, gracefully falls back to raw URL
   const sprintUrl = await dub.createShortLink(rawSprintUrl);
   const guideUrl = await dub.createShortLink(rawGuideUrl);
 
   if (isDuplicateMilestone) {
     await messaging.sendMessage(payload.chatId,
-      `🔁 <b>Practice Run Recognized: ${payload.subjectId.toUpperCase()} Week ${payload.termWeek} (Score: ${extraction.rawScore}/${extraction.totalScore})</b>\n\n` +
-      `We noticed this assessment matches your child's existing Week ${payload.termWeek} quiz score. ` +
-      `This has been logged as a <b>Practice Run</b> to preserve baseline mastery data.\n\n` +
+      `🔁 <b>Practice Run Recognized: ${student.name} (${resolvedSubjectId.toUpperCase()} Week ${resolvedWeek}, Score: ${extraction.rawScore}/${extraction.totalScore})</b>\n\n` +
+      `We noticed this assessment matches ${student.name}'s existing Week ${resolvedWeek} score. ` +
+      `This has been logged as a <b>Practice Run</b> to protect baseline mastery data.\n\n` +
       `📄 <b>Targeted 4-Page Sprint Pack:</b>\n` +
       `🔗 <a href="${sprintUrl}">Open Printable Student Pack</a>\n\n` +
       `🧭 <b>Parent Socratic Coaching Guide:</b>\n` +
-      `🔗 <a href="${guideUrl}">Open 8-Minute Coaching Script</a>\n\n` +
-      `📝 <b>Blank Practice Template:</b>\n` +
-      `🔗 <a href="${sprintUrl}">Download Clean Exam Template</a>\n\n` +
-      `💡 <i>Baseline cognitive gap ledger is protected from duplicate score skew.</i>`
+      `🔗 <a href="${guideUrl}">Open 8-Minute Coaching Script</a>`
     );
   } else {
     await messaging.deliverRemediationPacks(payload.chatId, {
       studentPackHtml: sprintUrl,
+      studentPackPdf: sprintUrl,
       coachingGuideHtml: guideUrl,
+      coachingGuidePdf: guideUrl,
+      summaryUrl: 'https://go.aim.getvintel.com',
+      studentName: student.name,
+      subject: resolvedSubjectId,
+      week: resolvedWeek,
     });
   }
 
   return {
     sprintId: sprint.id,
     guideId: guide.id,
+    studentId: resolvedStudentId,
+    subjectId: resolvedSubjectId,
     score: {
       raw: extraction.rawScore,
       total: extraction.totalScore,
