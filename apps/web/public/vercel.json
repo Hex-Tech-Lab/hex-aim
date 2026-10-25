@@ -1,9 +1,7 @@
 {
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/sprint/preview", "destination": "/sprint/preview.html" },
-    { "source": "/guide/preview", "destination": "/guide/preview.html" },
-    { "source": "/sprint/:path*", "destination": "/sprint/preview.html" },
-    { "source": "/guide/:path*", "destination": "/guide/preview.html" }
+  "routes": [
+    { "src": "^/sprint(/.*)?$", "dest": "/sprint/preview.html" },
+    { "src": "^/guide(/.*)?$", "dest": "/guide/preview.html" }
   ]
 }

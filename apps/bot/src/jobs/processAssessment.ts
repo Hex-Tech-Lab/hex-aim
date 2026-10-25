@@ -60,7 +60,12 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
 
   const percentage = Math.round((extraction.rawScore / Math.max(1, extraction.totalScore)) * 100);
 
-  // 2. Canonical Assessment Deduplication
+  // 2. Check for Duplicate Assessment / Practice Run
+  const priorAssessments = await storage.getStudentAssessments(payload.studentId, payload.subjectId);
+  const isDuplicateMilestone = priorAssessments.some(a => 
+    a.termWeek === payload.termWeek && (a.rawScore === extraction.rawScore || Math.abs(a.percentage - percentage) < 3)
+  );
+
   const dedupContext = {
     schoolId,
     yearGroup: payload.yearGroup,
@@ -80,49 +85,57 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
 
   await storage.saveAssessment(submission);
 
-  // 3. Update Cognitive Gap Ledger
+  // 3. Update Cognitive Gap Ledger (Only if NOT a repeated duplicate milestone)
+  let targetGaps: CognitiveGap[] = [];
   const existingGaps = await storage.getStudentGaps(payload.studentId);
-  const gapMap = new Map<string, CognitiveGap>();
-  for (const g of existingGaps) {
-    gapMap.set(g.conceptCode, g);
-  }
 
-  const nowStr = new Date().toISOString().split('T')[0]!;
+  if (!isDuplicateMilestone) {
+    const gapMap = new Map<string, CognitiveGap>();
+    for (const g of existingGaps) {
+      gapMap.set(g.conceptCode, g);
+    }
 
-  for (const item of extraction.items) {
-    if (item.status === 'fail' && item.errorClass) {
-      const existing = gapMap.get(item.conceptCode);
-      if (existing) {
-        existing.lastObservedDate = nowStr;
-        existing.recurrenceCount += 1;
-        existing.status = 'active_priority';
-      } else {
-        gapMap.set(item.conceptCode, {
-          id: `gap_${payload.studentId}_${item.conceptCode}_${Date.now()}`,
-          studentId: payload.studentId,
-          conceptCode: item.conceptCode,
-          errorClass: item.errorClass,
-          description: `Identified error ${item.errorClass} in Question ${item.qNum}`,
-          firstObservedDate: nowStr,
-          lastObservedDate: nowStr,
-          recurrenceCount: 1,
-          status: 'active_priority',
-          socraticHint: 'Guide the student to check place value columns with the elevator model.',
-        });
-      }
-    } else if (item.status === 'pass') {
-      const existing = gapMap.get(item.conceptCode);
-      if (existing && existing.status === 'active_priority') {
-        existing.status = 'progressing';
+    const nowStr = new Date().toISOString().split('T')[0]!;
+
+    for (const item of extraction.items) {
+      if (item.status === 'fail' && item.errorClass) {
+        const existing = gapMap.get(item.conceptCode);
+        if (existing) {
+          existing.lastObservedDate = nowStr;
+          existing.recurrenceCount += 1;
+          existing.status = 'active_priority';
+        } else {
+          gapMap.set(item.conceptCode, {
+            id: `gap_${payload.studentId}_${item.conceptCode}_${Date.now()}`,
+            studentId: payload.studentId,
+            conceptCode: item.conceptCode,
+            errorClass: item.errorClass,
+            description: `Identified error ${item.errorClass} in Question ${item.qNum}`,
+            firstObservedDate: nowStr,
+            lastObservedDate: nowStr,
+            recurrenceCount: 1,
+            status: 'active_priority',
+            socraticHint: 'Guide the student to check place value columns with the elevator model.',
+          });
+        }
+      } else if (item.status === 'pass') {
+        const existing = gapMap.get(item.conceptCode);
+        if (existing && existing.status === 'active_priority') {
+          existing.status = 'progressing';
+        }
       }
     }
+
+    const updatedGaps = Array.from(gapMap.values());
+    await storage.saveStudentGaps(payload.studentId, updatedGaps);
+    targetGaps = updatedGaps.filter(g => g.status === 'active_priority');
+  } else {
+    // Practice run: use active priority gaps without skewing recurrence counts
+    targetGaps = existingGaps.filter(g => g.status === 'active_priority');
+    if (targetGaps.length === 0) {
+      targetGaps = existingGaps.slice(0, 3);
+    }
   }
-
-  const updatedGaps = Array.from(gapMap.values());
-  await storage.saveStudentGaps(payload.studentId, updatedGaps);
-
-  // Filter to active gaps for targeted 4-page sprint
-  const targetGaps = updatedGaps.filter(g => g.status === 'active_priority');
 
   // 4. Compile 4-Page Print Sprint & Parent Socratic Guide
   const sprint = AdaptiveSprintCompiler.compile(student, targetGaps, {
@@ -134,17 +147,32 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
   await storage.saveCoachingGuide(guide);
 
   // 5. Deliver Links via Messaging Port (Telegram / WhatsApp) with Dub.co tracking
-  const rawSprintUrl = `https://aim.getvintel.com/sprint/${sprint.id}`;
-  const rawGuideUrl = `https://aim.getvintel.com/guide/${guide.id}`;
+  const rawSprintUrl = `https://aim.getvintel.com/sprint/preview?id=${sprint.id}`;
+  const rawGuideUrl = `https://aim.getvintel.com/guide/preview?id=${guide.id}`;
 
   const dub = new DubLinkAdapter();
   const sprintUrl = await dub.createShortLink(rawSprintUrl);
   const guideUrl = await dub.createShortLink(rawGuideUrl);
 
-  await messaging.deliverRemediationPacks(payload.chatId, {
-    studentPackHtml: sprintUrl,
-    coachingGuideHtml: guideUrl,
-  });
+  if (isDuplicateMilestone) {
+    await messaging.sendMessage(payload.chatId,
+      `🔁 <b>Practice Run Recognized: ${payload.subjectId.toUpperCase()} Week ${payload.termWeek} (Score: ${extraction.rawScore}/${extraction.totalScore})</b>\n\n` +
+      `We noticed this assessment matches your child's existing Week ${payload.termWeek} quiz score. ` +
+      `This has been logged as a <b>Practice Run</b> to preserve baseline mastery data.\n\n` +
+      `📄 <b>Targeted 4-Page Sprint Pack:</b>\n` +
+      `🔗 <a href="${sprintUrl}">Open Printable Student Pack</a>\n\n` +
+      `🧭 <b>Parent Socratic Coaching Guide:</b>\n` +
+      `🔗 <a href="${guideUrl}">Open 8-Minute Coaching Script</a>\n\n` +
+      `📝 <b>Blank Practice Template:</b>\n` +
+      `🔗 <a href="${sprintUrl}">Download Clean Exam Template</a>\n\n` +
+      `💡 <i>Baseline cognitive gap ledger is protected from duplicate score skew.</i>`
+    );
+  } else {
+    await messaging.deliverRemediationPacks(payload.chatId, {
+      studentPackHtml: sprintUrl,
+      coachingGuideHtml: guideUrl,
+    });
+  }
 
   return {
     sprintId: sprint.id,

@@ -4,5 +4,11 @@
   "installCommand": "echo 'No install needed'",
   "outputDirectory": "public",
   "cleanUrls": true,
-  "regions": ["cdg1"]
+  "regions": ["cdg1"],
+  "rewrites": [
+    { "source": "/sprint/preview", "destination": "/sprint/preview.html" },
+    { "source": "/guide/preview", "destination": "/guide/preview.html" },
+    { "source": "/sprint/:path*", "destination": "/sprint/preview.html" },
+    { "source": "/guide/:path*", "destination": "/guide/preview.html" }
+  ]
 }

@@ -13,6 +13,9 @@ export interface Env {
   UPSTASH_REDIS_REST_URL?: string;
   UPSTASH_REDIS_REST_TOKEN?: string;
   GEMINI_API_KEY?: string;
+  OPENROUTER_API_KEY?: string;
+  DUB_API_KEY?: string;
+  DUB_DOMAIN?: string;
 }
 
 export default {
@@ -21,15 +24,17 @@ export default {
 
     // Bind Worker Secrets & Env into SettingsManager
     const settings = SettingsManager.getInstance();
-    if (env.TELEGRAM_BOT_TOKEN) settings.set('TELEGRAM_BOT_TOKEN', env.TELEGRAM_BOT_TOKEN);
+    for (const [k, v] of Object.entries(env)) {
+      if (typeof v === 'string') {
+        settings.set(k, v);
+      }
+    }
     if (env.STORAGE_PROVIDER) settings.set('storage.provider', env.STORAGE_PROVIDER);
     if (env.MESSAGING_PROVIDER) settings.set('messaging.provider', env.MESSAGING_PROVIDER);
     if (env.QUEUE_PROVIDER) settings.set('queue.provider', env.QUEUE_PROVIDER);
     if (env.VISION_PROVIDER) settings.set('vision.provider', env.VISION_PROVIDER);
     if (env.UPSTASH_REDIS_REST_URL) settings.set('UPSTASH_REDIS_REST_URL', env.UPSTASH_REDIS_REST_URL);
     if (env.UPSTASH_REDIS_REST_TOKEN) settings.set('UPSTASH_REDIS_REST_TOKEN', env.UPSTASH_REDIS_REST_TOKEN);
-    if (env.QSTASH_TOKEN) settings.set('QSTASH_TOKEN', env.QSTASH_TOKEN);
-    if (env.GEMINI_API_KEY) settings.set('GEMINI_API_KEY', env.GEMINI_API_KEY);
 
     // Health check
     if (url.pathname === '/health' || url.pathname === '/') {
@@ -139,7 +144,7 @@ export default {
           }
 
           const payload: ProcessAssessmentPayload = {
-            studentId: 'student_001', // Default or derived from guardian session
+            studentId: 'lara',
             guardianId,
             chatId,
             imageUrls: [resolvedImageUrl],
@@ -149,20 +154,43 @@ export default {
             schoolId: 'asten-college',
           };
 
-          // Fast confirmation card (< 100ms)
-          await messaging.sendConfirmationCard(chatId, {
-            jobId: `job_${Date.now()}`,
-            imageUrl: resolvedImageUrl,
-            detectedStudent: 'Student (Year 4)',
-            detectedSubject: 'Mathematics',
-            detectedWeek: 'Week 3',
-          });
+          const mediaGroupId = message.media_group_id ? String(message.media_group_id) : undefined;
+          let shouldSendCard = true;
 
-          // Enqueue to QStash asynchronously
-          const queue = QueueFactory.getQueue();
-          const messageId = await queue.enqueueJob('process-assessment', payload);
+          if (mediaGroupId) {
+            const seenMediaGroup = await storage.hasSeenFileHash('media_group', mediaGroupId);
+            if (seenMediaGroup) {
+              shouldSendCard = false; // Suppress duplicate cards for photos in the same album
+            } else {
+              await storage.recordFileHash('media_group', mediaGroupId, { timestamp: new Date().toISOString() });
+            }
+          }
 
-          return new Response(JSON.stringify({ ok: true, queued: true, messageId }), {
+          const jobId = `job_${Date.now()}`;
+          if (shouldSendCard) {
+            await messaging.sendConfirmationCard(chatId, {
+              jobId,
+              imageUrl: resolvedImageUrl,
+              detectedStudent: 'Lara (Year 4)',
+              detectedSubject: 'Mathematics',
+              detectedWeek: 'Week 3',
+            });
+          }
+
+          // Asynchronous Edge Execution via ctx.waitUntil!
+          if (_ctx && typeof _ctx.waitUntil === 'function') {
+            _ctx.waitUntil(
+              processAssessmentJob(payload).catch(err => {
+                console.error('[Worker] Background processing error:', err);
+              })
+            );
+          } else {
+            processAssessmentJob(payload).catch(err => {
+              console.error('[Worker] Direct processing error:', err);
+            });
+          }
+
+          return new Response(JSON.stringify({ ok: true, queued: true, messageId: jobId }), {
             headers: { 'Content-Type': 'application/json' },
           });
         }
