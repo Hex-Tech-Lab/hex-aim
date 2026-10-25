@@ -119,6 +119,26 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     }
   }
 
+  public async sendBatchIntakeSummary(chatId: string, summary: {
+    totalPhotos: number;
+    students: Array<{ name: string; subject: string; week: number; pageCount: number; score?: string }>;
+  }): Promise<void> {
+    let text = `📥 <b>Batch Intake Evaluated (${summary.totalPhotos} pages)</b>\n\n`;
+    for (const s of summary.students) {
+      text += `👤 <b>${s.name}:</b> ${s.pageCount} pages • ${s.subject.toUpperCase()} Week ${s.week}${s.score ? ` (Score: ${s.score})` : ''}\n`;
+    }
+    text += `\n⚡ <i>Generating targeted printable sprints and parent guides...</i>\n` +
+      `<i>Need to adjust child or week? Reply with:</i> <code>/edit [Name] Week [N]</code>`;
+
+    await this.callApi('sendMessage', {
+      chat_id: chatId,
+      text,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+      link_preview_options: { is_disabled: true },
+    });
+  }
+
   public async deliverRemediationPacks(chatId: string, packs: {
     studentPackHtml?: string;
     studentPackPdf?: string | Uint8Array | ArrayBuffer;
@@ -132,20 +152,21 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     const name = packs.studentName || 'Student';
     const subj = packs.subject ? packs.subject.toUpperCase() : 'MASTERY';
     const week = packs.week || 3;
-    const consoleUrl = packs.summaryUrl || 'https://go.aim.getvintel.com';
+    const consoleUrl = packs.summaryUrl || 'https://aim.getvintel.com';
 
-    // 1. Send clean consolidated message with overview link
+    // 1. Send clean consolidated message with overview link (NO dub link preview)
     const text = `🎉 <b>Targeted Learning Pack Ready: ${name} (${subj} W${week})</b>\n\n` +
       `✨ <b>Zero Drill Sheets:</b> Personalized micro-practice targeting specific gaps.\n\n` +
       `🌐 <b>Interactive Web Console:</b>\n` +
       `🔗 <a href="${consoleUrl}">Open ${name}'s Mastery Dashboard</a>\n\n` +
-      `⬇️ <i>Direct printable PDFs are attached below:</i>`;
+      `⬇️ <b>Printable PDF attachments:</b>`;
 
     await this.callApi('sendMessage', {
       chat_id: chatId,
       text,
       parse_mode: 'HTML',
-      disable_web_page_preview: false,
+      disable_web_page_preview: true,
+      link_preview_options: { is_disabled: true },
     });
 
     // 2. Deliver Student Sprint PDF
@@ -156,10 +177,10 @@ export class TelegramMessagingAdapter implements IMessagingPort {
           buffer: isBuf ? (packs.studentPackPdf as Uint8Array) : undefined,
           url: !isBuf ? (packs.studentPackPdf as string) : undefined,
           filename: `${name}_${subj}_Week${week}_Sprint.pdf`,
-          caption: `📄 <b>${name}'s 4-Page Targeted Sprint</b> (6–10 mins micro-practice)`,
+          caption: `📄 <b>${name}'s 4-Page Targeted Sprint</b> (Week ${week} • 6–10 mins micro-practice)`,
         });
       } catch (docErr) {
-        console.warn('[TelegramMessagingAdapter] Could not send student pack PDF document:', docErr);
+        console.error('[TelegramMessagingAdapter] Error sending student pack PDF:', docErr);
       }
     }
 
@@ -171,10 +192,10 @@ export class TelegramMessagingAdapter implements IMessagingPort {
           buffer: isBuf ? (packs.coachingGuidePdf as Uint8Array) : undefined,
           url: !isBuf ? (packs.coachingGuidePdf as string) : undefined,
           filename: `Parent_Guide_${name}_${subj}_Week${week}.pdf`,
-          caption: `🧭 <b>Parent Socratic Coaching Guide</b> (8-Minute Coaching Script)`,
+          caption: `🧭 <b>Parent Socratic Coaching Guide</b> (Week ${week} • 8-Minute Coaching Script)`,
         });
       } catch (docErr) {
-        console.warn('[TelegramMessagingAdapter] Could not send coaching guide PDF document:', docErr);
+        console.error('[TelegramMessagingAdapter] Error sending coaching guide PDF:', docErr);
       }
     }
   }

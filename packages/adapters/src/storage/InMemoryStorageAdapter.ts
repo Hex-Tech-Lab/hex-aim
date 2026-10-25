@@ -134,4 +134,20 @@ export class InMemoryStorageAdapter implements IStoragePort {
   ): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null> {
     return this.seenFiles.get(`${guardianId}:${hash}`) || null;
   }
+
+  private intakeBatches = new Map<string, Array<{ url: string; fileUniqueId: string; messageId?: number }>>();
+
+  public async addIntakeBatchItem(batchId: string, item: { url: string; fileUniqueId: string; messageId?: number }): Promise<void> {
+    const list = this.intakeBatches.get(batchId) || [];
+    list.push(item);
+    this.intakeBatches.set(batchId, list);
+  }
+
+  public async getIntakeBatchItems(batchId: string): Promise<Array<{ url: string; fileUniqueId: string; messageId?: number }>> {
+    return this.intakeBatches.get(batchId) || [];
+  }
+
+  public async clearIntakeBatch(batchId: string): Promise<void> {
+    this.intakeBatches.delete(batchId);
+  }
 }

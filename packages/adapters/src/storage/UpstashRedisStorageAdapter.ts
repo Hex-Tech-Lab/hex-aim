@@ -160,4 +160,18 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
       this.k(`seen_files:${guardianId}:${hash}`)
     );
   }
+
+  public async addIntakeBatchItem(batchId: string, item: { url: string; fileUniqueId: string; messageId?: number }): Promise<void> {
+    await this.redis.rpush(this.k(`intake_batch:${batchId}`), item);
+    await this.redis.expire(this.k(`intake_batch:${batchId}`), 3600);
+  }
+
+  public async getIntakeBatchItems(batchId: string): Promise<Array<{ url: string; fileUniqueId: string; messageId?: number }>> {
+    const items = await this.redis.lrange<any>(this.k(`intake_batch:${batchId}`), 0, -1);
+    return items || [];
+  }
+
+  public async clearIntakeBatch(batchId: string): Promise<void> {
+    await this.redis.del(this.k(`intake_batch:${batchId}`));
+  }
 }
