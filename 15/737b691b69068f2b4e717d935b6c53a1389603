@@ -1,0 +1,44 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 18,22-24,31-32,41,43-45,48-85,88-89,91,96-98,102,113,115,134-135,143,155,164,166,173,178,184-186,190,195,197-201,208-209
+apps/bot/src/worker.ts
+  h_cdd764b4030252 1,38-39,47,67,78-79,118,134,147-218,220,224,230,232-239,241-252,255,257,260
+apps/web/public/icon.svg
+  h_cdd764b4030252 1-61
+apps/web/public/logo.svg
+  h_cdd764b4030252 1-61
+docs/ADR-001-STUDENT-RESOURCE-HIERARCHY-AND-MIGRATION.md
+  h_cdd764b4030252 1-100
+docs/assets/icon.svg
+  h_cdd764b4030252 1-61
+docs/assets/logo.svg
+  h_cdd764b4030252 1-61
+packages/adapters/src/index.ts
+  h_cdd764b4030252 20
+packages/adapters/src/messaging/MockMessagingAdapter.ts
+  h_cdd764b4030252 7,13-19,30-33,35-42
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 34-35,39-50,59,61,65-75,78-113,115-116,123-130,132-142,150-179
+packages/adapters/src/vision/OpenRouterVisionAdapter.ts
+  h_cdd764b4030252 1-157
+packages/adapters/src/vision/VisionFactory.ts
+  h_cdd764b4030252 4,10,16-18,20-21,23,27-28,32-55
+packages/core/src/settings/SettingsManager.ts
+  h_cdd764b4030252 8
+packages/types/package.json
+  h_cdd764b4030252 12
+packages/types/src/index.ts
+  h_cdd764b4030252 250-252,267,275,277-284
+pnpm-lock.yaml
+  h_cdd764b4030252 111-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "15737b691b69068f2b4e717d935b6c53a1389603",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
