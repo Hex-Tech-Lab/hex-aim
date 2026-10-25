@@ -1,0 +1,16 @@
+apps/bot/src/worker.ts
+  h_cdd764b4030252 1,25-28,61-63
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 55-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "74cd30ef3c66c52b14910c1dc66ccde66f2baf06",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
