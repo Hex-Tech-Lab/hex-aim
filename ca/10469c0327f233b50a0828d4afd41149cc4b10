@@ -1,0 +1,26 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 63-68,88-89,92-95,98-127,129-138,150-151,157-175
+apps/bot/src/worker.ts
+  h_cdd764b4030252 16-18,27-31,147,157-167,169-191,193
+apps/web/public/guide/index.html
+  h_cdd764b4030252 1-242
+apps/web/public/sprint/index.html
+  h_cdd764b4030252 1-402
+apps/web/public/vercel.json
+  h_cdd764b4030252 3-5
+apps/web/vercel.json
+  h_cdd764b4030252 7-13
+packages/adapters/src/messaging/DubLinkAdapter.ts
+  h_cdd764b4030252 1-2,13-15,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ca10469c0327f233b50a0828d4afd41149cc4b10",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
