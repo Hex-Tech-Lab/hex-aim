@@ -13,6 +13,7 @@ export * from './queue/QueueFactory.js';
 export * from './messaging/TelegramMessagingAdapter.js';
 export * from './messaging/MockMessagingAdapter.js';
 export * from './messaging/MessagingFactory.js';
+export * from './messaging/DubLinkAdapter.js';
 
 // Vision
 export * from './vision/GeminiVisionAdapter.js';

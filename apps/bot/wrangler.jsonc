@@ -1,17 +1,13 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "aim-bot-worker",
+  "account_id": "d28d44fcd9087c54845a8fb8df1c001e",
   "main": "src/worker.ts",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "routes": [
-    {
-      "pattern": "aim-bot.getvintel.com/*",
-      "zone_name": "getvintel.com"
-    }
-  ],
+  "workers_dev": true,
   "vars": {
     "STORAGE_PROVIDER": "upstash",
     "MESSAGING_PROVIDER": "telegram",

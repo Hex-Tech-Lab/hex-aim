@@ -8,7 +8,8 @@ import type {
   CognitiveGap,
   RemediationSprint,
   CoachingGuide,
-  TrendDataPoint
+  TrendDataPoint,
+  GuardianStrikeRecord
 } from '@hex-aim/types';
 
 export class GitStateStorageAdapter implements IStoragePort {
@@ -142,5 +143,33 @@ export class GitStateStorageAdapter implements IStoragePort {
       activeGapCount,
       resolvedGapCount,
     }));
+  }
+
+  public async getGuardianStrikes(guardianId: string): Promise<GuardianStrikeRecord | null> {
+    return this.readJson<GuardianStrikeRecord>('strikes', guardianId);
+  }
+
+  public async saveGuardianStrikes(record: GuardianStrikeRecord): Promise<void> {
+    this.writeJson('strikes', record.guardianId, record);
+  }
+
+  public async hasSeenFileHash(guardianId: string, hash: string): Promise<boolean> {
+    const meta = this.readJson<{ filename?: string; sprintId?: string; timestamp: string }>('seen_files', `${guardianId}_${hash}`);
+    return meta !== null;
+  }
+
+  public async recordFileHash(
+    guardianId: string,
+    hash: string,
+    metadata: { filename?: string; sprintId?: string; timestamp: string }
+  ): Promise<void> {
+    this.writeJson('seen_files', `${guardianId}_${hash}`, metadata);
+  }
+
+  public async getSeenFileMetadata(
+    guardianId: string,
+    hash: string
+  ): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null> {
+    return this.readJson<{ filename?: string; sprintId?: string; timestamp: string }>('seen_files', `${guardianId}_${hash}`);
   }
 }

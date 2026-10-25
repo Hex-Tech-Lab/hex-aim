@@ -1,7 +1,8 @@
 import {
   StorageFactory,
   VisionFactory,
-  MessagingFactory
+  MessagingFactory,
+  DubLinkAdapter
 } from '@hex-aim/adapters';
 import {
   CanonicalDeduplicator,
@@ -132,9 +133,13 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
   const guide = SocraticGuideCompiler.compile(student, targetGaps, guardian || undefined);
   await storage.saveCoachingGuide(guide);
 
-  // 5. Deliver Links via Messaging Port (Telegram / WhatsApp)
-  const sprintUrl = `https://aim.getvintel.com/sprint/${sprint.id}`;
-  const guideUrl = `https://aim.getvintel.com/guide/${guide.id}`;
+  // 5. Deliver Links via Messaging Port (Telegram / WhatsApp) with Dub.co tracking
+  const rawSprintUrl = `https://aim.getvintel.com/sprint/${sprint.id}`;
+  const rawGuideUrl = `https://aim.getvintel.com/guide/${guide.id}`;
+
+  const dub = new DubLinkAdapter();
+  const sprintUrl = await dub.createShortLink(rawSprintUrl);
+  const guideUrl = await dub.createShortLink(rawGuideUrl);
 
   await messaging.deliverRemediationPacks(payload.chatId, {
     studentPackHtml: sprintUrl,

@@ -6,7 +6,8 @@ import type {
   CognitiveGap,
   RemediationSprint,
   CoachingGuide,
-  TrendDataPoint
+  TrendDataPoint,
+  GuardianStrikeRecord
 } from '@hex-aim/types';
 
 export class InMemoryStorageAdapter implements IStoragePort {
@@ -16,6 +17,8 @@ export class InMemoryStorageAdapter implements IStoragePort {
   private gaps = new Map<string, CognitiveGap[]>();
   private sprints = new Map<string, RemediationSprint>();
   private guides = new Map<string, CoachingGuide>();
+  private strikes = new Map<string, GuardianStrikeRecord>();
+  private seenFiles = new Map<string, { filename?: string; sprintId?: string; timestamp: string }>();
 
   public async getStudent(id: string): Promise<Student | null> {
     return this.students.get(id) || null;
@@ -103,5 +106,32 @@ export class InMemoryStorageAdapter implements IStoragePort {
       activeGapCount,
       resolvedGapCount,
     }));
+  }
+
+  public async getGuardianStrikes(guardianId: string): Promise<GuardianStrikeRecord | null> {
+    return this.strikes.get(guardianId) || null;
+  }
+
+  public async saveGuardianStrikes(record: GuardianStrikeRecord): Promise<void> {
+    this.strikes.set(record.guardianId, { ...record });
+  }
+
+  public async hasSeenFileHash(guardianId: string, hash: string): Promise<boolean> {
+    return this.seenFiles.has(`${guardianId}:${hash}`);
+  }
+
+  public async recordFileHash(
+    guardianId: string,
+    hash: string,
+    metadata: { filename?: string; sprintId?: string; timestamp: string }
+  ): Promise<void> {
+    this.seenFiles.set(`${guardianId}:${hash}`, { ...metadata });
+  }
+
+  public async getSeenFileMetadata(
+    guardianId: string,
+    hash: string
+  ): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null> {
+    return this.seenFiles.get(`${guardianId}:${hash}`) || null;
   }
 }

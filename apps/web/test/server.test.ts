@@ -29,7 +29,7 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(body.service).toBe('hex-aim-web');
   });
 
-  it('GET / returns Dashboard HTML with metrics and roster', async () => {
+  it('GET / returns Dashboard HTML with metrics, deduplication gate, and regional infrastructure', async () => {
     const res = await fetch(`${baseUrl}/`);
     expect(res.status).toBe(200);
     const html = await res.text();
@@ -38,6 +38,9 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(html).toContain('Active Priority');
     expect(html).toContain('Lara');
     expect(html).toContain('Maya');
+    expect(html).toContain('Deduplication Gate');
+    expect(html).toContain('cdg1 (Paris)');
+    expect(html).toContain('aim-bot.getvintel.com');
   });
 
   it('GET /sprint/preview renders 4-page adaptive print sprint', async () => {
