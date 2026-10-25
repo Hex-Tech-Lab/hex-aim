@@ -1,4 +1,4 @@
-import { QueueFactory, MessagingFactory, StorageFactory } from '@hex-aim/adapters';
+import { QueueFactory, MessagingFactory, StorageFactory, TelegramMessagingAdapter } from '@hex-aim/adapters';
 import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
 import { processAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
 
@@ -22,6 +22,10 @@ export default {
     // Bind Worker Secrets & Env into SettingsManager
     const settings = SettingsManager.getInstance();
     if (env.TELEGRAM_BOT_TOKEN) settings.set('TELEGRAM_BOT_TOKEN', env.TELEGRAM_BOT_TOKEN);
+    if (env.STORAGE_PROVIDER) settings.set('storage.provider', env.STORAGE_PROVIDER);
+    if (env.MESSAGING_PROVIDER) settings.set('messaging.provider', env.MESSAGING_PROVIDER);
+    if (env.QUEUE_PROVIDER) settings.set('queue.provider', env.QUEUE_PROVIDER);
+    if (env.VISION_PROVIDER) settings.set('vision.provider', env.VISION_PROVIDER);
     if (env.UPSTASH_REDIS_REST_URL) settings.set('UPSTASH_REDIS_REST_URL', env.UPSTASH_REDIS_REST_URL);
     if (env.UPSTASH_REDIS_REST_TOKEN) settings.set('UPSTASH_REDIS_REST_TOKEN', env.UPSTASH_REDIS_REST_TOKEN);
     if (env.QSTASH_TOKEN) settings.set('QSTASH_TOKEN', env.QSTASH_TOKEN);
@@ -54,7 +58,9 @@ export default {
         const chatId = String(message.chat?.id || '');
         const text = String(message.text || '');
         const photos = message.photo;
-        const messaging = MessagingFactory.getMessaging();
+        const messaging = env.TELEGRAM_BOT_TOKEN 
+          ? new TelegramMessagingAdapter({ botToken: env.TELEGRAM_BOT_TOKEN }) 
+          : MessagingFactory.getMessaging();
 
         // 1. Text commands
         if (text.startsWith('/start')) {

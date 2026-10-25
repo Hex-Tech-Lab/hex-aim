@@ -52,12 +52,17 @@ export class TelegramMessagingAdapter implements IMessagingPort {
       `🗓️ <b>Week:</b> ${card.detectedWeek}\n\n` +
       `⚡ <i>Running cognitive gap extraction now. Your targeted 4-page sprint will arrive in ~30 seconds.</i>`;
 
-    await this.callApi('sendPhoto', {
-      chat_id: chatId,
-      photo: card.imageUrl,
-      caption,
-      parse_mode: 'HTML',
-    });
+    try {
+      await this.callApi('sendPhoto', {
+        chat_id: chatId,
+        photo: card.imageUrl,
+        caption,
+        parse_mode: 'HTML',
+      });
+    } catch {
+      // Fallback to text message if photo URL is unreachable by Telegram CDN
+      await this.sendMessage(chatId, caption);
+    }
   }
 
   public async deliverRemediationPacks(chatId: string, packs: {
