@@ -1,0 +1,23 @@
+{
+  "name": "@hex-aim/adapters",
+  "version": "0.1.0",
+  "description": "Hexagonal Storage, Queue, Messaging, and Vision Adapters for hex-aim",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@hex-aim/types": "workspace:*",
+    "@hex-aim/core": "workspace:*",
+    "@upstash/redis": "^1.38.0",
+    "@upstash/qstash": "^2.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.0"
+  }
+}

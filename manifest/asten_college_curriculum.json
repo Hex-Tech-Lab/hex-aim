@@ -1,0 +1,94 @@
+{
+  "school": {
+    "id": "asten-college",
+    "name": "Asten College",
+    "location": "New Cairo, Egypt",
+    "tracks": [
+      {
+        "id": "british-primary",
+        "name": "British Curriculum (Years 1-6)",
+        "year_groups": ["Y1", "Y2", "Y3", "Y4", "Y5", "Y6"]
+      },
+      {
+        "id": "american-track",
+        "name": "American Division (Grades 6-9 transition option)",
+        "grades": ["G6", "G7", "G8", "G9"]
+      }
+    ],
+    "subjects_y4": [
+      {
+        "id": "maths",
+        "name": "Mathematics",
+        "authority": "british-national",
+        "publisher": "Twinkl / Oxford Inspire",
+        "domains": [
+          "Number and Place Value",
+          "Addition and Subtraction",
+          "Multiplication and Division",
+          "Fractions and Decimals",
+          "Measurement",
+          "Geometry",
+          "Statistics"
+        ]
+      },
+      {
+        "id": "english",
+        "name": "English Language & Literacy",
+        "authority": "british-national",
+        "domains": [
+          "Reading Comprehension (Retrieval & Inference)",
+          "Writing Composition",
+          "SPaG (Spelling, Punctuation and Grammar)"
+        ]
+      },
+      {
+        "id": "science",
+        "name": "Science",
+        "authority": "british-national",
+        "domains": [
+          "Living Things and Their Habitats",
+          "States of Matter",
+          "Sound and Vibration",
+          "Electricity and Circuits"
+        ]
+      },
+      {
+        "id": "humanities",
+        "name": "Humanities",
+        "authority": "british-national",
+        "domains": ["History", "Geography"]
+      },
+      {
+        "id": "arabic",
+        "name": "Arabic Language (اللغة العربية)",
+        "authority": "egyptian-moe",
+        "domains": ["القراءة والفهم", "النحو والقواعد", "الإملاء والخط", "التعبير الكتابي"]
+      },
+      {
+        "id": "religion",
+        "name": "Religious Education (التربية الدينية)",
+        "authority": "egyptian-moe",
+        "variants": ["islamic", "christian"],
+        "domains": ["القرآن والحديث / العقيدة", "القيم والأخلاق", "السير والشخصيات"]
+      },
+      {
+        "id": "social_studies_ar",
+        "name": "Arabic Social Studies (الدراسات الاجتماعية)",
+        "authority": "egyptian-moe",
+        "domains": ["البيئة المصرية", "التاريخ المصري القديم"]
+      },
+      {
+        "id": "foreign_language",
+        "name": "Second Foreign Language",
+        "options": ["french", "german"],
+        "domains": ["Vocabulary", "Basic Grammar", "Pronunciation & Phonetics"]
+      },
+      {
+        "id": "pe",
+        "name": "Physical Education (PE)",
+        "authority": "school-program",
+        "domains": ["Fitness", "Team Sports", "Coordination"]
+      }
+    ]
+  }
+}

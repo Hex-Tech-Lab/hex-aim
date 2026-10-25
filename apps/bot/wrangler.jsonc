@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aim-bot-worker",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "routes": [
+    {
+      "pattern": "aim-bot.getvintel.com/*",
+      "zone_name": "getvintel.com"
+    }
+  ],
+  "vars": {
+    "STORAGE_PROVIDER": "upstash",
+    "MESSAGING_PROVIDER": "telegram",
+    "QUEUE_PROVIDER": "qstash",
+    "REDIS_PREFIX": "aim:"
+  }
+}
