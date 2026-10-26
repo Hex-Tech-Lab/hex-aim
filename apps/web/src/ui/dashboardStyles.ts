@@ -1,24 +1,49 @@
 export function renderDashboardStyles(): string {
   return `<style>
+  /* Meta Astryx Centralized Design Tokens (Theme: Neutral Dark) */
   :root {
-    --bg: #090d16;
-    --card: #111827;
-    --card-border: #1f2937;
-    --cyan: #06b6d4;
-    --accent: #3b82f6;
-    --text: #f3f4f6;
-    --muted: #9ca3af;
-    --green: #10b981;
-    --yellow: #f59e0b;
-    --orange: #f97316;
-    --purple: #a855f7;
-    --red: #ef4444;
+    --astryx-bg: #090d16;
+    --astryx-surface: #111827;
+    --astryx-surface-elevated: #1e293b;
+    --astryx-border: #1f2937;
+    --astryx-border-subtle: #334155;
+    --astryx-primary: #06b6d4;
+    --astryx-accent: #3b82f6;
+    --astryx-text: #f3f4f6;
+    --astryx-text-muted: #9ca3af;
+    --astryx-success: #10b981;
+    --astryx-warning: #f59e0b;
+    --astryx-priority: #f97316;
+    --astryx-purple: #a855f7;
+    --astryx-danger: #ef4444;
+
+    /* Astryx Elevation & Radii */
+    --astryx-radius-sm: 6px;
+    --astryx-radius-md: 8px;
+    --astryx-radius-lg: 12px;
+    --astryx-radius-full: 9999px;
+    --astryx-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --astryx-shadow-glow: 0 0 15px rgba(6, 182, 212, 0.25);
+
+    /* Token Aliases mapped to Meta Astryx */
+    --bg: var(--astryx-bg);
+    --card: var(--astryx-surface);
+    --card-border: var(--astryx-border);
+    --cyan: var(--astryx-primary);
+    --accent: var(--astryx-accent);
+    --text: var(--astryx-text);
+    --muted: var(--astryx-text-muted);
+    --green: var(--astryx-success);
+    --yellow: var(--astryx-warning);
+    --orange: var(--astryx-priority);
+    --purple: var(--astryx-purple);
+    --red: var(--astryx-danger);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--astryx-bg);
+    color: var(--astryx-text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     padding: 20px;
