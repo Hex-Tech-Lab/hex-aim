@@ -129,4 +129,27 @@ describe('Adapters & Factory Hierarchy', () => {
     expect(result.totalScore).toBe(3);
     expect(result.items[0]?.errorClass).toBe('ERR_PHANTOM_ZERO');
   });
+
+  it('Storage adapter saves and retrieves Multi-Guardian Family Unit', async () => {
+    const storage = StorageFactory.getStorage('memory');
+    const family = {
+      id: 'family_101',
+      name: 'Test Family',
+      studentIds: ['lara', 'maya'],
+      guardians: [
+        { guardianId: 'g1', chatId: '12345', channel: 'telegram' as const, name: 'Dad', role: 'primary_coach' as const },
+        { guardianId: 'g2', chatId: '67890', channel: 'whatsapp' as const, name: 'Mom', role: 'co_guardian' as const }
+      ],
+      createdAt: new Date().toISOString()
+    };
+
+    if (storage.saveFamilyUnit) {
+      await storage.saveFamilyUnit(family);
+      const byId = await storage.getFamilyUnit?.('family_101');
+      expect(byId?.name).toBe('Test Family');
+
+      const byChat = await storage.getFamilyByChatId?.('67890');
+      expect(byChat?.id).toBe('family_101');
+    }
+  });
 });

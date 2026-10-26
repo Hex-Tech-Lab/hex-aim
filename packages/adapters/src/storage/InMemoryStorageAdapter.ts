@@ -184,4 +184,24 @@ export class InMemoryStorageAdapter implements IStoragePort {
   public async clearIntakeBatch(batchId: string): Promise<void> {
     this.intakeBatches.delete(batchId);
   }
+
+  // Wave 14: Multi-Guardian Family Unit Methods
+  private families = new Map<string, any>();
+
+  public async saveFamilyUnit(family: any): Promise<void> {
+    this.families.set(family.id, { ...family });
+    for (const g of family.guardians || []) {
+      this.families.set(`chat_${g.chatId}`, family.id);
+    }
+  }
+
+  public async getFamilyUnit(familyId: string): Promise<any | null> {
+    return this.families.get(familyId) || null;
+  }
+
+  public async getFamilyByChatId(chatId: string): Promise<any | null> {
+    const familyId = this.families.get(`chat_${chatId}`);
+    if (!familyId) return null;
+    return this.getFamilyUnit(familyId);
+  }
 }
