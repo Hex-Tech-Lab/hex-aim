@@ -1,0 +1,22 @@
+apps/bot/src/handlers/diagHandler.ts
+  h_cdd764b4030252 1-76
+apps/bot/src/worker.ts
+  h_cdd764b4030252 6,70-72
+packages/core/src/family/FamilyAccessManager.ts
+  h_cdd764b4030252 45,49,51,54-63,71,74-76,82-89
+packages/core/test/familyAccess.test.ts
+  h_cdd764b4030252 98,116-134
+packages/types/src/index.ts
+  h_cdd764b4030252 323-331
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3d8678bc2b8ce627a5fba709299c1e98777d735d",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
