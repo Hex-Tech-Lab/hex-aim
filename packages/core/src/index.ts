@@ -11,3 +11,4 @@ export * from './curriculum/CurriculumTaxonomyService.js';
 export * from './identity/StudentIdentityVault.js';
 export * from './identity/DynamicPresentationHydrator.js';
 export * from './intake/PilotBatchIngestor.js';
+export * from './family/FamilyAccessManager.js';

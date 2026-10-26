@@ -313,6 +313,29 @@ export interface IStoragePort {
   trackBotMessage?(chatId: string, messageId: number): Promise<void>;
   getBotMessages?(chatId: string): Promise<number[]>;
   clearBotMessages?(chatId: string): Promise<void>;
+
+  // Wave 14: Multi-Guardian Family Unit Methods
+  saveFamilyUnit?(family: FamilyUnit): Promise<void>;
+  getFamilyUnit?(familyId: string): Promise<FamilyUnit | null>;
+  getFamilyByChatId?(chatId: string): Promise<FamilyUnit | null>;
+}
+
+export type GuardianRole = 'primary_coach' | 'observer' | 'co_guardian';
+
+export interface FamilyGuardianMember {
+  guardianId: string;
+  chatId: string;
+  channel: 'telegram' | 'whatsapp';
+  name: string;
+  role: GuardianRole;
+}
+
+export interface FamilyUnit {
+  id: string; // e.g. "family_asten_401"
+  name: string; // e.g. "Future Family"
+  studentIds: string[]; // ["lara", "maya"]
+  guardians: FamilyGuardianMember[];
+  createdAt: string;
 }
 
 export interface IVisionExtractionPort {

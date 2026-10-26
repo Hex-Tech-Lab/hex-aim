@@ -260,4 +260,22 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
   public async clearBotMessages(chatId: string): Promise<void> {
     await this.redis.del(this.k(`bot_messages:${chatId}`));
   }
+
+  // Wave 14: Multi-Guardian Family Unit Methods
+  public async saveFamilyUnit(family: any): Promise<void> {
+    await this.redis.set(this.k(`family:${family.id}`), family);
+    for (const g of family.guardians || []) {
+      await this.redis.set(this.k(`family_by_chat:${g.chatId}`), family.id);
+    }
+  }
+
+  public async getFamilyUnit(familyId: string): Promise<any | null> {
+    return await this.redis.get<any>(this.k(`family:${familyId}`));
+  }
+
+  public async getFamilyByChatId(chatId: string): Promise<any | null> {
+    const familyId = await this.redis.get<string>(this.k(`family_by_chat:${chatId}`));
+    if (!familyId) return null;
+    return this.getFamilyUnit(familyId);
+  }
 }

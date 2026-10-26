@@ -173,4 +173,22 @@ export class GitStateStorageAdapter implements IStoragePort {
   ): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null> {
     return this.readJson<{ filename?: string; sprintId?: string; timestamp: string }>('seen_files', `${guardianId}_${hash}`);
   }
+
+  // Wave 14: Multi-Guardian Family Unit Methods
+  public async saveFamilyUnit(family: any): Promise<void> {
+    this.writeJson('families', family.id, family);
+    for (const g of family.guardians || []) {
+      this.writeJson('family_by_chat', g.chatId, { familyId: family.id });
+    }
+  }
+
+  public async getFamilyUnit(familyId: string): Promise<any | null> {
+    return this.readJson<any>('families', familyId);
+  }
+
+  public async getFamilyByChatId(chatId: string): Promise<any | null> {
+    const meta = this.readJson<{ familyId: string }>('family_by_chat', chatId);
+    if (!meta?.familyId) return null;
+    return this.getFamilyUnit(meta.familyId);
+  }
 }
