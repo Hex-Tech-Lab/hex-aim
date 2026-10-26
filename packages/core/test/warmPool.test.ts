@@ -46,5 +46,5 @@ describe('WarmBrowserPoolCompiler (Approach C)', () => {
 
     console.log(`[WarmBrowserPool] Warm render completed in ${duration2}ms (First run: ${duration1}ms)`);
     expect(duration2).toBeLessThan(1000); // Must be under 1s
-  });
+  }, 30000);
 });

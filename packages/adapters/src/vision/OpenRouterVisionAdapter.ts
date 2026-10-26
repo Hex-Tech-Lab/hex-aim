@@ -53,16 +53,37 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
       { type: 'text', text: prompt }
     ];
 
-    for (const url of imageUrls) {
-      if (url.startsWith('data:') || url.startsWith('http://') || url.startsWith('https://')) {
+    for (const rawUrl of imageUrls) {
+      let finalUrl = rawUrl;
+      // In-line buffer remote images (e.g. Telegram CDN) to base64 data URIs.
+      // This prevents upstream OpenRouter providers from failing when fetching from Telegram CDN
+      // and prevents leaking Telegram bot tokens in transit.
+      if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
+        try {
+          const imgRes = await fetch(rawUrl, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; HEX-AIM-Intake/1.0)' },
+            signal: AbortSignal.timeout(15000),
+          });
+          if (imgRes.ok) {
+            const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
+            const arrayBuf = await imgRes.arrayBuffer();
+            const base64 = Buffer.from(arrayBuf).toString('base64');
+            finalUrl = `data:${mimeType};base64,${base64}`;
+          }
+        } catch (fetchErr) {
+          console.warn('[OpenRouterVisionAdapter] Unable to inline image buffer to base64, using raw URL:', fetchErr);
+        }
+      }
+
+      if (finalUrl.startsWith('data:') || finalUrl.startsWith('http://') || finalUrl.startsWith('https://')) {
         contentParts.push({
           type: 'image_url',
-          image_url: { url }
+          image_url: { url: finalUrl }
         });
       } else {
         contentParts.push({
           type: 'text',
-          text: `[Image reference: ${url}]`
+          text: `[Image reference: ${finalUrl}]`
         });
       }
     }

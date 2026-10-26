@@ -28,6 +28,7 @@ export interface Env {
   UPSTASH_REDIS_REST_TOKEN?: string;
   GEMINI_API_KEY?: string;
   OPENROUTER_API_KEY?: string;
+  OPENROUTER_VISION_MODEL?: string;
   DUB_API_KEY?: string;
   DUB_DOMAIN?: string;
 }
@@ -63,6 +64,50 @@ export default {
       }), {
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // Live OpenRouter Connectivity Diagnostic
+    if (url.pathname === '/diag/openrouter') {
+      const apiKey = env.OPENROUTER_API_KEY || settings.get<string>('OPENROUTER_API_KEY', '');
+      const model = env.OPENROUTER_VISION_MODEL || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
+      if (!apiKey) {
+        return new Response(JSON.stringify({ ok: false, error: 'OPENROUTER_API_KEY is not configured in worker environment' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      try {
+        const pingRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://aim.getvintel.com',
+            'X-Title': 'HEX-AIM Diagnostics',
+          },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: 'user', content: 'Reply with exact text: OPENROUTER_ONLINE' }],
+            max_tokens: 10,
+          }),
+          signal: AbortSignal.timeout(15000),
+        });
+        const pingData = await pingRes.json() as any;
+        return new Response(JSON.stringify({
+          ok: pingRes.ok,
+          status: pingRes.status,
+          model,
+          response: pingData?.choices?.[0]?.message?.content || pingData,
+          timestamp: new Date().toISOString(),
+        }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ ok: false, error: err?.message || String(err) }), {
+          status: 502,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     // Telegram Webhook Intake
@@ -366,7 +411,8 @@ export default {
           const jobId = `job_${Date.now()}`;
 
           if (isFirstPhoto) {
-            await storage.recordFileHash('intake_active_seen', chatId, { timestamp: new Date().toISOString() });
+            // Set 60-second atomic TTL so edge crashes or aborts can NEVER permanently deadlock intake
+            await storage.recordFileHash('intake_active_seen', chatId, { timestamp: new Date().toISOString() }, 60);
 
             // Minimal temporary receipt notice (deleted when batch starts processing)
             const receiptMsg = await sendAndTrack(chatId, '📥 <b>Receiving worksheet pages...</b> <i>(Gathering all pages in batch)</i>');
@@ -398,12 +444,6 @@ export default {
                   }).catch(err => {
                     console.warn('[Worker] Temporary receipt notice deletion warning:', err);
                   });
-                }
-
-                // Clear active seen marker so subsequent batches start clean
-                const redisStorage = storage as any;
-                if (redisStorage.redis) {
-                  await redisStorage.redis.del(`aim:seen_files:intake_active_seen:${chatId}`);
                 }
 
                 let batchImages: string[] = [resolvedImageUrl];
@@ -472,6 +512,12 @@ export default {
                   `⚠️ <b>Assessment Diagnostic Failed:</b>\n${err?.message || String(err)}\n\n` +
                   `<i>Zero Silent Fallback Active. Error logged to telemetry.</i>`
                 );
+              } finally {
+                // Guaranteed lock release: ensures subsequent batches are never deadlocked
+                const redisStorage = storage as any;
+                if (redisStorage.redis) {
+                  await redisStorage.redis.del(`aim:seen_files:intake_active_seen:${chatId}`).catch(() => {});
+                }
               }
             };
 

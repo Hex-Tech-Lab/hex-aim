@@ -389,10 +389,29 @@ Return strict JSON matching this schema:
           }
         ];
 
-      payload.imageUrls.forEach((url, i) => {
+      for (let i = 0; i < payload.imageUrls.length; i++) {
+        const rawUrl = payload.imageUrls[i];
+        if (!rawUrl) continue;
+        let finalUrl = rawUrl;
+        if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
+          try {
+            const imgRes = await fetch(rawUrl, {
+              headers: { 'User-Agent': 'Mozilla/5.0 (compatible; HEX-AIM-Intake/1.0)' },
+              signal: AbortSignal.timeout(15000),
+            });
+            if (imgRes.ok) {
+              const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
+              const arrayBuf = await imgRes.arrayBuffer();
+              const base64 = Buffer.from(arrayBuf).toString('base64');
+              finalUrl = `data:${mimeType};base64,${base64}`;
+            }
+          } catch (fetchErr) {
+            console.warn('[processBatchAssessmentJob] Unable to inline image buffer to base64; sending raw URL:', fetchErr);
+          }
+        }
         contentParts.push({ type: 'text', text: `PAGE INDEX ${i}:` });
-        contentParts.push({ type: 'image_url', image_url: { url } });
-      });
+        contentParts.push({ type: 'image_url', image_url: { url: finalUrl } });
+      }
 
       const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',

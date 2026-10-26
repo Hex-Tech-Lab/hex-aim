@@ -13,6 +13,6 @@
     "MESSAGING_PROVIDER": "telegram",
     "QUEUE_PROVIDER": "qstash",
     "REDIS_PREFIX": "aim:",
-    "OPENROUTER_VISION_MODEL": "google/gemini-3.5-flash-lite"
+    "OPENROUTER_VISION_MODEL": "google/gemini-2.5-flash"
   }
 }
