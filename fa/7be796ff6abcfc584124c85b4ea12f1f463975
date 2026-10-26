@@ -1,0 +1,28 @@
+packages/adapters/src/storage/GitStateStorageAdapter.ts
+  h_cdd764b4030252 176-193
+packages/adapters/src/storage/InMemoryStorageAdapter.ts
+  h_cdd764b4030252 187-206
+packages/adapters/src/storage/UpstashRedisStorageAdapter.ts
+  h_cdd764b4030252 263-280
+packages/adapters/test/adapters.test.ts
+  h_cdd764b4030252 132-154
+packages/core/src/family/FamilyAccessManager.ts
+  h_cdd764b4030252 1-74
+packages/core/src/index.ts
+  h_cdd764b4030252 14
+packages/core/test/familyAccess.test.ts
+  h_cdd764b4030252 1-131
+packages/types/src/index.ts
+  h_cdd764b4030252 316-338
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fa7be796ff6abcfc584124c85b4ea12f1f463975",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
