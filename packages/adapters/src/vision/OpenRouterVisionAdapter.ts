@@ -18,7 +18,7 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
   constructor(config?: OpenRouterVisionConfig) {
     const settings = SettingsManager.getInstance();
     this.apiKey = config?.apiKey || settings.get<string>('OPENROUTER_API_KEY', process.env.OPENROUTER_API_KEY || '');
-    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', process.env.OPENROUTER_VISION_MODEL || 'google/gemini-2.5-flash');
+    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', process.env.OPENROUTER_VISION_MODEL || 'google/gemini-3.5-flash-lite');
     this.baseUrl = config?.baseUrl || 'https://openrouter.ai/api/v1';
 
     if (!this.apiKey) {
@@ -103,34 +103,58 @@ Return STRICT JSON ONLY with NO MARKDOWN FENCES matching this exact schema:
     }
 
     const endpoint = `${this.baseUrl}/chat/completions`;
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://aim.getvintel.com',
-        'X-Title': 'HEX-AIM Cognitive Intake'
-      },
-      body: JSON.stringify({
-        model: this.model,
-        messages: [
-          {
-            role: 'user',
-            content: contentParts
-          }
-        ],
-        temperature: 0.1,
-        response_format: { type: 'json_object' }
-      })
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error(`[OpenRouterVisionAdapter] HTTP ${res.status} error:`, errText);
-      throw new Error(`OpenRouter Vision API failed with status ${res.status}: ${errText}`);
+    const candidateModels = [this.model];
+    if (this.model !== 'google/gemini-2.5-flash') {
+      candidateModels.push('google/gemini-2.5-flash');
     }
 
-    const data = await res.json() as any;
+    let lastError = '';
+    let data: any = null;
+
+    for (const modelCandidate of candidateModels) {
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://aim.getvintel.com',
+            'X-Title': 'HEX-AIM Cognitive Intake'
+          },
+          body: JSON.stringify({
+            model: modelCandidate,
+            messages: [
+              {
+                role: 'user',
+                content: contentParts
+              }
+            ],
+            temperature: 0.1,
+            response_format: { type: 'json_object' }
+          })
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.warn(`[OpenRouterVisionAdapter] Model ${modelCandidate} failed with HTTP ${res.status}:`, errText);
+          lastError = `Status ${res.status}: ${errText}`;
+          continue;
+        }
+
+        data = await res.json() as any;
+        if (data?.choices?.[0]?.message?.content) {
+          break; // successfully got completion
+        }
+      } catch (reqErr: any) {
+        lastError = String(reqErr?.message || reqErr);
+        console.warn(`[OpenRouterVisionAdapter] Model ${modelCandidate} request error:`, lastError);
+      }
+    }
+
+    if (!data?.choices?.[0]?.message?.content) {
+      console.error(`[OpenRouterVisionAdapter] All candidate models failed. Last error:`, lastError);
+      throw new Error(`OpenRouter Vision API failed across models [${candidateModels.join(', ')}]: ${lastError}`);
+    }
     const rawContent = data?.choices?.[0]?.message?.content;
     if (!rawContent) {
       throw new Error('[OpenRouterVisionAdapter] Empty response content received from OpenRouter API.');

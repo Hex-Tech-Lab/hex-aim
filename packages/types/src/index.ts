@@ -242,6 +242,13 @@ export interface IStoragePort {
   addIntakeBatchItem?(batchId: string, item: { url: string; fileUniqueId: string; messageId?: number }): Promise<void>;
   getIntakeBatchItems?(batchId: string): Promise<Array<{ url: string; fileUniqueId: string; messageId?: number }>>;
   clearIntakeBatch?(batchId: string): Promise<void>;
+
+  // Instruction Loop & Chat History
+  recordChatMessage?(chatId: string, message: { role: 'user' | 'assistant'; text: string; timestamp: string; messageId?: number }): Promise<void>;
+  getRecentChatTurns?(chatId: string, limit?: number): Promise<Array<{ role: 'user' | 'assistant'; text: string; timestamp: string; messageId?: number }>>;
+  trackBotMessage?(chatId: string, messageId: number): Promise<void>;
+  getBotMessages?(chatId: string): Promise<number[]>;
+  clearBotMessages?(chatId: string): Promise<void>;
 }
 
 export interface IVisionExtractionPort {

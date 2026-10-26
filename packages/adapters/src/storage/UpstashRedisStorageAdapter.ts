@@ -174,4 +174,37 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
   public async clearIntakeBatch(batchId: string): Promise<void> {
     await this.redis.del(this.k(`intake_batch:${batchId}`));
   }
+
+  public async recordChatMessage(
+    chatId: string,
+    message: { role: 'user' | 'assistant'; text: string; timestamp: string; messageId?: number }
+  ): Promise<void> {
+    const key = this.k(`chat_history:${chatId}`);
+    await this.redis.lpush(key, message);
+    await this.redis.ltrim(key, 0, 19);
+    await this.redis.expire(key, 86400 * 7);
+  }
+
+  public async getRecentChatTurns(
+    chatId: string,
+    limit: number = 5
+  ): Promise<Array<{ role: 'user' | 'assistant'; text: string; timestamp: string; messageId?: number }>> {
+    const items = await this.redis.lrange<any>(this.k(`chat_history:${chatId}`), 0, limit - 1);
+    return items || [];
+  }
+
+  public async trackBotMessage(chatId: string, messageId: number): Promise<void> {
+    const key = this.k(`bot_messages:${chatId}`);
+    await this.redis.sadd(key, messageId);
+    await this.redis.expire(key, 86400 * 7);
+  }
+
+  public async getBotMessages(chatId: string): Promise<number[]> {
+    const ids = await this.redis.smembers(this.k(`bot_messages:${chatId}`));
+    return (ids || []).map(id => Number(id)).filter(id => !isNaN(id));
+  }
+
+  public async clearBotMessages(chatId: string): Promise<void> {
+    await this.redis.del(this.k(`bot_messages:${chatId}`));
+  }
 }

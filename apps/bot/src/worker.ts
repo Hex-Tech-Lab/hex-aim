@@ -60,6 +60,24 @@ export default {
           : MessagingFactory.getMessaging();
         const storage = StorageFactory.getStorage();
 
+        // Helper to send message, track messageId for deletion, and record in chat history
+        const sendAndTrack = async (cId: string, txt: string, replyTo?: number, markup?: any) => {
+          const res = await messaging.sendMessage(cId, txt, replyTo, markup);
+          const sentMsgId = res?.result?.message_id;
+          if (sentMsgId && storage.trackBotMessage) {
+            await storage.trackBotMessage(cId, sentMsgId);
+          }
+          if (storage.recordChatMessage) {
+            await storage.recordChatMessage(cId, {
+              role: 'assistant',
+              text: txt.replace(/<[^>]+>/g, '').slice(0, 300),
+              timestamp: new Date().toISOString(),
+              messageId: sentMsgId,
+            });
+          }
+          return res;
+        };
+
         // 0. Handle Inline Callback Queries from Menu Buttons
         const callbackQuery = body?.callback_query;
         if (callbackQuery) {
@@ -75,24 +93,59 @@ export default {
             }).catch(() => {});
           }
 
-          if (callbackData === 'reset_quota') {
+          if (callbackData === 'clear_chat' || callbackData === 'reset_quota') {
             const redisStorage = storage as any;
             if (redisStorage.redis) {
+              // 1. Delete recent bot messages from the user's Telegram chat
+              const botMsgIds = (await storage.getBotMessages?.(cbChatId)) || [];
+              for (const mid of botMsgIds) {
+                if (env.TELEGRAM_BOT_TOKEN) {
+                  await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: cbChatId, message_id: mid }),
+                  }).catch(() => {});
+                }
+              }
+              // Also delete callback query message if possible
+              if (callbackQuery.message?.message_id && env.TELEGRAM_BOT_TOKEN) {
+                await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ chat_id: cbChatId, message_id: callbackQuery.message.message_id }),
+                }).catch(() => {});
+              }
+
+              // 2. Clear state in Redis
+              await storage.clearBotMessages?.(cbChatId);
+              await redisStorage.redis.del(`aim:chat_history:${cbChatId}`);
               await redisStorage.redis.del(`aim:strikes:guardian_${cbChatId}`);
               const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${cbChatId}:*`);
               for (const k of keys || []) {
                 await redisStorage.redis.del(k);
               }
             }
-            await messaging.sendMessage(cbChatId, `🟢 <b>Ingestion Session Reset:</b> Upload quota cleared. You are free to test and upload.`);
+
+            await sendAndTrack(cbChatId,
+              `✨ <b>Chat Reset & Session Refreshed!</b>\n\n` +
+              `Welcome back to <b>HEX-AIM</b>. Your session is clean and all upload quotas are reset.\n\n` +
+              `📸 <b>To begin:</b> Take a clear photo of your child's marked worksheet (or send an album of pages) and send it here!\n\n` +
+              `<i>Tap any option below to access sprints or the full Mini-App console:</i>`
+            );
+            if (messaging.sendInteractiveMenu) {
+              const menuRes = await messaging.sendInteractiveMenu(cbChatId);
+              if (menuRes?.result?.message_id && storage.trackBotMessage) {
+                await storage.trackBotMessage(cbChatId, menuRes.result.message_id);
+              }
+            }
           } else if (callbackData === 'view_sprint_lara') {
-            await messaging.sendMessage(cbChatId, `📄 <b>Lara's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
+            await sendAndTrack(cbChatId, `📄 <b>Lara's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
           } else if (callbackData === 'view_sprint_maya') {
-            await messaging.sendMessage(cbChatId, `📄 <b>Maya's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
+            await sendAndTrack(cbChatId, `📄 <b>Maya's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
           } else if (callbackData === 'view_guide_lara') {
-            await messaging.sendMessage(cbChatId, `🧭 <b>Lara's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
+            await sendAndTrack(cbChatId, `🧭 <b>Lara's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
           } else if (callbackData === 'view_guide_maya') {
-            await messaging.sendMessage(cbChatId, `🧭 <b>Maya's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
+            await sendAndTrack(cbChatId, `🧭 <b>Maya's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
           } else if (callbackData === 'menu_change_week') {
             const weekKeyboard = {
               inline_keyboard: [
@@ -113,12 +166,12 @@ export default {
                 ]
               ]
             };
-            await (messaging as TelegramMessagingAdapter).sendMessage(cbChatId, `📅 <b>Select Target Week to Recompile Sprint:</b>`, undefined, weekKeyboard);
+            await sendAndTrack(cbChatId, `📅 <b>Select Target Week to Recompile Sprint:</b>`, undefined, weekKeyboard);
           } else if (callbackData.startsWith('set_week_')) {
             const parts = callbackData.split('_');
             const sName = parts[2]!;
             const wNum = Number(parts[3]!);
-            await messaging.sendMessage(cbChatId, `🔄 <b>Recompiling for ${sName.toUpperCase()} (Week ${wNum})...</b>`);
+            await sendAndTrack(cbChatId, `🔄 <b>Recompiling for ${sName.toUpperCase()} (Week ${wNum})...</b>`);
             await processAssessmentJob({
               studentId: sName,
               guardianId: `guardian_${cbChatId}`,
@@ -131,7 +184,10 @@ export default {
             });
           } else if (callbackData === 'open_main_menu') {
             if (messaging.sendInteractiveMenu) {
-              await messaging.sendInteractiveMenu(cbChatId);
+              const menuRes = await messaging.sendInteractiveMenu(cbChatId);
+              if (menuRes?.result?.message_id && storage.trackBotMessage) {
+                await storage.trackBotMessage(cbChatId, menuRes.result.message_id);
+              }
             }
           }
 
@@ -153,38 +209,106 @@ export default {
         const text = String(message.text || '');
         const photos = message.photo;
 
+        // Record incoming user message in rolling chat history
+        if (storage.recordChatMessage) {
+          const userText = text || (photos ? `[Uploaded ${photos.length} worksheet photo(s)]` : '[Media]');
+          await storage.recordChatMessage(chatId, {
+            role: 'user',
+            text: userText,
+            timestamp: new Date().toISOString(),
+            messageId,
+          });
+        }
+
         // 1. Direct AGY Instruction Loop (#I: ...)
         if (/^#I\s*:/i.test(text)) {
           const instructionText = text.replace(/^#I\s*:\s*/i, '').trim();
           const redisStorage = storage as any;
+          let recentTurns: any[] = [];
+          if (storage.getRecentChatTurns) {
+            recentTurns = await storage.getRecentChatTurns(chatId, 5);
+          }
+
+          const item = {
+            chatId,
+            instruction: instructionText,
+            timestamp: new Date().toISOString(),
+            recentTurns,
+          };
+
           if (redisStorage.redis) {
-            const item = {
-              chatId,
-              text: instructionText,
-              timestamp: new Date().toISOString(),
-            };
             await redisStorage.redis.set('aim:instructions:latest', item);
             await redisStorage.redis.rpush('aim:instructions:log', item);
           }
 
-          console.log(`[Worker] AGY Instruction logged from ${chatId}: "${instructionText}"`);
+          console.log(`[Worker] AGY Instruction logged from ${chatId}: "${instructionText}" with ${recentTurns.length} recent context turns`);
 
-          await messaging.sendMessage(chatId,
-            `📝 <b>Instruction Received & Logged for AGY:</b>\n` +
+          await sendAndTrack(chatId,
+            `📝 <b>Instruction Logged for AGY with Full Context:</b>\n` +
             `<i>"${instructionText}"</i>\n\n` +
+            `🔍 <b>Preceding Context Captured:</b> ${recentTurns.length} recent chat turns attached.\n` +
             `✅ <i>Stored in state ledger. Antigravity will ingest this directly on the next loop.</i>`,
             messageId
           );
 
-          return new Response(JSON.stringify({ ok: true, action: 'instruction_captured', text: instructionText }), {
+          return new Response(JSON.stringify({ ok: true, action: 'instruction_captured', text: instructionText, contextTurns: recentTurns.length }), {
             headers: { 'Content-Type': 'application/json' },
           });
         }
 
-        // 2. Menu and Control Commands
+        // 2. Clear Chat & Start Over Command
+        if (text.startsWith('/clear')) {
+          const redisStorage = storage as any;
+          if (redisStorage.redis) {
+            const botMsgIds = (await storage.getBotMessages?.(chatId)) || [];
+            for (const mid of botMsgIds) {
+              if (env.TELEGRAM_BOT_TOKEN) {
+                await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ chat_id: chatId, message_id: mid }),
+                }).catch(() => {});
+              }
+            }
+            if (messageId && env.TELEGRAM_BOT_TOKEN) {
+              await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, message_id: messageId }),
+              }).catch(() => {});
+            }
+            await storage.clearBotMessages?.(chatId);
+            await redisStorage.redis.del(`aim:chat_history:${chatId}`);
+            await redisStorage.redis.del(`aim:strikes:guardian_${chatId}`);
+            const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${chatId}:*`);
+            for (const k of keys || []) {
+              await redisStorage.redis.del(k);
+            }
+          }
+
+          await sendAndTrack(chatId,
+            `✨ <b>Chat Reset & Session Refreshed!</b>\n\n` +
+            `Welcome back to <b>HEX-AIM</b>. Your session is clean and all upload quotas are reset.\n\n` +
+            `📸 <b>To begin:</b> Take a clear photo of your child's marked worksheet and send it here!`
+          );
+          if (messaging.sendInteractiveMenu) {
+            const menuRes = await messaging.sendInteractiveMenu(chatId);
+            if (menuRes?.result?.message_id && storage.trackBotMessage) {
+              await storage.trackBotMessage(chatId, menuRes.result.message_id);
+            }
+          }
+          return new Response(JSON.stringify({ ok: true, action: 'chat_cleared' }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        // 3. Menu and Control Commands
         if (text.startsWith('/menu')) {
           if (messaging.sendInteractiveMenu) {
-            await messaging.sendInteractiveMenu(chatId);
+            const menuRes = await messaging.sendInteractiveMenu(chatId);
+            if (menuRes?.result?.message_id && storage.trackBotMessage) {
+              await storage.trackBotMessage(chatId, menuRes.result.message_id);
+            }
           }
           return new Response(JSON.stringify({ ok: true, action: 'menu_sent' }), {
             headers: { 'Content-Type': 'application/json' },
@@ -200,14 +324,14 @@ export default {
               await redisStorage.redis.del(k);
             }
           }
-          await messaging.sendMessage(chatId, `🟢 <b>Ingestion Session Reset:</b> Upload quota cleared. You are free to test and upload.`);
+          await sendAndTrack(chatId, `🟢 <b>Ingestion Session Reset:</b> Upload quota cleared. You are free to test and upload.`);
           return new Response(JSON.stringify({ ok: true, action: 'quota_reset' }), {
             headers: { 'Content-Type': 'application/json' },
           });
         }
 
         if (text.startsWith('/start')) {
-          await messaging.sendMessage(chatId, 
+          await sendAndTrack(chatId, 
             `👋 <b>Welcome to HEX-AIM (Adaptive Individualized Mastery)!</b>\n\n` +
             `We turn weekly school quizzes into <b>targeted 4-page sprints (6–10 mins)</b> for your child.\n\n` +
             `📸 <b>To begin:</b> Take a clear photo of your child's marked worksheet (or send an album of pages) and send it here!\n\n` +
@@ -215,7 +339,10 @@ export default {
             `📱 <b>Mini-App:</b> Tap the <b>AIM Console</b> button at the bottom left to view the interactive dashboard anytime.`
           );
           if (messaging.sendInteractiveMenu) {
-            await messaging.sendInteractiveMenu(chatId);
+            const menuRes = await messaging.sendInteractiveMenu(chatId);
+            if (menuRes?.result?.message_id && storage.trackBotMessage) {
+              await storage.trackBotMessage(chatId, menuRes.result.message_id);
+            }
           }
           return new Response(JSON.stringify({ ok: true, action: 'welcome_sent' }), {
             headers: { 'Content-Type': 'application/json' },
