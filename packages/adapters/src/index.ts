@@ -11,6 +11,7 @@ export * from './queue/QueueFactory.js';
 
 // Messaging
 export * from './messaging/TelegramMessagingAdapter.js';
+export * from './messaging/WhatsAppMessagingAdapter.js';
 export * from './messaging/MockMessagingAdapter.js';
 export * from './messaging/MessagingFactory.js';
 export * from './messaging/DubLinkAdapter.js';

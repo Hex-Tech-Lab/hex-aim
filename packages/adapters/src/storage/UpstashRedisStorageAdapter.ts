@@ -4,6 +4,7 @@ import type {
   Student,
   Guardian,
   AssessmentSubmission,
+  CanonicalAssessmentMaster,
   CognitiveGap,
   RemediationSprint,
   CoachingGuide,
@@ -89,6 +90,33 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
       return list.filter(a => a.subjectId === subjectId);
     }
     return list;
+  }
+
+  public async saveCanonicalMaster(master: CanonicalAssessmentMaster): Promise<void> {
+    const masterKey = this.k(`canonical:master:${master.id}`);
+    const indexKey = this.k(
+      `canonical:index:${master.schoolId.toLowerCase().trim()}:${master.yearGroup.toUpperCase().trim()}:${master.subjectId.toLowerCase().trim()}:w${master.termWeek}`
+    );
+    await this.redis.set(masterKey, master);
+    await this.redis.set(indexKey, master.id);
+  }
+
+  public async getCanonicalMaster(id: string): Promise<CanonicalAssessmentMaster | null> {
+    return await this.redis.get<CanonicalAssessmentMaster>(this.k(`canonical:master:${id}`));
+  }
+
+  public async findCanonicalMaster(
+    schoolId: string,
+    yearGroup: string,
+    subjectId: string,
+    termWeek: number
+  ): Promise<CanonicalAssessmentMaster | null> {
+    const indexKey = this.k(
+      `canonical:index:${schoolId.toLowerCase().trim()}:${yearGroup.toUpperCase().trim()}:${subjectId.toLowerCase().trim()}:w${termWeek}`
+    );
+    const masterId = await this.redis.get<string>(indexKey);
+    if (!masterId) return null;
+    return await this.getCanonicalMaster(masterId);
   }
 
   public async getStudentGaps(studentId: string): Promise<CognitiveGap[]> {

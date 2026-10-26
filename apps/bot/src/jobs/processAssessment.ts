@@ -189,15 +189,30 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
     termWeek: resolvedWeek,
   };
 
-  const { submission } = CanonicalDeduplicator.processSubmission(null, dedupContext, {
-    studentId: resolvedStudentId,
-    guardianId: payload.guardianId,
-    rawScore: extraction.rawScore,
-    totalScore: extraction.totalScore,
-    percentage,
-    items: extraction.items,
-    sourceImageUrls: payload.imageUrls,
-  });
+  let existingMaster = storage.findCanonicalMaster
+    ? await storage.findCanonicalMaster(schoolId, resolvedYearGroup, resolvedSubjectId, resolvedWeek)
+    : null;
+
+  const { master, isNewMaster, submission, delta } = CanonicalDeduplicator.processSubmission(
+    existingMaster,
+    dedupContext,
+    {
+      studentId: resolvedStudentId,
+      guardianId: payload.guardianId,
+      rawScore: extraction.rawScore,
+      totalScore: extraction.totalScore,
+      percentage,
+      items: extraction.items,
+      sourceImageUrls: payload.imageUrls,
+    }
+  );
+
+  if (isNewMaster && storage.saveCanonicalMaster) {
+    await storage.saveCanonicalMaster(master);
+    console.log(`[processAssessment] Registered new Canonical Master: ${master.id} with ${master.schemaQuestions.length} question schemas`);
+  } else if (delta) {
+    console.log(`[processAssessment] Reused Canonical Master: ${master.id}. Student delta coverage: ${delta.coveragePct}% (${delta.matchedQuestionCount}/${master.schemaQuestions.length})`);
+  }
 
   await storage.saveAssessment(submission);
 
