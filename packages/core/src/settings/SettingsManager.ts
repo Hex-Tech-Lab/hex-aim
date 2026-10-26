@@ -41,6 +41,7 @@ export const DEFAULT_AIM_REGISTRY: Record<string, unknown> = {
 
   // Compiler & Browser Pool Settings
   'compiler.chrome_bin': '/usr/bin/google-chrome',
+  'compiler.use_warm_pool': true,
 };
 
 export class SettingsManager implements ISettingsPort {
