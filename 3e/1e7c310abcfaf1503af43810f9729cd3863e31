@@ -1,0 +1,24 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 27,241-319
+apps/bot/src/worker.ts
+  h_cdd764b4030252 3,58-142,156-208,214-215,217-219,316-318,320-327,329-340,343-352,354-358,360-364,366-376,380,385,387-393,395,397-398,400,403-405,407-410
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 34-39,44-45,50-52,56-83,162-170,172-193,195-196,247,249-250,264,266-267,270-272
+packages/core/src/dedup/IntakeDeduplicator.ts
+  h_cdd764b4030252 63-75,145-148,151-153,155
+packages/core/test/dedup.test.ts
+  h_cdd764b4030252 99-100,136
+packages/types/src/index.ts
+  h_cdd764b4030252 273,285-293,295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3e1e7c310abcfaf1503af43810f9729cd3863e31",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
