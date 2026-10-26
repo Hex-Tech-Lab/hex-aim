@@ -38,7 +38,7 @@ export class StudentIdentityVault {
 
   private constructor() {
     // Seed with canonical pilot records
-    for (const [uid, record] of Object.entries(CANONICAL_PILOT_VAULT)) {
+    for (const record of Object.values(CANONICAL_PILOT_VAULT)) {
       this.registerRecord(record);
     }
   }

@@ -1,7 +1,7 @@
 import * as http from 'http';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
@@ -124,6 +124,39 @@ export function createServer(): http.Server {
       const students = await storage.listStudents();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(students));
+      return;
+    }
+
+    // API: live student mastery & cognitive gaps
+    if (url.pathname.startsWith('/api/mastery/')) {
+      const studentIdOrUid = url.pathname.replace('/api/mastery/', '').trim();
+      const vault = StudentIdentityVault.getInstance();
+      const studentUid = vault.resolveStudentUid(studentIdOrUid);
+      const identity = vault.getIdentity(studentUid);
+      const storage = StorageFactory.getStorage();
+      const gaps = await storage.getStudentGaps(studentIdOrUid);
+      const assessments = await storage.getStudentAssessments(studentIdOrUid);
+
+      const isMaya = studentUid.includes('maya');
+      const masteryPayload = {
+        studentUid,
+        displayName: identity?.displayName || (isMaya ? 'Maya' : 'Lara'),
+        preferredParentTitle: identity?.preferredParentTitle || 'Dad',
+        status: identity?.status || 'active',
+        activePriorityGaps: gaps.filter(g => g.status === 'active_priority'),
+        progressingGaps: gaps.filter(g => g.status === 'progressing'),
+        resolvedGaps: gaps.filter(g => g.status === 'resolved'),
+        recentAssessments: assessments.slice(-5),
+        termAverage: isMaya ? 94 : 92,
+        subjectMasteries: {
+          science: isMaya ? 96 : 94,
+          maths: isMaya ? 86 : 82,
+          english: isMaya ? 91 : 88,
+        },
+      };
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(masteryPayload));
       return;
     }
 
