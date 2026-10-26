@@ -262,9 +262,10 @@ export async function processBatchAssessmentJob(payload: {
       const model = settings.get<string>('OPENROUTER_VISION_MODEL', process.env.OPENROUTER_VISION_MODEL || 'google/gemini-3.5-flash-lite');
 
       if (apiKey) {
-        {
-          type: 'text',
-          text: `You are an expert curriculum evaluator analyzing ${totalCount} worksheet page photos for Year 4 students Lara and Maya at Asten College.
+        const contentParts: any[] = [
+          {
+            type: 'text',
+            text: `You are an expert curriculum evaluator analyzing ${totalCount} worksheet page photos for Year 4 students Lara and Maya at Asten College.
 CRITICAL CONTEXT:
 - Both students received an identical English practice worksheet set (Vocabulary, Grammar, Punctuation, Word Classes).
 - Inspect the student name header, handwriting style, and question order to separate the images into Lara and Maya.
@@ -276,8 +277,8 @@ Return strict JSON matching this schema:
   "laraAttemptStatus": string,
   "mayaAttemptStatus": string
 }`
-        }
-      ];
+          }
+        ];
 
       payload.imageUrls.forEach((url, i) => {
         contentParts.push({ type: 'text', text: `PAGE INDEX ${i}:` });
@@ -312,10 +313,11 @@ Return strict JSON matching this schema:
         if (parsed.laraAttemptStatus) laraStatus = parsed.laraAttemptStatus;
         if (parsed.mayaAttemptStatus) mayaStatus = parsed.mayaAttemptStatus;
       }
-    } catch (partErr) {
-      console.warn('[processBatchAssessmentJob] AI partition warning, falling back to sequential split:', partErr);
     }
+  } catch (partErr) {
+    console.warn('[processBatchAssessmentJob] AI partition warning, falling back to sequential split:', partErr);
   }
+}
 
   // Fallback partition if AI partition produced no results
   if (laraImages.length === 0 && mayaImages.length === 0) {
