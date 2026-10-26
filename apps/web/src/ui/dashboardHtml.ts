@@ -10,6 +10,38 @@ export function renderDashboardHtml(): string {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HEX-AIM • Adaptive Individualized Mastery Console</title>
+<!-- Meta Astryx & Tailwind CSS Centralized Bridge -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          astryx: {
+            bg: '#090d16',
+            surface: '#111827',
+            elevated: '#1e293b',
+            border: '#1f2937',
+            subtle: '#334155',
+            primary: '#06b6d4',
+            accent: '#3b82f6',
+            success: '#10b981',
+            warning: '#f59e0b',
+            priority: '#f97316',
+            purple: '#a855f7',
+            danger: '#ef4444',
+          }
+        },
+        borderRadius: {
+          'astryx-sm': '6px',
+          'astryx-md': '8px',
+          'astryx-lg': '12px',
+        }
+      }
+    }
+  };
+</script>
 ${renderDashboardStyles()}
 </head>
 <body>
