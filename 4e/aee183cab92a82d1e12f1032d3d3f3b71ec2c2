@@ -1,0 +1,25 @@
+packages/adapters/src/messaging/MessagingFactory.ts
+  s_6625bc67577472::t_402ba91b701fa8 4,10,16,18-36
+packages/adapters/test/whatsappMessaging.test.ts
+  s_6625bc67577472::t_ecf69781ac87b4 1-133
+packages/core/src/intake/PilotBatchIngestor.ts
+  s_6625bc67577472::t_ff8f2c02027456 1-237
+scripts/run-pilot-ingestion.mjs
+  s_6625bc67577472::t_31b8189cdb8fa1 1-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4eaee183cab92a82d1e12f1032d3d3f3b71ec2c2",
+  "prompts": {},
+  "sessions": {
+    "s_6625bc67577472": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e3d758-e9b9-4cdb-bb9d-00d9ef397297",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
