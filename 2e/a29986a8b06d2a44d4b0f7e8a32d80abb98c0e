@@ -1,0 +1,20 @@
+packages/core/src/identity/DynamicPresentationHydrator.ts
+  h_cdd764b4030252 1-75
+packages/core/src/identity/StudentIdentityVault.ts
+  h_cdd764b4030252 1-114
+packages/core/src/index.ts
+  h_cdd764b4030252 11-12
+packages/core/test/identity.test.ts
+  h_cdd764b4030252 1-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2ea29986a8b06d2a44d4b0f7e8a32d80abb98c0e",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
