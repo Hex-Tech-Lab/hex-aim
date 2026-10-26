@@ -36,7 +36,7 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     text: string,
     replyToMessageId?: number,
     replyMarkup?: Record<string, unknown>
-  ): Promise<void> {
+  ): Promise<any> {
     const payload: Record<string, unknown> = {
       chat_id: chatId,
       text,
@@ -50,35 +50,47 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     if (replyMarkup) {
       payload.reply_markup = replyMarkup;
     }
-    await this.callApi('sendMessage', payload);
+    return await this.callApi('sendMessage', payload);
   }
 
-  public async sendInteractiveMenu(chatId: string, customTitle?: string): Promise<void> {
+  public async deleteMessage(chatId: string, messageId: number): Promise<boolean> {
+    try {
+      await this.callApi('deleteMessage', {
+        chat_id: chatId,
+        message_id: messageId,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  public async sendInteractiveMenu(chatId: string, customTitle?: string): Promise<any> {
     const title = customTitle || '🎛️ <b>AIM Parent Control Center</b>';
     const text = `${title}\n\n` +
-      `<i>Tap any option below to view sprints, guides, or manage settings:</i>`;
+      `<i>Access your child's targeted sprints and coaching guides directly inside Telegram below:</i>`;
 
     const inlineKeyboard = {
       inline_keyboard: [
         [
-          { text: '👧 Lara: Latest Sprint', callback_data: 'view_sprint_lara' },
-          { text: '👧 Maya: Latest Sprint', callback_data: 'view_sprint_maya' }
+          { text: '👧 Lara Sprint (Mini-App)', web_app: { url: 'https://aim.getvintel.com/sprint/preview' } },
+          { text: '👧 Maya Sprint (Mini-App)', web_app: { url: 'https://aim.getvintel.com/sprint/preview' } }
         ],
         [
-          { text: '🧭 Lara: Coaching Guide', callback_data: 'view_guide_lara' },
-          { text: '🧭 Maya: Coaching Guide', callback_data: 'view_guide_maya' }
+          { text: '🧭 Lara Guide (Mini-App)', web_app: { url: 'https://aim.getvintel.com/guide/preview' } },
+          { text: '🧭 Maya Guide (Mini-App)', web_app: { url: 'https://aim.getvintel.com/guide/preview' } }
         ],
         [
-          { text: '📱 Open AIM Mastery Console (Mini-App)', web_app: { url: 'https://aim.getvintel.com' } }
+          { text: '📱 Open AIM Mastery Console', web_app: { url: 'https://aim.getvintel.com' } }
         ],
         [
           { text: '📚 Change Target Week', callback_data: 'menu_change_week' },
-          { text: '🔄 Reset Ingestion Session', callback_data: 'reset_quota' }
+          { text: '🧹 Clear Chat & Start Over', callback_data: 'clear_chat' }
         ]
       ]
     };
 
-    await this.sendMessage(chatId, text, undefined, inlineKeyboard);
+    return await this.sendMessage(chatId, text, undefined, inlineKeyboard);
   }
 
   public async sendReceiptSummary(chatId: string, summary: { photoCount: number; mediaGroupId?: string }): Promise<void> {
@@ -217,14 +229,24 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     const name = packs.studentName || 'Student';
     const subj = packs.subject ? packs.subject.toUpperCase() : 'MASTERY';
     const week = packs.week || 3;
-    const consoleUrl = packs.summaryUrl || 'https://aim.getvintel.com';
+    const sprintWebUrl = packs.studentPackHtml || 'https://aim.getvintel.com/sprint/preview';
+    const guideWebUrl = packs.coachingGuideHtml || 'https://aim.getvintel.com/guide/preview';
 
-    // 1. Send clean consolidated message with overview link (NO dub link preview)
+    // 1. Send clean consolidated message with Mini-App action buttons
     const text = `🎉 <b>Targeted Learning Pack Ready: ${name} (${subj} W${week})</b>\n\n` +
       `✨ <b>Zero Drill Sheets:</b> Personalized micro-practice targeting specific gaps.\n\n` +
-      `🌐 <b>Interactive Web Console:</b>\n` +
-      `🔗 <a href="${consoleUrl}">Open ${name}'s Mastery Dashboard</a>\n\n` +
-      `⬇️ <b>Printable PDF attachments:</b>`;
+      `📱 <i>Tap below to open interactive views inside Telegram, or download the printable PDFs attached:</i>`;
+
+    const inlineKeyboard = {
+      inline_keyboard: [
+        [
+          { text: `📄 Open ${name}'s Sprint (Mini-App)`, web_app: { url: sprintWebUrl } }
+        ],
+        [
+          { text: `🧭 Open ${name}'s Parent Guide (Mini-App)`, web_app: { url: guideWebUrl } }
+        ]
+      ]
+    };
 
     await this.callApi('sendMessage', {
       chat_id: chatId,
@@ -232,6 +254,7 @@ export class TelegramMessagingAdapter implements IMessagingPort {
       parse_mode: 'HTML',
       disable_web_page_preview: true,
       link_preview_options: { is_disabled: true },
+      reply_markup: inlineKeyboard,
     });
 
     // 2. Deliver Student Sprint PDF
@@ -246,7 +269,7 @@ export class TelegramMessagingAdapter implements IMessagingPort {
         });
       } catch (docErr: any) {
         console.error('[TelegramMessagingAdapter] Error sending student pack PDF:', docErr);
-        await this.sendMessage(chatId, `⚠️ <b>PDF Delivery Error:</b> Failed to attach student pack PDF (${docErr?.message || 'timeout'}). Link: ${packs.studentPackHtml || consoleUrl}`);
+        await this.sendMessage(chatId, `⚠️ <b>PDF Delivery Error:</b> Failed to attach student pack PDF (${docErr?.message || 'timeout'}).`);
         throw docErr;
       }
     }
@@ -263,7 +286,7 @@ export class TelegramMessagingAdapter implements IMessagingPort {
         });
       } catch (docErr: any) {
         console.error('[TelegramMessagingAdapter] Error sending coaching guide PDF:', docErr);
-        await this.sendMessage(chatId, `⚠️ <b>PDF Delivery Error:</b> Failed to attach coaching guide PDF (${docErr?.message || 'timeout'}). Link: ${packs.coachingGuideHtml || consoleUrl}`);
+        await this.sendMessage(chatId, `⚠️ <b>PDF Delivery Error:</b> Failed to attach coaching guide PDF (${docErr?.message || 'timeout'}).`);
         throw docErr;
       }
     }

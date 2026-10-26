@@ -2,7 +2,15 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Socratic Coaching Guide - Lara (Y4)</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Nunito:wght@400;600;700;800;900&display=swap');
 
@@ -143,9 +151,9 @@
     <button onclick="window.print()" style="background: #06b6d4; color: #0f172a; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
       🖨️ Download / Print PDF
     </button>
-    <a href="/" style="background: #334155; color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px;">
-      Console
-    </a>
+    <button onclick="if(window.Telegram?.WebApp) { window.Telegram.WebApp.close(); } else { window.location.href='/'; }" style="background: #334155; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;">
+      ✕ Close
+    </button>
   </div>
 </div>
 
