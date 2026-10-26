@@ -12,6 +12,10 @@ export function renderDashboardHtml(): string {
 <title>HEX-AIM • Adaptive Individualized Mastery Console</title>
 <!-- Meta Astryx & Tailwind CSS Centralized Bridge -->
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js Graphics & Animation Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Lucide Modern Vector Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
 <script>
   tailwind.config = {
     darkMode: 'class',
@@ -53,24 +57,24 @@ ${renderDashboardStyles()}
     </div>
     <div class="header-badges">
       <div class="badge-tag badge-region">
-        📍 Primary: cdg1 (Paris) • Sec: fra1 (Frankfurt)
+        <i data-lucide="server" class="inline w-3.5 h-3.5 mr-1"></i> cdg1 (Paris) • fra1 (Frankfurt)
       </div>
       <div class="badge-tag">
-        🏫 Asten College • Year 4 British Primary
+        <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i> Asten College • Y4 British Primary
       </div>
     </div>
   </header>
 
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchTab('tab-student-view')">
-      📈 Student Progress & Mastery
+    <button class="nav-tab active" onclick="switchTab('tab-student-view', this)">
+      <i data-lucide="line-chart" class="w-4 h-4"></i> Student Progress & Mastery
     </button>
-    <button class="nav-tab" onclick="switchTab('tab-gap-ledger')">
-      🧠 Cognitive Gap Ledger
+    <button class="nav-tab" onclick="switchTab('tab-gap-ledger', this)">
+      <i data-lucide="brain-circuit" class="w-4 h-4"></i> Cognitive Gap Ledger
     </button>
-    <button class="nav-tab" onclick="switchTab('tab-infra-gate')">
-      🛡️ Ingestion Gate & Infrastructure
+    <button class="nav-tab" onclick="switchTab('tab-infra-gate', this)">
+      <i data-lucide="shield-alert" class="w-4 h-4"></i> Ingestion Gate & Infrastructure
     </button>
   </div>
 
@@ -80,16 +84,17 @@ ${renderDashboardStyles()}
 
   <script>
     // Tab Switching
-    function switchTab(tabId) {
+    function switchTab(tabId, el) {
       document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
 
-      event.currentTarget.classList.add('active');
+      if (el) el.classList.add('active');
       const pane = document.getElementById(tabId);
       if (pane) pane.classList.add('active');
+      if (window.lucide) lucide.createIcons();
     }
 
-    // Student Data Mock for Dynamic View
+    // Dynamic Student Telemetry
     const studentsData = {
       lara: {
         name: "Lara",
@@ -104,17 +109,18 @@ ${renderDashboardStyles()}
         eval: "Science Midterm: Mastered skeletons, muscles, and medicines. Working memory slipped on negative scale.",
         strategyTitle: "Target: 8 Min Sprint • Visual Chunking",
         strategyDesc: "ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.",
-        radar: { recall: 98, concept: 91, steps: 78, speed: 72 },
+        radar: [98, 91, 78, 72],
+        gaugeVal: 94,
+        series: {
+          science: [52, 64, 72, 80, 85, 88, 91, 94],
+          maths:   [45, 55, 62, 70, 75, 78, 80, 82],
+          english: [60, 68, 75, 80, 82, 85, 86, 88]
+        },
         misconceptions: [
           { code: "Y4.MATH.NPV.EMPTY_COLUMNS", class: "ERR_PHANTOM_ZERO", desc: "Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)", priority: "orange" },
           { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -4°C as warmer than -1°C", priority: "yellow" },
           { code: "Y4.MATH.NPV.WRITING_NUMBERS", class: "ERR_TRANSPOSITION", desc: "Transposing digits under time rush (writes 03 for thirty)", priority: "yellow" }
-        ],
-        curves: {
-          science: "M 60,110 L 135,100 L 210,85 L 285,75 L 360,60 L 435,45 L 510,35 L 560,25",
-          maths:   "M 60,130 L 135,125 L 210,115 L 285,105 L 360,95 L 435,90 L 510,88 L 560,82",
-          english: "M 60,115 L 135,110 L 210,100 L 285,90 L 360,80 L 435,70 L 510,65 L 560,55"
-        }
+        ]
       },
       maya: {
         name: "Maya",
@@ -129,19 +135,177 @@ ${renderDashboardStyles()}
         eval: "Science Midterm: Perfect classification keys and vertebrate traits. Clear methodical execution.",
         strategyTitle: "Target: 10 Min Sprint • Verbal Peer Teaching",
         strategyDesc: "High verbal retention and methodical steps. Explaining concepts aloud to Lara reinforces long-term schemas.",
-        radar: { recall: 99, concept: 95, steps: 86, speed: 84 },
+        radar: [99, 95, 86, 84],
+        gaugeVal: 96,
+        series: {
+          science: [60, 72, 80, 85, 89, 92, 94, 96],
+          maths:   [50, 62, 70, 76, 80, 82, 84, 86],
+          english: [65, 75, 82, 86, 88, 89, 90, 91]
+        },
         misconceptions: [
           { code: "Y4.MATH.NPV.5DIGIT_ORDERING", class: "ERR_SHARED_PREFIX_ORDERING", desc: "Sequencing 5-digit numbers that share leading prefix digits", priority: "orange" },
           { code: "Y4.MATH.NPV.NUMBER_LINE_SCALES", class: "ERR_INTERVAL_DECODE", desc: "Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)", priority: "yellow" },
           { code: "Y4.MATH.NPV.CROSSING_ZERO", class: "ERR_FENCEPOST_COUNT", desc: "Counting the starting tick mark across zero bridge", priority: "yellow" }
-        ],
-        curves: {
-          science: "M 60,95 L 135,80 L 210,70 L 285,55 L 360,45 L 435,35 L 510,25 L 560,18",
-          maths:   "M 60,120 L 135,110 L 210,105 L 285,95 L 360,85 L 435,80 L 510,75 L 560,70",
-          english: "M 60,100 L 135,90 L 210,80 L 285,70 L 360,60 L 435,50 L 510,45 L 560,40"
-        }
+        ]
       }
     };
+
+    // Chart.js References
+    let trajectoryChart = null;
+    let cognitiveRadarChart = null;
+    let masteryGaugeChart = null;
+
+    function initCharts() {
+      // 1. Trajectory Multi-Line Chart
+      const trajCtx = document.getElementById('trajectoryCanvas')?.getContext('2d');
+      if (trajCtx) {
+        trajectoryChart = new Chart(trajCtx, {
+          type: 'line',
+          data: {
+            labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8 (Mid)'],
+            datasets: [
+              {
+                label: 'Science',
+                data: studentsData.lara.series.science,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                fill: true,
+                tension: 0.38,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#10b981',
+              },
+              {
+                label: 'Maths',
+                data: studentsData.lara.series.maths,
+                borderColor: '#f59e0b',
+                borderDash: [4, 4],
+                fill: false,
+                tension: 0.38,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#f59e0b',
+              },
+              {
+                label: 'English',
+                data: studentsData.lara.series.english,
+                borderColor: '#a855f7',
+                fill: false,
+                tension: 0.38,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#a855f7',
+              },
+              {
+                label: '80% Goal',
+                data: [80, 80, 80, 80, 80, 80, 80, 80],
+                borderColor: '#64748b',
+                borderDash: [6, 6],
+                borderWidth: 1.5,
+                pointRadius: 0,
+                fill: false,
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 900, easing: 'easeOutQuart' },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#111827',
+                titleColor: '#f3f4f6',
+                bodyColor: '#9ca3af',
+                borderColor: '#374151',
+                borderWidth: 1,
+                padding: 10,
+                callbacks: {
+                  label: ctx => \` \${ctx.dataset.label}: \${ctx.parsed.y}%\`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: '#1f2937' },
+                ticks: { color: '#9ca3af', font: { size: 10 } }
+              },
+              y: {
+                min: 40,
+                max: 100,
+                grid: { color: '#1f2937' },
+                ticks: {
+                  color: '#9ca3af',
+                  font: { size: 10 },
+                  callback: v => v + '%'
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 2. Cognitive Domain Radar Chart
+      const radarCtx = document.getElementById('cognitiveRadarCanvas')?.getContext('2d');
+      if (radarCtx) {
+        cognitiveRadarChart = new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: ['Recall', 'Concepts', 'Multi-Step', 'Pressure'],
+            datasets: [{
+              label: 'Mastery Level',
+              data: studentsData.lara.radar,
+              borderColor: '#06b6d4',
+              backgroundColor: 'rgba(6, 182, 212, 0.25)',
+              pointBackgroundColor: '#06b6d4',
+              pointBorderColor: '#fff',
+              pointRadius: 3,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 800, easing: 'easeOutCubic' },
+            plugins: { legend: { display: false } },
+            scales: {
+              r: {
+                min: 50,
+                max: 100,
+                grid: { color: '#1f2937' },
+                angleLines: { color: '#334155' },
+                pointLabels: { color: '#cbd5e1', font: { size: 10, weight: 'bold' } },
+                ticks: { display: false }
+              }
+            }
+          }
+        });
+      }
+
+      // 3. Zero-Alarm Mastery Gauge (Doughnut)
+      const gaugeCtx = document.getElementById('masteryGaugeCanvas')?.getContext('2d');
+      if (gaugeCtx) {
+        masteryGaugeChart = new Chart(gaugeCtx, {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: [94, 6],
+              backgroundColor: ['#10b981', '#1e293b'],
+              borderWidth: 0,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            circumference: 240,
+            rotation: 240,
+            cutout: '76%',
+            plugins: { tooltip: { enabled: false }, legend: { display: false } },
+            animation: { duration: 1000, easing: 'easeOutBack' }
+          }
+        });
+      }
+    }
 
     function setStudent(studentId) {
       document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
@@ -164,47 +328,54 @@ ${renderDashboardStyles()}
       document.getElementById('side-strategy-title').innerText = data.strategyTitle;
       document.getElementById('side-strategy-desc').innerText = data.strategyDesc;
 
-      // Radar bars
-      document.getElementById('bar-recall').style.width = data.radar.recall + '%';
-      document.getElementById('val-recall').innerText = data.radar.recall + '%';
-      document.getElementById('bar-concept').style.width = data.radar.concept + '%';
-      document.getElementById('val-concept').innerText = data.radar.concept + '%';
-      document.getElementById('bar-steps').style.width = data.radar.steps + '%';
-      document.getElementById('val-steps').innerText = data.radar.steps + '%';
-      document.getElementById('bar-speed').style.width = data.radar.speed + '%';
-      document.getElementById('val-speed').innerText = data.radar.speed + '%';
+      // Update Animated Chart.js Trajectory
+      if (trajectoryChart) {
+        trajectoryChart.data.datasets[0].data = data.series.science;
+        trajectoryChart.data.datasets[1].data = data.series.maths;
+        trajectoryChart.data.datasets[2].data = data.series.english;
+        trajectoryChart.update();
+      }
+
+      // Update Animated Chart.js Radar
+      if (cognitiveRadarChart) {
+        cognitiveRadarChart.data.datasets[0].data = data.radar;
+        cognitiveRadarChart.update();
+      }
+
+      // Update Animated Chart.js Gauge
+      if (masteryGaugeChart) {
+        masteryGaugeChart.data.datasets[0].data = [data.gaugeVal, 100 - data.gaugeVal];
+        masteryGaugeChart.update();
+        document.getElementById('gauge-val').innerText = data.gaugeVal + '%';
+      }
 
       // Misconceptions
       const misContainer = document.getElementById('misconception-list');
-      misContainer.innerHTML = data.misconceptions.map(m => \`
-        <div class="misconception-item \${m.priority === 'yellow' ? 'yellow' : ''}">
-          <div class="misconception-title">
-            <span><code>\${m.code}</code></span>
-            <span class="badge badge-\${m.priority}">\${m.priority === 'orange' ? 'Priority' : 'Progressing'}</span>
+      if (misContainer) {
+        misContainer.innerHTML = data.misconceptions.map(m => \`
+          <div class="misconception-item \${m.priority === 'yellow' ? 'yellow' : ''}">
+            <div class="misconception-title">
+              <span><code>\${m.code}</code></span>
+              <span class="badge badge-\${m.priority}">\${m.priority === 'orange' ? 'Priority' : 'Progressing'}</span>
+            </div>
+            <div class="misconception-desc">\${m.desc}</div>
           </div>
-          <div class="misconception-desc">\${m.desc}</div>
-        </div>
-      \`).join('');
+        \`).join('');
+      }
 
-      // Curves in SVG
-      const chartPaths = document.getElementById('chart-paths');
-      chartPaths.innerHTML = \`
-        <path d="\${data.curves.science}" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" />
-        <path d="\${data.curves.maths}" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="3 3" />
-        <path d="\${data.curves.english}" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" />
-        <circle cx="560" cy="25" r="4" fill="var(--green)" />
-        <circle cx="560" cy="82" r="4" fill="var(--yellow)" />
-        <circle cx="560" cy="55" r="4" fill="var(--purple)" />
-      \`;
+      if (window.lucide) lucide.createIcons();
     }
 
-    // Initialize Default View (Lara)
-    setStudent('lara');
+    // Initialize on window load
+    window.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+      setStudent('lara');
+      if (window.lucide) lucide.createIcons();
+    });
 
     // Intake Simulator
     let simStrikeCount = 0;
     let simDupCount = 0;
-    let simTokens = 9600;
 
     function simulateNewUpload() {
       const log = document.getElementById('sim-log');
@@ -214,11 +385,7 @@ ${renderDashboardStyles()}
 
     function simulateDuplicateUpload() {
       simDupCount += 1;
-      simTokens += 3200;
-
-      if (simStrikeCount < 3) {
-        simStrikeCount += 1;
-      }
+      if (simStrikeCount < 3) simStrikeCount += 1;
 
       const log = document.getElementById('sim-log');
       log.style.display = 'block';
@@ -230,11 +397,11 @@ ${renderDashboardStyles()}
       if (simStrikeCount >= 3) {
         badge.className = 'badge badge-red';
         badge.innerText = 'Downgraded';
-        log.innerHTML = '🚫 [Intake Intercepted] REPEATED UPLOAD DETECTED (' + simDupCount + ' duplicates). STRIKE 3 APPLIED. Quota downgraded to delayed batch. Zero LLM tokens wasted. Message sent to parent.';
+        log.innerHTML = '🚫 [Intake Intercepted] REPEATED UPLOAD DETECTED (' + simDupCount + ' duplicates). STRIKE 3 APPLIED. Quota downgraded. Zero LLM tokens wasted. Message sent to parent.';
       } else {
         badge.className = 'badge badge-yellow';
         badge.innerText = 'Warned';
-        log.innerHTML = '⚠️ [Intake Intercepted] REPEATED UPLOAD DETECTED. Strike ' + simStrikeCount + ' of 3 recorded. Saved 3,200 vision tokens. Educational warning & previous sprint link dispatched to parent.';
+        log.innerHTML = '⚠️ [Intake Intercepted] REPEATED UPLOAD DETECTED. Strike ' + simStrikeCount + ' of 3 recorded. Saved 3,200 vision tokens. Educational warning dispatched to parent.';
       }
     }
 

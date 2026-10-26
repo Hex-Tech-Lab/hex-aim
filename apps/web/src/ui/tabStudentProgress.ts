@@ -2,8 +2,12 @@ export function renderStudentProgressTab(): string {
   return `  <!-- TAB 1: Student Progress & Mastery (2/3 + 1/3 Split) -->
   <div id="tab-student-view" class="tab-pane active">
     <div class="student-pills">
-      <button class="pill-btn active" id="pill-lara" onclick="setStudent('lara')">👧 Lara (Year 4)</button>
-      <button class="pill-btn" id="pill-maya" onclick="setStudent('maya')">👧 Maya (Year 4)</button>
+      <button class="pill-btn active" id="pill-lara" onclick="setStudent('lara')">
+        <i data-lucide="user" class="inline w-4 h-4 mr-1"></i> 👧 Lara (Year 4)
+      </button>
+      <button class="pill-btn" id="pill-maya" onclick="setStudent('maya')">
+        <i data-lucide="user-check" class="inline w-4 h-4 mr-1"></i> 👧 Maya (Year 4)
+      </button>
     </div>
 
     <div class="tab1-layout">
@@ -15,7 +19,7 @@ export function renderStudentProgressTab(): string {
               <h2 id="student-name-header">Lara's Academic Trajectory & Mastery Progression</h2>
               <div style="font-size: 12px; color: var(--muted);" id="student-meta-sub">Asten College • Year 4 British Track • Term 1 Diagnostic Trajectory</div>
             </div>
-            <span class="badge badge-green" id="student-overall-status">Mastery Stable (92% Avg)</span>
+            <span class="badge badge-green pulse-glow" id="student-overall-status">Mastery Stable (92% Avg)</span>
           </div>
 
           <!-- Mini KPIs -->
@@ -38,68 +42,63 @@ export function renderStudentProgressTab(): string {
             </div>
           </div>
 
-          <!-- Interactive SVG Trajectory Chart -->
+          <!-- Interactive Animated Chart.js Trajectory -->
           <div class="chart-box">
             <div class="chart-title">
-              <span>Weekly Assessment Performance (Weeks 1 - 8)</span>
+              <span class="flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+                Weekly Assessment Performance (Weeks 1 - 8)
+              </span>
               <div class="chart-legend">
                 <div class="legend-item"><div class="dot" style="background: var(--green);"></div> Science</div>
                 <div class="legend-item"><div class="dot" style="background: var(--yellow);"></div> Maths</div>
-                <div class="legend-item"><div class="dot" style="background: var(--cyan);"></div> English</div>
-                <div class="legend-item"><div class="dot" style="background: #475569;"></div> 80% Mastery Goal</div>
+                <div class="legend-item"><div class="dot" style="background: var(--purple);"></div> English</div>
+                <div class="legend-item"><div class="dot" style="background: #64748b;"></div> 80% Benchmark</div>
               </div>
             </div>
-            <svg class="trend-svg" viewBox="0 0 600 160" id="trajectory-svg">
-              <!-- Grid Lines -->
-              <line x1="40" y1="20" x2="580" y2="20" stroke="#1f2937" stroke-width="1" stroke-dasharray="2" />
-              <line x1="40" y1="55" x2="580" y2="55" stroke="#1f2937" stroke-width="1" stroke-dasharray="2" />
-              <line x1="40" y1="90" x2="580" y2="90" stroke="#334155" stroke-width="1" stroke-dasharray="4" />
-              <line x1="40" y1="125" x2="580" y2="125" stroke="#1f2937" stroke-width="1" stroke-dasharray="2" />
-
-              <!-- Y-Axis Labels -->
-              <text x="10" y="24" fill="#64748b" font-size="10">100%</text>
-              <text x="15" y="59" fill="#64748b" font-size="10">90%</text>
-              <text x="15" y="94" fill="#06b6d4" font-size="10" font-weight="bold">80%</text>
-              <text x="15" y="129" fill="#64748b" font-size="10">70%</text>
-
-              <!-- X-Axis Labels -->
-              <text x="60" y="150" fill="#64748b" font-size="10">W1</text>
-              <text x="135" y="150" fill="#64748b" font-size="10">W2</text>
-              <text x="210" y="150" fill="#64748b" font-size="10">W3</text>
-              <text x="285" y="150" fill="#64748b" font-size="10">W4</text>
-              <text x="360" y="150" fill="#64748b" font-size="10">W5</text>
-              <text x="435" y="150" fill="#64748b" font-size="10">W6</text>
-              <text x="510" y="150" fill="#64748b" font-size="10">W7</text>
-              <text x="560" y="150" fill="#64748b" font-size="10" font-weight="bold">W8 (Mid)</text>
-
-              <!-- Dynamic Curves will be rendered here by script -->
-              <g id="chart-paths"></g>
-            </svg>
+            <div style="position: relative; height: 210px; width: 100%;">
+              <canvas id="trajectoryCanvas"></canvas>
+            </div>
           </div>
 
-          <!-- Cognitive Dimension Radar/Bars -->
-          <div style="margin-top: 10px;">
-            <div style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 12px;">Cognitive Domain Mastery Breakdown</div>
-            <div class="dim-row">
-              <span style="color: #cbd5e1;">Factual Recall & Vocabulary</span>
-              <div class="bar-container"><div class="bar-fill" id="bar-recall" style="width: 98%; background: var(--green);"></div></div>
-              <span style="font-weight: 700; color: var(--green);" id="val-recall">98%</span>
+          <!-- Dual Animated Visual Graphics: Cognitive Radar & Confidence Gauge -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 16px;">
+            <!-- Chart.js Cognitive Domain Radar -->
+            <div style="background: #0d131f; border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <span class="flex items-center gap-1.5"><i data-lucide="brain" class="w-3.5 h-3.5 text-cyan-400"></i> Cognitive Domain Radar</span>
+                <span style="font-size: 10px; color: var(--cyan); font-family: monospace;">ASTEN Y4 RADAR</span>
+              </div>
+              <div style="position: relative; height: 180px; width: 100%;">
+                <canvas id="cognitiveRadarCanvas"></canvas>
+              </div>
             </div>
-            <div class="dim-row">
-              <span style="color: #cbd5e1;">Conceptual Understanding</span>
-              <div class="bar-container"><div class="bar-fill" id="bar-concept" style="width: 91%; background: var(--cyan);"></div></div>
-              <span style="font-weight: 700; color: var(--cyan);" id="val-concept">91%</span>
+
+            <!-- Chart.js Mastery Gauge / Doughnut -->
+            <div style="background: #0d131f; border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Zero-Alarm Confidence</span>
+                <span class="badge badge-green" id="gauge-badge">High</span>
+              </div>
+              <div style="position: relative; height: 140px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                <canvas id="masteryGaugeCanvas"></canvas>
+                <div id="gauge-center-text" style="position: absolute; top: 58%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                  <div id="gauge-val" style="font-size: 22px; font-weight: 800; color: #fff; font-family: monospace;">94%</div>
+                  <div style="font-size: 9px; color: var(--muted); text-transform: uppercase;">Retention</div>
+                </div>
+              </div>
+              <div style="font-size: 10px; color: var(--muted); text-align: center; margin-top: 4px;" id="gauge-sub">
+                Working memory load protected under sprint timer
+              </div>
             </div>
-            <div class="dim-row">
-              <span style="color: #cbd5e1;">Multi-Step Problem Execution</span>
-              <div class="bar-container"><div class="bar-fill" id="bar-steps" style="width: 78%; background: var(--yellow);"></div></div>
-              <span style="font-weight: 700; color: var(--yellow);" id="val-steps">78%</span>
+          </div>
+
+          <!-- Misconceptions Summary -->
+          <div style="margin-top: 16px;">
+            <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Active Priority Cognitive Errors (Targeted in Sprints)
             </div>
-            <div class="dim-row">
-              <span style="color: #cbd5e1;">Accuracy Under Timed Pressure</span>
-              <div class="bar-container"><div class="bar-fill" id="bar-speed" style="width: 72%; background: var(--orange);"></div></div>
-              <span style="font-weight: 700; color: var(--orange);" id="val-speed">72%</span>
-            </div>
+            <div id="misconception-list"></div>
           </div>
         </div>
       </div>
@@ -109,7 +108,7 @@ export function renderStudentProgressTab(): string {
         <!-- Recent Worksheet Scorecard -->
         <div class="card">
           <div class="card-header">
-            <h2>📝 Latest Ingested Scorecard</h2>
+            <h2 class="flex items-center gap-1.5"><i data-lucide="file-check-2" class="w-4 h-4 text-emerald-400"></i> Latest Intake Scorecard</h2>
             <span class="badge badge-green">Passed</span>
           </div>
           <div class="scorecard-banner">
@@ -118,28 +117,31 @@ export function renderStudentProgressTab(): string {
               <span>ASTEN Y4</span>
             </div>
             <div class="big-score" id="side-score">19 / 20 <span style="font-size: 16px; color: var(--green);">(95%)</span></div>
-            <div style="font-size: 12px; color: #cbd5e1;" id="side-eval">
-              Demonstrated complete mastery of skeletons, muscles, and medicines. 1 minor slip in negative temperature scale.
-            </div>
+            <div class="sub-eval" id="side-eval">Science Midterm: Mastered skeletons, muscles, and medicines. Working memory slipped on negative scale.</div>
           </div>
 
-          <!-- Identified Misconceptions -->
-          <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">Active Misconceptions Detected:</div>
-          <div id="misconception-list">
-            <!-- Populated via script -->
+          <!-- Action / Sprint Trigger -->
+          <div class="sprint-box">
+            <div class="title" id="side-strategy-title">Target: 8 Min Sprint • Visual Chunking</div>
+            <div class="desc" id="side-strategy-desc">ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.</div>
+            <button class="btn-sprint" onclick="alert('⚡ Compiling tailored 4-page sprint pack via Warm Browser Pool (Approach C)...')">
+              <i data-lucide="zap" class="inline w-4 h-4 mr-1"></i> 🚀 Generate Targeted Practice Pack
+            </button>
           </div>
+        </div>
 
-          <!-- Neuro-Profile Scaffold -->
-          <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 12px; margin: 14px 0;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Study Strategy Scaffold</div>
-            <div style="font-size: 12px; color: #fff; font-weight: 600; margin-top: 4px;" id="side-strategy-title">Target: 8 Min Sprint • Visual Chunking</div>
-            <div style="font-size: 11px; color: var(--muted); margin-top: 2px;" id="side-strategy-desc">ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.</div>
+        <!-- Socratic Guide Preview Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="flex items-center gap-1.5"><i data-lucide="compass" class="w-4 h-4 text-cyan-400"></i> Parent Coaching Script</h2>
+            <span class="badge badge-blue">Socratic</span>
           </div>
-
-          <!-- Action Buttons -->
-          <a href="/sprint/preview" target="_blank" class="btn">🚀 Generate Follow-up Sprint Now</a>
-          <a href="/guide/preview" target="_blank" class="btn btn-outline">🧭 Open Parent Socratic Guide</a>
-          <a href="https://t.me/aim_pal_bot" target="_blank" class="btn btn-outline" style="border-color: #0284c7; color: #38bdf8;">📱 Send Snapshot to Telegram Bot</a>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">
+            "Imagine our number lives in an apartment with reserved rooms: Ones, Tens, Hundreds, Thousands. If a room has nothing in it, does it disappear, or do we put a 0 guard in the chair?"
+          </div>
+          <a href="/guide/preview" target="_blank" style="display: block; text-align: center; background: #1e293b; border: 1px solid #334155; color: var(--cyan); padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none;">
+            🧭 Open Socratic Guide Companion (2-Page A4)
+          </a>
         </div>
       </div>
     </div>

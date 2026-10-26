@@ -198,7 +198,8 @@ export default {
                 { text: '👧 Maya Progress Card', callback_data: 'view_progress:maya' },
               ],
               [
-                { text: '📱 Open Full Web Analytics', web_app: { url: 'https://aim.getvintel.com' } }
+                { text: '📱 Open Full Web Analytics', web_app: { url: 'https://aim.getvintel.com' } },
+                { text: '↩️ Back to Menu', callback_data: 'open_main_menu' }
               ]
             ]
           };
