@@ -65,7 +65,7 @@ Return a STRICT JSON object with no markdown fences, matching this exact shape:
       } else {
         // For external URLs or test placeholders
         try {
-          const fetchRes = await fetch(url);
+          const fetchRes = await fetch(url, { signal: AbortSignal.timeout(10000) });
           if (fetchRes.ok) {
             const buf = await fetchRes.arrayBuffer();
             const b64 = Buffer.from(buf).toString('base64');
@@ -95,35 +95,13 @@ Return a STRICT JSON object with no markdown fences, matching this exact shape:
           temperature: 0.1,
         },
       }),
+      signal: AbortSignal.timeout(20000),
     });
 
     if (!res.ok) {
       const errText = await res.text();
-      console.warn(`[GeminiVisionAdapter] Gemini API returned ${res.status}: ${errText}. Using resilient fallback extraction.`);
-      // Fail-closed fallback: return safe partial diagnostic instead of crashing the pipeline
-      return {
-        detectedStudentName: `Student-${context.studentId}`,
-        rawScore: 1,
-        totalScore: 2,
-        items: [
-          {
-            qNum: '1',
-            conceptCode: `${context.yearGroup}.${context.subjectId.toUpperCase()}.NPV.1`,
-            studentAnswer: 'Unparsed',
-            correctAnswer: 'Target',
-            status: 'fail',
-            errorClass: 'ERR_PHANTOM_ZERO',
-            cognitiveFactor: 'empty_column_omission',
-          },
-          {
-            qNum: '2',
-            conceptCode: `${context.yearGroup}.${context.subjectId.toUpperCase()}.NPV.2`,
-            studentAnswer: 'Correct',
-            correctAnswer: 'Correct',
-            status: 'pass',
-          },
-        ],
-      };
+      console.error(`[GeminiVisionAdapter] Gemini API returned HTTP ${res.status}: ${errText}`);
+      throw new Error(`[GeminiVisionAdapter] Upstream API failure (HTTP ${res.status}): ${errText}`);
     }
 
     const data = await res.json() as any;

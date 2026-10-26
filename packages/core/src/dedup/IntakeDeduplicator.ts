@@ -60,8 +60,12 @@ export class IntakeDeduplicator {
       };
     }
 
-    // Admin & Testing Whitelist: Developer/Admin chat is never blocked or restricted
-    const isAdmin = input.guardianId.includes('5055012900') || settings.get<boolean>('intake.adminBypass', false);
+    // Admin & Testing Whitelist: Configurable admin guardians bypass dedup
+    const adminGuardians = settings.get<string[]>('intake.adminGuardians', []);
+    const adminChatId = settings.get<string>('telegram.adminChatId', '');
+    const isAdmin = settings.get<boolean>('intake.adminBypass', false) ||
+      adminGuardians.includes(input.guardianId) ||
+      (adminChatId && input.guardianId.includes(adminChatId));
     if (isAdmin) {
       return {
         isDuplicate: false,

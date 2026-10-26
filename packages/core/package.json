@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@hex-aim/types": "workspace:*",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "puppeteer-core": "^25.16.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

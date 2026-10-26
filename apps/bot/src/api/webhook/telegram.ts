@@ -25,7 +25,20 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     body: req.method !== 'GET' && req.method !== 'HEAD' ? body : undefined,
   });
 
-  const workerRes = await worker.fetch(workerReq, {}, {} as any);
+  const asyncTasks: Promise<any>[] = [];
+  const executionCtx = {
+    waitUntil(promise: Promise<any>) {
+      asyncTasks.push(promise);
+    },
+  };
+
+  const workerRes = await worker.fetch(workerReq, {}, executionCtx as any);
+
+  // In Serverless Node.js runtime, wait for background tasks before closing lambda
+  // to avoid Vercel prematurely freezing uncompleted batch ingestion
+  if (asyncTasks.length > 0) {
+    await Promise.allSettled(asyncTasks);
+  }
 
   res.statusCode = workerRes.status;
   workerRes.headers.forEach((v, k) => {

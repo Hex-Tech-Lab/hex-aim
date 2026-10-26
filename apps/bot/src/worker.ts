@@ -1,11 +1,14 @@
 import { MessagingFactory, QueueFactory, StorageFactory, TelegramMessagingAdapter } from '@hex-aim/adapters';
 import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
 import { processAssessmentJob, processBatchAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
+import { handleCallbackQuery } from './handlers/callbackHandler.js';
+import { purgeAndResetSession, resetSessionOnly } from './handlers/sessionHandler.js';
 
 export const PERSISTENT_REPLY_KEYBOARD = {
   keyboard: [
     [
       { text: '🎛️ Menu' },
+      { text: '📊 Progress' },
       { text: '📱 Cons.', web_app: { url: 'https://aim.getvintel.com' } }
     ]
   ],
@@ -90,144 +93,17 @@ export default {
           return res;
         };
 
-        // Helper to cleanly purge and reset session with ZERO double-messages
-        const purgeAndResetSession = async (targetChatId: string, currentMsgId?: number) => {
-          const redisStorage = storage as any;
-          const idsToDelete = new Set<number>();
-          if (currentMsgId) {
-            idsToDelete.add(currentMsgId);
-            for (let i = 1; i <= 80; i++) {
-              if (currentMsgId - i > 0) idsToDelete.add(currentMsgId - i);
-            }
-          }
-
-          if (storage.getBotMessages) {
-            const tracked = await storage.getBotMessages(targetChatId);
-            for (const id of tracked) idsToDelete.add(id);
-          }
-
-          if (redisStorage.redis) {
-            try {
-              const hist = await redisStorage.redis.lrange(`aim:chat_history:${targetChatId}`, 0, -1);
-              for (const h of hist || []) {
-                const parsed = typeof h === 'string' ? JSON.parse(h) : h;
-                if (parsed?.messageId) idsToDelete.add(parsed.messageId);
-              }
-            } catch (err) {
-              console.warn('[purgeAndResetSession] Error reading history message IDs:', err);
-            }
-          }
-
-          const idArray = Array.from(idsToDelete);
-          if (messaging instanceof TelegramMessagingAdapter) {
-            await messaging.deleteMessages(targetChatId, idArray);
-          } else if (env.TELEGRAM_BOT_TOKEN) {
-            for (let i = 0; i < idArray.length; i += 100) {
-              await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/deleteMessages`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: targetChatId, message_ids: idArray.slice(i, i + 100) }),
-              }).catch(() => {});
-            }
-          }
-
-          // Clear Redis state
-          await storage.clearBotMessages?.(targetChatId);
-          if (redisStorage.redis) {
-            await redisStorage.redis.del(`aim:chat_history:${targetChatId}`);
-            await redisStorage.redis.del(`aim:strikes:guardian_${targetChatId}`);
-            const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${targetChatId}:*`);
-            for (const k of keys || []) {
-              await redisStorage.redis.del(k);
-            }
-          }
-
-          // Deliver EXACTLY ONE consolidated fresh welcome + parent control menu
-          const singleCardTitle = `✨ <b>Chat Cleared & Session Refreshed!</b>\n\n` +
-            `Welcome back to <b>HEX-AIM</b>. Your session is clean and all upload quotas are reset.\n\n` +
-            `📸 <b>To begin:</b> Take a clear photo of your child's marked worksheet (or send an album of pages) and send it here!`;
-
-          if (messaging.sendInteractiveMenu) {
-            const menuRes = await messaging.sendInteractiveMenu(targetChatId, singleCardTitle);
-            if (menuRes?.result?.message_id && storage.trackBotMessage) {
-              await storage.trackBotMessage(targetChatId, menuRes.result.message_id);
-            }
-          }
+        const sessionCtx = {
+          storage,
+          messaging,
+          telegramBotToken: env.TELEGRAM_BOT_TOKEN,
+          sendAndTrack,
         };
 
-        // 0. Handle Inline Callback Queries from Menu Buttons
+        // 0. Handle Inline Callback Queries from Menu Buttons & Two-Stage Gating
         const callbackQuery = body?.callback_query;
         if (callbackQuery) {
-          const callbackData = String(callbackQuery.data || '');
-          const cbChatId = String(callbackQuery.message?.chat?.id || '');
-
-          // Answer callback to dismiss Telegram client spinner
-          if (env.TELEGRAM_BOT_TOKEN) {
-            await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ callback_query_id: callbackQuery.id }),
-            }).catch(() => {});
-          }
-
-          if (callbackData === 'clear_chat' || callbackData === 'reset_quota') {
-            await purgeAndResetSession(cbChatId, callbackQuery.message?.message_id);
-          } else if (callbackData === 'view_sprint_lara') {
-            await sendAndTrack(cbChatId, `📄 <b>Lara's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
-          } else if (callbackData === 'view_sprint_maya') {
-            await sendAndTrack(cbChatId, `📄 <b>Maya's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
-          } else if (callbackData === 'view_guide_lara') {
-            await sendAndTrack(cbChatId, `🧭 <b>Lara's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
-          } else if (callbackData === 'view_guide_maya') {
-            await sendAndTrack(cbChatId, `🧭 <b>Maya's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
-          } else if (callbackData === 'menu_change_week') {
-            const weekKeyboard = {
-              inline_keyboard: [
-                [
-                  { text: 'Lara: W1', callback_data: 'set_week_lara_1' },
-                  { text: 'Lara: W2', callback_data: 'set_week_lara_2' },
-                  { text: 'Lara: W3', callback_data: 'set_week_lara_3' },
-                  { text: 'Lara: W4', callback_data: 'set_week_lara_4' },
-                ],
-                [
-                  { text: 'Maya: W5', callback_data: 'set_week_maya_5' },
-                  { text: 'Maya: W6', callback_data: 'set_week_maya_6' },
-                  { text: 'Maya: W7', callback_data: 'set_week_maya_7' },
-                  { text: 'Maya: W8', callback_data: 'set_week_maya_8' },
-                ],
-                [
-                  { text: '🔙 Back to Menu', callback_data: 'open_main_menu' }
-                ]
-              ]
-            };
-            await sendAndTrack(cbChatId, `📅 <b>Select Target Week to Recompile Sprint:</b>`, undefined, weekKeyboard);
-          } else if (callbackData.startsWith('set_week_')) {
-            const parts = callbackData.split('_');
-            const sName = parts[2]!;
-            const wNum = Number(parts[3]!);
-            await sendAndTrack(cbChatId, `🔄 <b>Recompiling for ${sName.toUpperCase()} (Week ${wNum})...</b>`);
-            await processAssessmentJob({
-              studentId: sName,
-              guardianId: `guardian_${cbChatId}`,
-              chatId: cbChatId,
-              imageUrls: [],
-              subjectId: 'english',
-              yearGroup: 'Y4',
-              termWeek: wNum,
-              schoolId: 'asten-college',
-            });
-          } else if (callbackData === 'open_main_menu') {
-            if (messaging.sendInteractiveMenu) {
-              const menuRes = await messaging.sendInteractiveMenu(cbChatId);
-              if (menuRes?.result?.message_id && storage.trackBotMessage) {
-                await storage.trackBotMessage(cbChatId, menuRes.result.message_id);
-              }
-            }
-          }
-
-          return new Response(JSON.stringify({ ok: true, action: 'callback_handled' }), {
-            headers: { 'Content-Type': 'application/json' },
-          });
+          return await handleCallbackQuery(callbackQuery, sessionCtx);
         }
 
         const message = body?.message;
@@ -292,7 +168,7 @@ export default {
 
         // 2. Clear Chat & Start Over Command
         if (text.startsWith('/clear')) {
-          await purgeAndResetSession(chatId, messageId);
+          await purgeAndResetSession(chatId, messageId, sessionCtx);
           return new Response(JSON.stringify({ ok: true, action: 'chat_cleared' }), {
             headers: { 'Content-Type': 'application/json' },
           });
@@ -308,6 +184,32 @@ export default {
             }
           }
           return new Response(JSON.stringify({ ok: true, action: 'menu_sent' }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        // 4. On-Demand Student Mastery & Progress Report
+        const isProgressCommand = text.startsWith('/progress') || text.startsWith('/report') || /^(\/?progress|📊|\s*📊\s*progress\s*)$/i.test(text.trim()) || text.includes('Progress');
+        if (isProgressCommand) {
+          const progressKeyboard = {
+            inline_keyboard: [
+              [
+                { text: '👧 Lara Progress Card', callback_data: 'view_progress:lara' },
+                { text: '👧 Maya Progress Card', callback_data: 'view_progress:maya' },
+              ],
+              [
+                { text: '📱 Open Full Web Analytics', web_app: { url: 'https://aim.getvintel.com' } }
+              ]
+            ]
+          };
+          await sendAndTrack(
+            chatId,
+            `📊 <b>On-Demand Student Mastery & Progress:</b>\n\n` +
+            `Choose a child below to view instant diagnostic scores, active priority gaps, and topic mastery trends at will:`,
+            messageId,
+            progressKeyboard
+          );
+          return new Response(JSON.stringify({ ok: true, action: 'progress_prompt_sent' }), {
             headers: { 'Content-Type': 'application/json' },
           });
         }
@@ -330,17 +232,9 @@ export default {
           });
         }
 
-        if (text.startsWith('/reset')) {
-          const redisStorage = storage as any;
-          if (redisStorage.redis) {
-            await redisStorage.redis.del(`aim:strikes:guardian_${chatId}`);
-            const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${chatId}:*`);
-            for (const k of keys || []) {
-              await redisStorage.redis.del(k);
-            }
-          }
-          await sendAndTrack(chatId, `🟢 <b>Ingestion Session Reset:</b> Upload quota cleared. You are free to test and upload.`);
-          return new Response(JSON.stringify({ ok: true, action: 'quota_reset' }), {
+        if (text.startsWith('/reset') || text.startsWith('/resetsession')) {
+          await resetSessionOnly(chatId, sessionCtx);
+          return new Response(JSON.stringify({ ok: true, action: 'session_reset' }), {
             headers: { 'Content-Type': 'application/json' },
           });
         }
@@ -499,7 +393,10 @@ export default {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: chatId, message_id: receiptMsg.result.message_id }),
-                  }).catch(() => {});
+                    signal: AbortSignal.timeout(5000),
+                  }).catch(err => {
+                    console.warn('[Worker] Temporary receipt notice deletion warning:', err);
+                  });
                 }
 
                 // Clear active seen marker so subsequent batches start clean
@@ -611,7 +508,10 @@ export default {
       try {
         const body = await request.json() as any;
         const payload: ProcessAssessmentPayload = body.payload || body;
-        const result = await processAssessmentJob(payload);
+        const result = await processAssessmentJob({
+          autoCompileSprint: true,
+          ...payload,
+        });
 
         return new Response(JSON.stringify({ ok: true, result }), {
           headers: { 'Content-Type': 'application/json' },
