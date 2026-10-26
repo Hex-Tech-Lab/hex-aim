@@ -14,8 +14,8 @@ export class VisionFactory {
 
     const settings = SettingsManager.getInstance();
     const provider = forceProvider || settings.get<'openrouter' | 'gemini' | 'mock'>('vision.provider', 'openrouter');
-    const openRouterApiKey = settings.get<string>('OPENROUTER_API_KEY', process.env.OPENROUTER_API_KEY || '');
-    const geminiApiKey = settings.get<string>('GEMINI_API_KEY', process.env.GEMINI_API_KEY || '');
+    const openRouterApiKey = settings.get<string>('OPENROUTER_API_KEY', '');
+    const geminiApiKey = settings.get<string>('GEMINI_API_KEY', '');
 
     // 1. Explicit or auto-detected OpenRouter
     if ((provider === 'openrouter' || (!forceProvider && openRouterApiKey)) && openRouterApiKey) {

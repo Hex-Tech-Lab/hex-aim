@@ -11,8 +11,8 @@ export class DubLinkAdapter {
 
   constructor(config?: DubLinkConfig) {
     const settings = SettingsManager.getInstance();
-    this.apiKey = config?.apiKey || settings.get<string>('DUB_API_KEY', process.env.DUB_API_KEY || '');
-    this.domain = config?.domain || settings.get<string>('DUB_DOMAIN', process.env.DUB_DOMAIN || 'link.getmytestdrive.com');
+    this.apiKey = config?.apiKey || settings.get<string>('DUB_API_KEY', '');
+    this.domain = config?.domain || settings.get<string>('DUB_DOMAIN', 'link.getmytestdrive.com');
   }
 
   /**

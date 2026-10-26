@@ -38,14 +38,20 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
   const storage = StorageFactory.getStorage();
   const vision = VisionFactory.getVision();
   const messaging = MessagingFactory.getMessaging();
+  const settings = SettingsManager.getInstance();
 
-  const schoolId = payload.schoolId || 'asten-college';
+  const defaultSchool = settings.get<string>('curriculum.default_school', 'asten-college');
+  const defaultSubject = settings.get<string>('curriculum.default_subject', 'english');
+  const defaultYearGroup = settings.get<string>('curriculum.default_year_group', 'Y4');
+  const defaultTermWeek = settings.get<number>('curriculum.default_term_week', 3);
+
+  const schoolId = payload.schoolId || defaultSchool;
 
   // 1. Run Vision Extraction (OpenRouter AI Multimodal)
   const extraction = await vision.extractAssessment(payload.imageUrls, {
     studentId: payload.studentId || 'auto',
-    subjectId: payload.subjectId || 'auto',
-    yearGroup: payload.yearGroup || 'Y4',
+    subjectId: payload.subjectId || defaultSubject,
+    yearGroup: payload.yearGroup || defaultYearGroup,
   });
 
   // 2. Resolve Dynamic Classification from Vision (Lara vs. Maya, English vs. Maths)
@@ -58,11 +64,11 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
     resolvedStudentId = payload.studentId.toLowerCase();
   }
 
-  const resolvedSubjectId = (extraction.detectedSubject || payload.subjectId || 'english').toLowerCase();
+  const resolvedSubjectId = (extraction.detectedSubject || payload.subjectId || defaultSubject).toLowerCase();
   const resolvedWeek = (typeof extraction.detectedWeek === 'number' && extraction.detectedWeek > 0)
     ? extraction.detectedWeek
-    : (payload.termWeek || 3);
-  const resolvedYearGroup = extraction.detectedYearGroup || payload.yearGroup || 'Y4';
+    : (payload.termWeek || defaultTermWeek);
+  const resolvedYearGroup = extraction.detectedYearGroup || payload.yearGroup || defaultYearGroup;
 
   console.log(`[processAssessment] Classified assessment: Student=${resolvedStudentId}, Subject=${resolvedSubjectId}, Week=${resolvedWeek}`);
 
@@ -258,8 +264,8 @@ export async function processBatchAssessmentJob(payload: {
   if (totalCount >= 2) {
     try {
       const settings = SettingsManager.getInstance();
-      const apiKey = settings.get<string>('OPENROUTER_API_KEY', process.env.OPENROUTER_API_KEY || '');
-      const model = settings.get<string>('OPENROUTER_VISION_MODEL', process.env.OPENROUTER_VISION_MODEL || 'google/gemini-3.5-flash-lite');
+      const apiKey = settings.get<string>('OPENROUTER_API_KEY', '');
+      const model = settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
 
       if (apiKey) {
         const contentParts: any[] = [
@@ -319,16 +325,16 @@ Return strict JSON matching this schema:
   }
 }
 
-  // Fallback partition if AI partition produced no results
+  // Fallback partition: if AI partition did not assign images, do NOT blindly slice 50/50.
+  // Treat entire batch as belonging to the primary detected student rather than guessing.
   if (laraImages.length === 0 && mayaImages.length === 0) {
-    if (totalCount >= 2) {
-      const half = Math.ceil(totalCount / 2);
-      laraImages = payload.imageUrls.slice(0, half);
-      mayaImages = payload.imageUrls.slice(half);
-    } else {
-      laraImages = payload.imageUrls;
-    }
+    laraImages = payload.imageUrls;
+    laraStatus = 'Full Intake (Single Batch)';
   }
+
+  const batchSettings = SettingsManager.getInstance();
+  const batchSubject = batchSettings.get<string>('curriculum.default_subject', 'english');
+  const batchWeek = batchSettings.get<number>('curriculum.default_term_week', 3);
 
   // 2. Deliver exactly ONE consolidated monospace intake table
   if (messaging.sendBatchIntakeSummary) {
@@ -336,8 +342,8 @@ Return strict JSON matching this schema:
     if (laraImages.length > 0) {
       studentsSummary.push({
         name: 'Lara',
-        subject: 'english',
-        week: 3,
+        subject: batchSubject,
+        week: batchWeek,
         pageCount: laraImages.length,
         isPractice: true,
         statusDescription: laraStatus,
@@ -346,8 +352,8 @@ Return strict JSON matching this schema:
     if (mayaImages.length > 0) {
       studentsSummary.push({
         name: 'Maya',
-        subject: 'english',
-        week: 3,
+        subject: batchSubject,
+        week: batchWeek,
         pageCount: mayaImages.length,
         isPractice: true,
         statusDescription: mayaStatus,
@@ -367,8 +373,8 @@ Return strict JSON matching this schema:
       guardianId: payload.guardianId,
       imageUrls: laraImages,
       studentId: 'lara',
-      subjectId: 'english',
-      termWeek: 3,
+      subjectId: batchSubject,
+      termWeek: batchWeek,
       skipMenu: mayaImages.length > 0, // only show menu after Maya
     });
   }
@@ -380,8 +386,8 @@ Return strict JSON matching this schema:
       guardianId: payload.guardianId,
       imageUrls: mayaImages,
       studentId: 'maya',
-      subjectId: 'english',
-      termWeek: 3,
+      subjectId: batchSubject,
+      termWeek: batchWeek,
       skipMenu: false, // show menu at conclusion of entire batch!
     });
   }

@@ -16,6 +16,30 @@ export interface AppConfig {
   openRouterApiKey?: string;
 }
 
+export const DEFAULT_AIM_REGISTRY: Record<string, unknown> = {
+  // Intake & Velocity Debounce Settings
+  'intake.debounce.silence_ms': 5500, // 5.5s silence gate after LAST incoming photo
+  'intake.debounce.max_ceiling_ms': 45000, // 45s ceiling for large bursts
+  'intake.batch.chunk_size': 12, // chunk size for multimodal vision passes
+  'intake.batch.large_batch_threshold': 18, // above this, offload to background QStash pipeline
+
+  // Vision Models
+  'vision.model.primary': 'google/gemini-3.5-flash-lite',
+  'vision.model.escalation': 'google/gemini-3.8-flash',
+  'vision.model.fallback': 'google/gemini-2.5-flash',
+
+  // Curriculum & Term Defaults
+  'curriculum.default_school': 'asten-college',
+  'curriculum.default_year_group': 'Y4',
+  'curriculum.default_term_week': 3,
+  'curriculum.default_subject': 'english',
+
+  // Deduplication & Strike Management
+  'intake.dedup.max_strikes': 5,
+  'intake.dedup.ttl_seconds': 86400,
+  'intake.dedup.enabled': true,
+};
+
 export class SettingsManager implements ISettingsPort {
   private static instance: SettingsManager;
   private overrides: Map<string, unknown> = new Map();
@@ -29,7 +53,7 @@ export class SettingsManager implements ISettingsPort {
     return SettingsManager.instance;
   }
 
-  public get<T>(key: string, defaultValue: T): T {
+  public get<T>(key: string, defaultValue?: T): T {
     if (this.overrides.has(key)) {
       return this.overrides.get(key) as T;
     }
@@ -37,18 +61,20 @@ export class SettingsManager implements ISettingsPort {
     const envKey = key.toUpperCase().replace(/\./g, '_');
     const envVal = process.env[envKey] ?? process.env[key];
 
+    const fallback = (defaultValue !== undefined ? defaultValue : DEFAULT_AIM_REGISTRY[key]) as T;
+
     if (envVal !== undefined) {
-      if (typeof defaultValue === 'boolean') {
+      if (typeof fallback === 'boolean') {
         return (envVal === 'true' || envVal === '1') as unknown as T;
       }
-      if (typeof defaultValue === 'number') {
+      if (typeof fallback === 'number') {
         const num = Number(envVal);
-        return (isNaN(num) ? defaultValue : num) as unknown as T;
+        return (isNaN(num) ? fallback : num) as unknown as T;
       }
       return envVal as unknown as T;
     }
 
-    return defaultValue;
+    return fallback;
   }
 
   public set<T>(key: string, value: T): void {
