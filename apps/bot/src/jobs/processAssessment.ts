@@ -8,7 +8,8 @@ import {
   CanonicalDeduplicator,
   AdaptiveSprintCompiler,
   SocraticGuideCompiler,
-  PdfPackCompiler
+  PdfPackCompiler,
+  SettingsManager
 } from '@hex-aim/core';
 import type {
   CognitiveGap,
@@ -250,20 +251,84 @@ export async function processBatchAssessmentJob(payload: {
 
   let laraImages: string[] = [];
   let mayaImages: string[] = [];
+  let laraStatus = 'Partially Attempted';
+  let mayaStatus = 'Fully Attempted';
 
-  if (totalCount === 12) {
-    // 6 for Maya (Week 7 Vocabulary), 6 for Lara (Week 3 Grammar)
-    mayaImages = payload.imageUrls.slice(0, 6);
-    laraImages = payload.imageUrls.slice(6, 12);
-  } else if (totalCount >= 6) {
-    const half = Math.ceil(totalCount / 2);
-    mayaImages = payload.imageUrls.slice(0, half);
-    laraImages = payload.imageUrls.slice(half);
-  } else {
-    laraImages = payload.imageUrls;
+  // 1. Run AI Partitioning if multiple images are present
+  if (totalCount >= 2) {
+    try {
+      const settings = SettingsManager.getInstance();
+      const apiKey = settings.get<string>('OPENROUTER_API_KEY', process.env.OPENROUTER_API_KEY || '');
+      const model = settings.get<string>('OPENROUTER_VISION_MODEL', process.env.OPENROUTER_VISION_MODEL || 'google/gemini-3.5-flash-lite');
+
+      if (apiKey) {
+        {
+          type: 'text',
+          text: `You are an expert curriculum evaluator analyzing ${totalCount} worksheet page photos for Year 4 students Lara and Maya at Asten College.
+CRITICAL CONTEXT:
+- Both students received an identical English practice worksheet set (Vocabulary, Grammar, Punctuation, Word Classes).
+- Inspect the student name header, handwriting style, and question order to separate the images into Lara and Maya.
+Return strict JSON matching this schema:
+{
+  "laraPageIndices": number[],
+  "mayaPageIndices": number[],
+  "subject": "english",
+  "laraAttemptStatus": string,
+  "mayaAttemptStatus": string
+}`
+        }
+      ];
+
+      payload.imageUrls.forEach((url, i) => {
+        contentParts.push({ type: 'text', text: `PAGE INDEX ${i}:` });
+        contentParts.push({ type: 'image_url', image_url: { url } });
+      });
+
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://aim.getvintel.com',
+          'X-Title': 'HEX-AIM Cognitive Intake'
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: contentParts }],
+          temperature: 0.1,
+          response_format: { type: 'json_object' }
+        })
+      });
+
+      if (res.ok) {
+        const d = await res.json() as any;
+        const parsed = JSON.parse(d?.choices?.[0]?.message?.content || '{}');
+        if (Array.isArray(parsed.laraPageIndices) && parsed.laraPageIndices.length > 0) {
+          laraImages = parsed.laraPageIndices.map((idx: number) => payload.imageUrls[idx]).filter(Boolean);
+        }
+        if (Array.isArray(parsed.mayaPageIndices) && parsed.mayaPageIndices.length > 0) {
+          mayaImages = parsed.mayaPageIndices.map((idx: number) => payload.imageUrls[idx]).filter(Boolean);
+        }
+        if (parsed.laraAttemptStatus) laraStatus = parsed.laraAttemptStatus;
+        if (parsed.mayaAttemptStatus) mayaStatus = parsed.mayaAttemptStatus;
+      }
+    } catch (partErr) {
+      console.warn('[processBatchAssessmentJob] AI partition warning, falling back to sequential split:', partErr);
+    }
   }
 
-  // 1. Deliver exactly ONE consolidated batch intake summary first
+  // Fallback partition if AI partition produced no results
+  if (laraImages.length === 0 && mayaImages.length === 0) {
+    if (totalCount >= 2) {
+      const half = Math.ceil(totalCount / 2);
+      laraImages = payload.imageUrls.slice(0, half);
+      mayaImages = payload.imageUrls.slice(half);
+    } else {
+      laraImages = payload.imageUrls;
+    }
+  }
+
+  // 2. Deliver exactly ONE consolidated monospace intake table
   if (messaging.sendBatchIntakeSummary) {
     const studentsSummary = [];
     if (laraImages.length > 0) {
@@ -273,15 +338,17 @@ export async function processBatchAssessmentJob(payload: {
         week: 3,
         pageCount: laraImages.length,
         isPractice: true,
+        statusDescription: laraStatus,
       });
     }
     if (mayaImages.length > 0) {
       studentsSummary.push({
         name: 'Maya',
         subject: 'english',
-        week: 7,
+        week: 3,
         pageCount: mayaImages.length,
         isPractice: true,
+        statusDescription: mayaStatus,
       });
     }
 
@@ -291,7 +358,7 @@ export async function processBatchAssessmentJob(payload: {
     });
   }
 
-  // 2. Deliver Lara's Printable Sprint Pack & Parent Guide
+  // 3. Deliver Lara's Printable Sprint Pack & Parent Guide
   if (laraImages.length > 0) {
     await processAssessmentJob({
       chatId: payload.chatId,
@@ -304,7 +371,7 @@ export async function processBatchAssessmentJob(payload: {
     });
   }
 
-  // 3. Deliver Maya's Printable Sprint Pack & Parent Guide
+  // 4. Deliver Maya's Printable Sprint Pack & Parent Guide
   if (mayaImages.length > 0) {
     await processAssessmentJob({
       chatId: payload.chatId,
@@ -312,8 +379,8 @@ export async function processBatchAssessmentJob(payload: {
       imageUrls: mayaImages,
       studentId: 'maya',
       subjectId: 'english',
-      termWeek: 7,
-      skipMenu: false, // show menu at conclusion of batch!
+      termWeek: 3,
+      skipMenu: false, // show menu at conclusion of entire batch!
     });
   }
 }

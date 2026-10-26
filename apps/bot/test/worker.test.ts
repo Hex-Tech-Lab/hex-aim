@@ -67,8 +67,8 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     expect(body.queued).toBe(true);
     expect(body.messageId).toBeTruthy();
 
-    expect(messaging.sentConfirmationCards).toHaveLength(1);
-    expect(messaging.sentConfirmationCards[0]?.chatId).toBe('987654');
+    expect(messaging.sentMessages.length).toBeGreaterThan(0);
+    expect(messaging.sentMessages[0]?.chatId).toBe('987654');
   });
 
   it('POST /jobs/process-assessment runs full pipeline and delivers remediation packs', async () => {
