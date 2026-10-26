@@ -65,6 +65,22 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     }
   }
 
+  public async deleteMessages(chatId: string, messageIds: number[]): Promise<boolean> {
+    if (!messageIds || messageIds.length === 0) return true;
+    try {
+      for (let i = 0; i < messageIds.length; i += 100) {
+        const slice = messageIds.slice(i, i + 100);
+        await this.callApi('deleteMessages', {
+          chat_id: chatId,
+          message_ids: slice,
+        }).catch(() => {});
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   public async sendInteractiveMenu(chatId: string, customTitle?: string): Promise<any> {
     const title = customTitle || '🎛️ <b>AIM Parent Control Center</b>';
     const text = `${title}\n\n` +
