@@ -96,8 +96,8 @@ describe('IntakeDeduplicator', () => {
     expect(result.status).toBe('warned');
     expect(result.duplicateCount).toBe(1);
     expect(result.tokensSaved).toBe(3200);
-    expect(result.userMessage).toContain('Repeated Test Submission Detected');
-    expect(result.userMessage).toContain('1 of 3 strikes');
+    expect(result.userMessage).toContain('Parent Guidance: Repeat Upload Recognized');
+    expect(result.userMessage).toContain('1 of 3 duplicate notices');
     expect(result.userMessage).toContain('https://aim.getvintel.com/sprint/sp_999');
   });
 
@@ -133,7 +133,7 @@ describe('IntakeDeduplicator', () => {
     expect(result.isDuplicate).toBe(true);
     expect(result.strikeCount).toBe(3);
     expect(result.status).toBe('downgraded');
-    expect(result.userMessage).toContain('Intake Quota Downgraded');
+    expect(result.userMessage).toContain('System Guidance: Practice Run Mode');
     expect(result.tokensSaved).toBe(3200 * 3);
   });
 });

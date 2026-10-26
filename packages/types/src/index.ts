@@ -270,7 +270,7 @@ export interface IVectorPort {
 }
 
 export interface IMessagingPort {
-  sendMessage(chatId: string, text: string): Promise<void>;
+  sendMessage(chatId: string, text: string, replyToMessageId?: number, replyMarkup?: Record<string, unknown>): Promise<void>;
   sendReceiptSummary(chatId: string, summary: { photoCount: number; mediaGroupId?: string }): Promise<void>;
   sendConfirmationCard(chatId: string, card: {
     jobId: string;
@@ -282,8 +282,17 @@ export interface IMessagingPort {
   sendDocument(chatId: string, doc: { buffer?: Uint8Array | ArrayBuffer; url?: string; filename: string; caption?: string }): Promise<void>;
   sendBatchIntakeSummary?(chatId: string, summary: {
     totalPhotos: number;
-    students: Array<{ name: string; subject: string; week: number; pageCount: number; score?: string }>;
+    students: Array<{
+      name: string;
+      subject: string;
+      week: number;
+      pageCount: number;
+      isPractice?: boolean;
+      score?: string;
+      fileItems?: string[];
+    }>;
   }): Promise<void>;
+  sendInteractiveMenu?(chatId: string, customTitle?: string): Promise<void>;
   deliverRemediationPacks(chatId: string, packs: {
     studentPackHtml?: string;
     studentPackPdf?: string | Uint8Array | ArrayBuffer;

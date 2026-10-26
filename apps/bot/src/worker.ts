@@ -1,6 +1,6 @@
 import { MessagingFactory, StorageFactory, TelegramMessagingAdapter } from '@hex-aim/adapters';
 import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
-import { processAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
+import { processAssessmentJob, processBatchAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
 
 export interface Env {
   STORAGE_PROVIDER?: string;
@@ -55,6 +55,91 @@ export default {
     if (url.pathname === '/webhook/telegram' && request.method === 'POST') {
       try {
         const body = await request.json() as any;
+        const messaging = env.TELEGRAM_BOT_TOKEN 
+          ? new TelegramMessagingAdapter({ botToken: env.TELEGRAM_BOT_TOKEN }) 
+          : MessagingFactory.getMessaging();
+        const storage = StorageFactory.getStorage();
+
+        // 0. Handle Inline Callback Queries from Menu Buttons
+        const callbackQuery = body?.callback_query;
+        if (callbackQuery) {
+          const callbackData = String(callbackQuery.data || '');
+          const cbChatId = String(callbackQuery.message?.chat?.id || '');
+
+          // Answer callback to dismiss Telegram client spinner
+          if (env.TELEGRAM_BOT_TOKEN) {
+            await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: callbackQuery.id }),
+            }).catch(() => {});
+          }
+
+          if (callbackData === 'reset_quota') {
+            const redisStorage = storage as any;
+            if (redisStorage.redis) {
+              await redisStorage.redis.del(`aim:strikes:guardian_${cbChatId}`);
+              const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${cbChatId}:*`);
+              for (const k of keys || []) {
+                await redisStorage.redis.del(k);
+              }
+            }
+            await messaging.sendMessage(cbChatId, `🟢 <b>Ingestion Session Reset:</b> Upload quota cleared. You are free to test and upload.`);
+          } else if (callbackData === 'view_sprint_lara') {
+            await messaging.sendMessage(cbChatId, `📄 <b>Lara's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
+          } else if (callbackData === 'view_sprint_maya') {
+            await messaging.sendMessage(cbChatId, `📄 <b>Maya's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
+          } else if (callbackData === 'view_guide_lara') {
+            await messaging.sendMessage(cbChatId, `🧭 <b>Lara's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
+          } else if (callbackData === 'view_guide_maya') {
+            await messaging.sendMessage(cbChatId, `🧭 <b>Maya's Parent Socratic Guide:</b>\n🔗 https://aim.getvintel.com/guide/preview`);
+          } else if (callbackData === 'menu_change_week') {
+            const weekKeyboard = {
+              inline_keyboard: [
+                [
+                  { text: 'Lara: W1', callback_data: 'set_week_lara_1' },
+                  { text: 'Lara: W2', callback_data: 'set_week_lara_2' },
+                  { text: 'Lara: W3', callback_data: 'set_week_lara_3' },
+                  { text: 'Lara: W4', callback_data: 'set_week_lara_4' },
+                ],
+                [
+                  { text: 'Maya: W5', callback_data: 'set_week_maya_5' },
+                  { text: 'Maya: W6', callback_data: 'set_week_maya_6' },
+                  { text: 'Maya: W7', callback_data: 'set_week_maya_7' },
+                  { text: 'Maya: W8', callback_data: 'set_week_maya_8' },
+                ],
+                [
+                  { text: '🔙 Back to Menu', callback_data: 'open_main_menu' }
+                ]
+              ]
+            };
+            await (messaging as TelegramMessagingAdapter).sendMessage(cbChatId, `📅 <b>Select Target Week to Recompile Sprint:</b>`, undefined, weekKeyboard);
+          } else if (callbackData.startsWith('set_week_')) {
+            const parts = callbackData.split('_');
+            const sName = parts[2]!;
+            const wNum = Number(parts[3]!);
+            await messaging.sendMessage(cbChatId, `🔄 <b>Recompiling for ${sName.toUpperCase()} (Week ${wNum})...</b>`);
+            await processAssessmentJob({
+              studentId: sName,
+              guardianId: `guardian_${cbChatId}`,
+              chatId: cbChatId,
+              imageUrls: [],
+              subjectId: 'english',
+              yearGroup: 'Y4',
+              termWeek: wNum,
+              schoolId: 'asten-college',
+            });
+          } else if (callbackData === 'open_main_menu') {
+            if (messaging.sendInteractiveMenu) {
+              await messaging.sendInteractiveMenu(cbChatId);
+            }
+          }
+
+          return new Response(JSON.stringify({ ok: true, action: 'callback_handled' }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
         const message = body?.message;
 
         if (!message) {
@@ -67,18 +152,71 @@ export default {
         const messageId = message.message_id ? Number(message.message_id) : undefined;
         const text = String(message.text || '');
         const photos = message.photo;
-        const messaging = env.TELEGRAM_BOT_TOKEN 
-          ? new TelegramMessagingAdapter({ botToken: env.TELEGRAM_BOT_TOKEN }) 
-          : MessagingFactory.getMessaging();
 
-        // 1. Text commands
+        // 1. Direct AGY Instruction Loop (#I: ...)
+        if (/^#I\s*:/i.test(text)) {
+          const instructionText = text.replace(/^#I\s*:\s*/i, '').trim();
+          const redisStorage = storage as any;
+          if (redisStorage.redis) {
+            const item = {
+              chatId,
+              text: instructionText,
+              timestamp: new Date().toISOString(),
+            };
+            await redisStorage.redis.set('aim:instructions:latest', item);
+            await redisStorage.redis.rpush('aim:instructions:log', item);
+          }
+
+          console.log(`[Worker] AGY Instruction logged from ${chatId}: "${instructionText}"`);
+
+          await messaging.sendMessage(chatId,
+            `📝 <b>Instruction Received & Logged for AGY:</b>\n` +
+            `<i>"${instructionText}"</i>\n\n` +
+            `✅ <i>Stored in state ledger. Antigravity will ingest this directly on the next loop.</i>`,
+            messageId
+          );
+
+          return new Response(JSON.stringify({ ok: true, action: 'instruction_captured', text: instructionText }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        // 2. Menu and Control Commands
+        if (text.startsWith('/menu')) {
+          if (messaging.sendInteractiveMenu) {
+            await messaging.sendInteractiveMenu(chatId);
+          }
+          return new Response(JSON.stringify({ ok: true, action: 'menu_sent' }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        if (text.startsWith('/reset')) {
+          const redisStorage = storage as any;
+          if (redisStorage.redis) {
+            await redisStorage.redis.del(`aim:strikes:guardian_${chatId}`);
+            const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${chatId}:*`);
+            for (const k of keys || []) {
+              await redisStorage.redis.del(k);
+            }
+          }
+          await messaging.sendMessage(chatId, `🟢 <b>Ingestion Session Reset:</b> Upload quota cleared. You are free to test and upload.`);
+          return new Response(JSON.stringify({ ok: true, action: 'quota_reset' }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
         if (text.startsWith('/start')) {
           await messaging.sendMessage(chatId, 
             `👋 <b>Welcome to HEX-AIM (Adaptive Individualized Mastery)!</b>\n\n` +
             `We turn weekly school quizzes into <b>targeted 4-page sprints (6–10 mins)</b> for your child.\n\n` +
             `📸 <b>To begin:</b> Take a clear photo of your child's marked worksheet (or send an album of pages) and send it here!\n\n` +
-            `📄 <b>Direct PDF delivery:</b> Printable PDFs are generated and delivered directly to your chat.`
+            `📄 <b>Direct PDF delivery:</b> Printable PDFs are delivered directly to your chat.\n` +
+            `📱 <b>Mini-App:</b> Tap the <b>AIM Console</b> button at the bottom left to view the interactive dashboard anytime.`
           );
+          if (messaging.sendInteractiveMenu) {
+            await messaging.sendInteractiveMenu(chatId);
+          }
           return new Response(JSON.stringify({ ok: true, action: 'welcome_sent' }), {
             headers: { 'Content-Type': 'application/json' },
           });
@@ -175,138 +313,102 @@ export default {
             });
           }
 
-          const mediaGroupId = message.media_group_id ? String(message.media_group_id) : undefined;
+          // UNIFIED CHAT-LEVEL INTAKE BATCH BUFFER (Aggregates split albums e.g. 10 + 2 photos)
+          const activeBatchKey = `intake_active:${chatId}`;
+          const isFirstPhoto = !(await storage.hasSeenFileHash('intake_active_seen', chatId));
 
-          // ALBUM BATCH AGGREGATION
-          if (mediaGroupId) {
-            const albumKey = `media_album:${mediaGroupId}`;
-            const isFirstPhoto = !(await storage.hasSeenFileHash('media_album_seen', mediaGroupId));
+          // Record this photo URL into the active intake batch
+          if (storage.addIntakeBatchItem) {
+            await storage.addIntakeBatchItem(activeBatchKey, {
+              url: resolvedImageUrl,
+              fileUniqueId,
+              messageId,
+            });
+          }
 
-            // Record this photo URL into the album
-            await storage.recordFileHash(albumKey, fileUniqueId, {
-              filename: resolvedImageUrl,
-              timestamp: new Date().toISOString()
+          const jobId = `job_${Date.now()}`;
+
+          if (isFirstPhoto) {
+            await storage.recordFileHash('intake_active_seen', chatId, { timestamp: new Date().toISOString() });
+
+            // Send confirmation card acknowledging receipt
+            await messaging.sendConfirmationCard(chatId, {
+              jobId,
+              imageUrl: resolvedImageUrl,
+              detectedStudent: 'Student',
+              detectedSubject: 'Worksheet',
+              detectedWeek: 'Week 3',
             });
 
-            if (storage.addIntakeBatchItem) {
-              await storage.addIntakeBatchItem(albumKey, {
-                url: resolvedImageUrl,
-                fileUniqueId,
-                messageId,
-              });
-            }
+            // Debounce 4.5s for all photos (across multiple Telegram albums like 10+2) to arrive
+            const runUnifiedBatch = async () => {
+              try {
+                await new Promise(resolve => setTimeout(resolve, 4500));
+                
+                // Clear active seen marker so subsequent batches start clean
+                const redisStorage = storage as any;
+                if (redisStorage.redis) {
+                  await redisStorage.redis.del(`aim:seen_files:intake_active_seen:${chatId}`);
+                }
 
-            if (isFirstPhoto) {
-              await storage.recordFileHash('media_album_seen', mediaGroupId, { timestamp: new Date().toISOString() });
-
-              // Immediate initial receipt acknowledgment
-              await messaging.sendMessage(chatId,
-                `📥 <b>Worksheet Album Received!</b>\n` +
-                `⚡ <i>Assembling pages and running OpenRouter diagnostic extraction...</i>\n` +
-                `<i>Direct printable PDFs will be attached automatically once ready.</i>`,
-                messageId
-              );
-
-              // Background Execution: Debounce 4.0s for all album photos to arrive, then execute
-              const runAlbumBatch = async () => {
-                try {
-                  await new Promise(resolve => setTimeout(resolve, 4000));
-                  
-                  // Collect all image URLs for this media group
-                  let albumImages: string[] = [resolvedImageUrl];
-                  if (storage.getIntakeBatchItems) {
-                    const items = await storage.getIntakeBatchItems(albumKey);
-                    if (items && items.length > 0) {
-                      albumImages = items.map(it => it.url);
-                    }
+                let batchImages: string[] = [resolvedImageUrl];
+                if (storage.getIntakeBatchItems) {
+                  const items = await storage.getIntakeBatchItems(activeBatchKey);
+                  if (items && items.length > 0) {
+                    batchImages = items.map(it => it.url);
                   }
-                  
-                  console.log(`[Worker] Processing album ${mediaGroupId} with ${albumImages.length} images`);
+                }
 
-                  const payload: ProcessAssessmentPayload = {
+                if (storage.clearIntakeBatch) {
+                  await storage.clearIntakeBatch(activeBatchKey);
+                }
+
+                console.log(`[Worker] Processing unified batch for ${chatId} with ${batchImages.length} images`);
+
+                if (batchImages.length > 1) {
+                  await processBatchAssessmentJob({
+                    chatId,
+                    guardianId,
+                    imageUrls: batchImages,
+                    schoolId: 'asten-college',
+                  });
+                } else {
+                  await processAssessmentJob({
                     studentId: 'auto',
                     guardianId,
                     chatId,
-                    imageUrls: albumImages,
+                    imageUrls: batchImages,
                     subjectId: 'auto',
                     yearGroup: 'Y4',
                     termWeek: 3,
                     schoolId: 'asten-college',
-                  };
-
-                  await processAssessmentJob(payload);
-                } catch (err: any) {
-                  console.error('[Worker] Album batch processing error:', err);
-                  // ZERO SILENT FAILURES: notify user directly!
-                  await messaging.sendMessage(chatId,
-                    `⚠️ <b>Assessment Diagnostic Failed:</b>\n${err?.message || String(err)}\n\n` +
-                    `<i>Zero Silent Fallback Active. Error logged to telemetry.</i>`
-                  );
+                  });
                 }
-              };
-
-              if (_ctx && typeof _ctx.waitUntil === 'function') {
-                _ctx.waitUntil(runAlbumBatch());
-              } else {
-                runAlbumBatch();
+              } catch (err: any) {
+                console.error('[Worker] Batch processing error:', err);
+                // FAIL LOUD: never swallow errors!
+                await messaging.sendMessage(chatId,
+                  `⚠️ <b>Assessment Diagnostic Failed:</b>\n${err?.message || String(err)}\n\n` +
+                  `<i>Zero Silent Fallback Active. Error logged to telemetry.</i>`
+                );
               }
+            };
 
-              return new Response(JSON.stringify({ ok: true, queued: true, batchLeader: true }), {
-                headers: { 'Content-Type': 'application/json' },
-              });
+            if (_ctx && typeof _ctx.waitUntil === 'function') {
+              _ctx.waitUntil(runUnifiedBatch());
             } else {
-              // Sibling photo in the same album: aggregated silently into the leader's batch
-              return new Response(JSON.stringify({ ok: true, batched: true }), {
-                headers: { 'Content-Type': 'application/json' },
-              });
+              runUnifiedBatch();
             }
-          }
 
-          // SINGLE PHOTO / NON-ALBUM INTAKE
-          const payload: ProcessAssessmentPayload = {
-            studentId: 'auto',
-            guardianId,
-            chatId,
-            imageUrls: [resolvedImageUrl],
-            subjectId: 'auto',
-            yearGroup: 'Y4',
-            termWeek: 3,
-            schoolId: 'asten-college',
-          };
-
-          const jobId = `job_${Date.now()}`;
-
-          // Send confirmation card replying to this photo
-          await messaging.sendConfirmationCard(chatId, {
-            jobId,
-            imageUrl: resolvedImageUrl,
-            detectedStudent: 'Student',
-            detectedSubject: 'Worksheet',
-            detectedWeek: 'Week 3',
-          });
-
-          const runSingleJob = async () => {
-            try {
-              await processAssessmentJob(payload);
-            } catch (err: any) {
-              console.error('[Worker] Single processing error:', err);
-              await messaging.sendMessage(chatId,
-                `⚠️ <b>Assessment Diagnostic Failed:</b>\n${err?.message || String(err)}\n\n` +
-                `<i>Zero Silent Fallback Active. Error logged to telemetry.</i>`,
-                messageId
-              );
-            }
-          };
-
-          if (_ctx && typeof _ctx.waitUntil === 'function') {
-            _ctx.waitUntil(runSingleJob());
+            return new Response(JSON.stringify({ ok: true, queued: true, batchLeader: true, messageId: jobId }), {
+              headers: { 'Content-Type': 'application/json' },
+            });
           } else {
-            runSingleJob();
+            // Sibling photo in the same batch: aggregated silently into the batch leader
+            return new Response(JSON.stringify({ ok: true, batched: true }), {
+              headers: { 'Content-Type': 'application/json' },
+            });
           }
-
-          return new Response(JSON.stringify({ ok: true, queued: true, messageId: jobId, single: true }), {
-            headers: { 'Content-Type': 'application/json' },
-          });
         }
 
         return new Response(JSON.stringify({ ok: true, note: 'unhandled_message_type' }), {
