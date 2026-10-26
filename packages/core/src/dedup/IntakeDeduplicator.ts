@@ -60,6 +60,19 @@ export class IntakeDeduplicator {
       };
     }
 
+    // Admin & Testing Whitelist: Developer/Admin chat is never blocked or restricted
+    const isAdmin = input.guardianId.includes('5055012900') || settings.get<boolean>('intake.adminBypass', false);
+    if (isAdmin) {
+      return {
+        isDuplicate: false,
+        strikeCount: 0,
+        maxStrikes,
+        status: 'active',
+        duplicateCount: 0,
+        tokensSaved: 0,
+      };
+    }
+
     const isSeen = await storage.hasSeenFileHash(input.guardianId, fingerprint);
 
     if (!isSeen) {
@@ -129,18 +142,17 @@ export class IntakeDeduplicator {
     let userMessage = '';
     if (record.status === 'downgraded') {
       userMessage =
-        `🚫 <b>Intake Quota Downgraded (${record.strikeCount}/${record.maxStrikes} Strikes)</b>\n\n` +
-        `You have repeatedly submitted the same quiz file (${record.duplicateUploadCount} duplicate uploads detected).\n` +
-        `To protect system resources and avoid wasting tokens, intake processing for your account has been downgraded to low-priority batch mode.\n\n` +
-        `Please contact your student's educator or school coordinator if you need to reset your quota.`;
+        `🛡️ <b>System Guidance: Practice Run Mode</b>\n\n` +
+        `We noticed these pages match previously submitted work (${record.duplicateUploadCount} duplicate uploads detected).\n` +
+        `To ensure optimal progress, repeated uploads are handled in <b>Practice Run Mode</b> to preserve baseline mastery.\n\n` +
+        `<i>Need to reset your upload session? Reply with</i> <code>/reset</code> <i>or tap Reset Quota in the menu.</i>`;
     } else {
       userMessage =
-        `⚠️ <b>Repeated Test Submission Detected</b>\n\n` +
-        `You have uploaded a repeated test (${record.duplicateUploadCount} duplicate uploads recorded).\n` +
-        `Please try not to do that because it costs tokens to process files unnecessarily.\n\n` +
-        `📌 <b>Strike Status:</b> ${record.strikeCount} of ${record.maxStrikes} strikes.\n` +
+        `💡 <b>Parent Guidance: Repeat Upload Recognized</b>\n\n` +
+        `These pages match an existing assessment. We have logged them as a <b>Practice Run</b> to preserve your child's baseline score.\n\n` +
+        `📌 <b>Notice Status:</b> ${record.strikeCount} of ${record.maxStrikes} duplicate notices.\n` +
         (sprintUrl
-          ? `\n👉 <b>Previously Generated Sprint:</b> <a href="${sprintUrl}">Open Sprint Pack</a>\n`
+          ? `👉 <b>Existing Sprint Pack:</b> <a href="${sprintUrl}">Open Sprint Pack</a>\n`
           : '\nTo generate a new sprint, please take a photo of a new weekly assessment.');
     }
 

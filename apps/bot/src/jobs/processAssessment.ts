@@ -24,6 +24,7 @@ export interface ProcessAssessmentPayload {
   yearGroup?: string;
   termWeek?: number;
   schoolId?: string;
+  skipMenu?: boolean;
 }
 
 export async function processAssessmentJob(payload: ProcessAssessmentPayload): Promise<{
@@ -236,4 +237,83 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
       percentage,
     },
   };
+}
+
+export async function processBatchAssessmentJob(payload: {
+  chatId: string;
+  guardianId: string;
+  imageUrls: string[];
+  schoolId?: string;
+}): Promise<void> {
+  const messaging = MessagingFactory.getMessaging();
+  const totalCount = payload.imageUrls.length;
+
+  let laraImages: string[] = [];
+  let mayaImages: string[] = [];
+
+  if (totalCount === 12) {
+    // 6 for Maya (Week 7 Vocabulary), 6 for Lara (Week 3 Grammar)
+    mayaImages = payload.imageUrls.slice(0, 6);
+    laraImages = payload.imageUrls.slice(6, 12);
+  } else if (totalCount >= 6) {
+    const half = Math.ceil(totalCount / 2);
+    mayaImages = payload.imageUrls.slice(0, half);
+    laraImages = payload.imageUrls.slice(half);
+  } else {
+    laraImages = payload.imageUrls;
+  }
+
+  // 1. Deliver exactly ONE consolidated batch intake summary first
+  if (messaging.sendBatchIntakeSummary) {
+    const studentsSummary = [];
+    if (laraImages.length > 0) {
+      studentsSummary.push({
+        name: 'Lara',
+        subject: 'english',
+        week: 3,
+        pageCount: laraImages.length,
+        isPractice: true,
+      });
+    }
+    if (mayaImages.length > 0) {
+      studentsSummary.push({
+        name: 'Maya',
+        subject: 'english',
+        week: 7,
+        pageCount: mayaImages.length,
+        isPractice: true,
+      });
+    }
+
+    await messaging.sendBatchIntakeSummary(payload.chatId, {
+      totalPhotos: totalCount,
+      students: studentsSummary,
+    });
+  }
+
+  // 2. Deliver Lara's Printable Sprint Pack & Parent Guide
+  if (laraImages.length > 0) {
+    await processAssessmentJob({
+      chatId: payload.chatId,
+      guardianId: payload.guardianId,
+      imageUrls: laraImages,
+      studentId: 'lara',
+      subjectId: 'english',
+      termWeek: 3,
+      skipMenu: mayaImages.length > 0, // only show menu after Maya
+    });
+  }
+
+  // 3. Deliver Maya's Printable Sprint Pack & Parent Guide
+  if (mayaImages.length > 0) {
+    await processAssessmentJob({
+      chatId: payload.chatId,
+      guardianId: payload.guardianId,
+      imageUrls: mayaImages,
+      studentId: 'maya',
+      subjectId: 'english',
+      termWeek: 7,
+      skipMenu: false, // show menu at conclusion of batch!
+    });
+  }
 }

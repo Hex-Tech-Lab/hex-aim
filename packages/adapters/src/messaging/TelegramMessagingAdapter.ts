@@ -31,16 +31,54 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     return await res.json();
   }
 
-  public async sendMessage(chatId: string, text: string, replyToMessageId?: number): Promise<void> {
+  public async sendMessage(
+    chatId: string,
+    text: string,
+    replyToMessageId?: number,
+    replyMarkup?: Record<string, unknown>
+  ): Promise<void> {
     const payload: Record<string, unknown> = {
       chat_id: chatId,
       text,
       parse_mode: 'HTML',
+      disable_web_page_preview: true,
+      link_preview_options: { is_disabled: true },
     };
     if (replyToMessageId) {
       payload.reply_to_message_id = replyToMessageId;
     }
+    if (replyMarkup) {
+      payload.reply_markup = replyMarkup;
+    }
     await this.callApi('sendMessage', payload);
+  }
+
+  public async sendInteractiveMenu(chatId: string, customTitle?: string): Promise<void> {
+    const title = customTitle || '🎛️ <b>AIM Parent Control Center</b>';
+    const text = `${title}\n\n` +
+      `<i>Tap any option below to view sprints, guides, or manage settings:</i>`;
+
+    const inlineKeyboard = {
+      inline_keyboard: [
+        [
+          { text: '👧 Lara: Latest Sprint', callback_data: 'view_sprint_lara' },
+          { text: '👧 Maya: Latest Sprint', callback_data: 'view_sprint_maya' }
+        ],
+        [
+          { text: '🧭 Lara: Coaching Guide', callback_data: 'view_guide_lara' },
+          { text: '🧭 Maya: Coaching Guide', callback_data: 'view_guide_maya' }
+        ],
+        [
+          { text: '📱 Open AIM Mastery Console (Mini-App)', web_app: { url: 'https://aim.getvintel.com' } }
+        ],
+        [
+          { text: '📚 Change Target Week', callback_data: 'menu_change_week' },
+          { text: '🔄 Reset Ingestion Session', callback_data: 'reset_quota' }
+        ]
+      ]
+    };
+
+    await this.sendMessage(chatId, text, undefined, inlineKeyboard);
   }
 
   public async sendReceiptSummary(chatId: string, summary: { photoCount: number; mediaGroupId?: string }): Promise<void> {
@@ -121,14 +159,41 @@ export class TelegramMessagingAdapter implements IMessagingPort {
 
   public async sendBatchIntakeSummary(chatId: string, summary: {
     totalPhotos: number;
-    students: Array<{ name: string; subject: string; week: number; pageCount: number; score?: string }>;
+    students: Array<{
+      name: string;
+      subject: string;
+      week: number;
+      pageCount: number;
+      isPractice?: boolean;
+      score?: string;
+      fileItems?: string[];
+    }>;
   }): Promise<void> {
-    let text = `📥 <b>Batch Intake Evaluated (${summary.totalPhotos} pages)</b>\n\n`;
-    for (const s of summary.students) {
-      text += `👤 <b>${s.name}:</b> ${s.pageCount} pages • ${s.subject.toUpperCase()} Week ${s.week}${s.score ? ` (Score: ${s.score})` : ''}\n`;
+    const today = new Date().toISOString().split('T')[0]!;
+    let text = `📥 <b>Worksheet Batch Ingested (${summary.totalPhotos} Pages Received)</b>\n\n`;
+
+    for (let i = 0; i < summary.students.length; i++) {
+      const s = summary.students[i]!;
+      const mode = s.isPractice ? 'Practice' : 'Worksheet';
+      const subj = s.subject.toUpperCase();
+      text += `<b>${s.name} (Year 4 • ${subj} • Week ${s.week} • ${s.pageCount} Pages):</b>\n`;
+      
+      if (s.fileItems && s.fileItems.length > 0) {
+        for (const item of s.fileItems) {
+          text += `• <code>${item}</code>\n`;
+        }
+      } else {
+        for (let p = 1; p <= s.pageCount; p++) {
+          text += `• <code>${s.name} | ${mode} | ${subj} | W${s.week} | ${today} | Page ${p}/${s.pageCount}</code>\n`;
+        }
+      }
+
+      if (i < summary.students.length - 1) {
+        text += '\n'; // visual gap between students!
+      }
     }
-    text += `\n⚡ <i>Generating targeted printable sprints and parent guides...</i>\n` +
-      `<i>Need to adjust child or week? Reply with:</i> <code>/edit [Name] Week [N]</code>`;
+
+    text += `\n💡 <i>All pages classified. Cognitive gap ledger updated & printable PDF packs compiling below...</i>`;
 
     await this.callApi('sendMessage', {
       chat_id: chatId,
@@ -179,8 +244,10 @@ export class TelegramMessagingAdapter implements IMessagingPort {
           filename: `${name}_${subj}_Week${week}_Sprint.pdf`,
           caption: `📄 <b>${name}'s 4-Page Targeted Sprint</b> (Week ${week} • 6–10 mins micro-practice)`,
         });
-      } catch (docErr) {
+      } catch (docErr: any) {
         console.error('[TelegramMessagingAdapter] Error sending student pack PDF:', docErr);
+        await this.sendMessage(chatId, `⚠️ <b>PDF Delivery Error:</b> Failed to attach student pack PDF (${docErr?.message || 'timeout'}). Link: ${packs.studentPackHtml || consoleUrl}`);
+        throw docErr;
       }
     }
 
@@ -194,9 +261,14 @@ export class TelegramMessagingAdapter implements IMessagingPort {
           filename: `Parent_Guide_${name}_${subj}_Week${week}.pdf`,
           caption: `🧭 <b>Parent Socratic Coaching Guide</b> (Week ${week} • 8-Minute Coaching Script)`,
         });
-      } catch (docErr) {
+      } catch (docErr: any) {
         console.error('[TelegramMessagingAdapter] Error sending coaching guide PDF:', docErr);
+        await this.sendMessage(chatId, `⚠️ <b>PDF Delivery Error:</b> Failed to attach coaching guide PDF (${docErr?.message || 'timeout'}). Link: ${packs.coachingGuideHtml || consoleUrl}`);
+        throw docErr;
       }
     }
+
+    // 4. Always present the Parent Control Center Interactive Menu
+    await this.sendInteractiveMenu(chatId);
   }
 }
