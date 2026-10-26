@@ -302,6 +302,10 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
         [
           { text: '🚀 Generate Follow-up Sprint Now', callback_data: `gen_sprint:${resolvedStudentId}:${resolvedSubjectId}:${resolvedWeek}` },
           { text: '⏱️ Save to Portfolio / Later', callback_data: `save_portfolio:${resolvedStudentId}:${resolvedSubjectId}:${resolvedWeek}` }
+        ],
+        [
+          { text: '📱 Open AIM Console', web_app: { url: 'https://aim.getvintel.com' } },
+          { text: '↩️ Return to Menu', callback_data: 'open_main_menu' }
         ]
       ]
     };

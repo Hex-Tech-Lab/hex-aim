@@ -111,7 +111,8 @@ export class TelegramMessagingAdapter implements IMessagingPort {
           { text: '🔄 Reset Session Quota', callback_data: 'reset_session' }
         ],
         [
-          { text: '🧹 Clear Chat History', callback_data: 'clear_chat' }
+          { text: '🧹 Clear Chat History', callback_data: 'clear_chat' },
+          { text: '↩️ Return / Close', callback_data: 'close_menu' }
         ]
       ]
     };

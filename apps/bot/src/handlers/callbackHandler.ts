@@ -55,10 +55,14 @@ export async function handleCallbackQuery(
     const progressCard = isMaya
       ? `📊 <b>Maya's Academic Mastery Snapshot (Year 4)</b>\n` +
         `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
-        `🎯 <b>Curriculum Mastery & Confidence:</b>\n` +
-        `• <b>Science (Midterm):</b> 96% 🟢 (Vertebrates, Invertebrates & Keys Mastered)\n` +
-        `• <b>Maths (Place Value):</b> 86% 🟡 (Number Line Scales & Intervals Progressing)\n` +
-        `• <b>English (Reading/Vocab):</b> 91% 🟢 (Verbal Execution & Context Clues Solid)\n\n` +
+        `🎯 <b>Curriculum Mastery Trajectory:</b>\n` +
+        `• <b>Science (Midterm):</b> 96% 🟢 <code>[▰▰▰▰▰▰▰▰▰▰]</code> (Mastered)\n` +
+        `• <b>English (Reading/Vocab):</b> 91% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Solid)\n` +
+        `• <b>Maths (Place Value):</b> 86% 🟡 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Scale Focus)\n\n` +
+        `📈 <b>Weekly Learning Velocity (Weeks 1–8):</b>\n` +
+        `<code>W1: 60% ▰▰▰▰▰▱▱▱▱▱ (Intake)</code>\n` +
+        `<code>W4: 85% ▰▰▰▰▰▰▰▰▱▱ (Threshold)</code>\n` +
+        `<code>W8: 96% ▰▰▰▰▰▰▰▰▰▰ (Midterm Peak) 🚀</code>\n\n` +
         `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
         `🟠 <code>Y4.MATH.NPV.5DIGIT_ORDERING</code> (<code>ERR_SHARED_PREFIX_ORDERING</code>) — Sequencing 5-digit numbers sharing prefix (1x)\n` +
         `🟡 <code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code> (<code>ERR_INTERVAL_DECODE</code>) — Decoding interval jump sizes (1x)\n\n` +
@@ -67,10 +71,14 @@ export async function handleCallbackQuery(
         `• Peer Teaching: Explaining concepts to Lara solidifies retention.`
       : `📊 <b>Lara's Academic Mastery Snapshot (Year 4)</b>\n` +
         `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
-        `🎯 <b>Curriculum Mastery & Confidence:</b>\n` +
-        `• <b>Science (Midterm):</b> 94% 🟢 (Bones/Skeletons, Muscles, Medicine Mastered)\n` +
-        `• <b>Maths (Place Value):</b> 82% 🟡 (Negative Numbers Progressing • Room Zero Guard Active)\n` +
-        `• <b>English (Spelling/Grammar):</b> 88% 🟢 (Consonant Blends & Prefixes Stable)\n\n` +
+        `🎯 <b>Curriculum Mastery Trajectory:</b>\n` +
+        `• <b>Science (Midterm):</b> 94% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Mastered)\n` +
+        `• <b>English (Spelling/Grammar):</b> 88% 🟢 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Stable)\n` +
+        `• <b>Maths (Place Value):</b> 82% 🟡 <code>[▰▰▰▰▰▰▰▱▱▱]</code> (Elevator Active)\n\n` +
+        `📈 <b>Weekly Learning Velocity (Weeks 1–8):</b>\n` +
+        `<code>W1: 52% ▰▰▰▰▱▱▱▱▱▱ (Intake Baseline)</code>\n` +
+        `<code>W4: 80% ▰▰▰▰▰▰▰▰▱▱ (Mastery Threshold)</code>\n` +
+        `<code>W8: 94% ▰▰▰▰▰▰▰▰▰▱ (Midterm Stable) 🚀</code>\n\n` +
         `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
         `🟠 <code>Y4.MATH.NPV.EMPTY_COLUMNS</code> (<code>ERR_PHANTOM_ZERO</code>) — Omits zero in unmentioned place-value rooms (3x)\n` +
         `🟡 <code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code> (<code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code>) — Orders -4°C as warmer than -1°C (2x)\n` +
@@ -87,6 +95,10 @@ export async function handleCallbackQuery(
         [
           { text: '🧭 Parent Socratic Guide', callback_data: `view_guide_${studentId}` },
           { text: '📱 Open AIM Console', web_app: { url: 'https://aim.getvintel.com' } }
+        ],
+        [
+          { text: '🧹 Clear Chat', callback_data: 'clear_chat' },
+          { text: '↩️ Return 1 Step Back', callback_data: 'open_main_menu' }
         ]
       ]
     };
@@ -120,11 +132,24 @@ export async function handleCallbackQuery(
   else if (callbackData.startsWith('save_portfolio:')) {
     const [, sId] = callbackData.split(':');
     const studentDisplayName = sId ? sId.charAt(0).toUpperCase() + sId.slice(1) : 'Student';
+    const portfolioKeyboard = {
+      inline_keyboard: [
+        [
+          { text: `🚀 Generate ${studentDisplayName}'s Sprint`, callback_data: `gen_sprint:${sId || 'lara'}:science:8` }
+        ],
+        [
+          { text: '🧹 Clear Chat', callback_data: 'clear_chat' },
+          { text: '↩️ Return 1 Step Back', callback_data: 'open_main_menu' }
+        ]
+      ]
+    };
     await sendAndTrack(
       cbChatId,
       `📁 <b>Saved to ${studentDisplayName}'s Portfolio!</b>\n\n` +
       `All assessment metrics and concept masteries have been committed to the cognitive history ledger.\n\n` +
-      `<i>Whenever you are ready for tonight's practice session, tap <b>🎛️ Menu</b> or use /sprint.</i>`
+      `<i>Whenever you are ready for tonight's practice session, tap <b>🎛️ Menu</b> or use /sprint.</i>`,
+      undefined,
+      portfolioKeyboard
     );
   }
   // 5. Week Selection Menu
@@ -144,7 +169,8 @@ export async function handleCallbackQuery(
           { text: 'Maya: W8', callback_data: 'set_week_maya_8' },
         ],
         [
-          { text: '🔙 Back to Menu', callback_data: 'open_main_menu' }
+          { text: '🧹 Clear Chat', callback_data: 'clear_chat' },
+          { text: '↩️ Return 1 Step Back', callback_data: 'open_main_menu' }
         ]
       ]
     };
@@ -171,6 +197,11 @@ export async function handleCallbackQuery(
       if (menuRes?.result?.message_id && storage.trackBotMessage) {
         await storage.trackBotMessage(cbChatId, menuRes.result.message_id);
       }
+    }
+  } else if (callbackData === 'close_menu') {
+    const msgId = callbackQuery.message?.message_id;
+    if (msgId && (messaging as any).deleteMessage) {
+      await (messaging as any).deleteMessage(cbChatId, msgId).catch(() => {});
     }
   }
 
