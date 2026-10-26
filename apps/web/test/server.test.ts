@@ -67,4 +67,20 @@ describe('Apps/Web HTTP Server & Console', () => {
     const data = await res.json();
     expect(Array.isArray(data)).toBe(true);
   });
+
+  it('GET /api/mastery/:studentUid returns live cognitive mastery payload', async () => {
+    const resLara = await fetch(`${baseUrl}/api/mastery/lara`);
+    expect(resLara.status).toBe(200);
+    const dataLara = await resLara.json() as any;
+    expect(dataLara.studentUid).toBe('stu_01j9ax8001lara');
+    expect(dataLara.displayName).toBe('Lara');
+    expect(dataLara.subjectMasteries.science).toBe(94);
+
+    const resMaya = await fetch(`${baseUrl}/api/mastery/stu_01j9ax8002maya`);
+    expect(resMaya.status).toBe(200);
+    const dataMaya = await resMaya.json() as any;
+    expect(dataMaya.studentUid).toBe('stu_01j9ax8002maya');
+    expect(dataMaya.displayName).toBe('Maya');
+    expect(dataMaya.subjectMasteries.science).toBe(96);
+  });
 });

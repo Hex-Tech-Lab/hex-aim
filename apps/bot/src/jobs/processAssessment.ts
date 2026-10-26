@@ -174,7 +174,6 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
     } as Student;
   }
 
-  const guardian = payload.guardianId ? await storage.getGuardian(payload.guardianId) : null;
   const percentage = Math.round((extraction.rawScore / Math.max(1, extraction.totalScore)) * 100);
 
   // 3. Check for Duplicate Assessment / Practice Run
@@ -352,7 +351,6 @@ export async function processBatchAssessmentJob(payload: {
       const model = settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
 
       if (apiKey) {
-        const taxonomy = CurriculumTaxonomyService.getInstance();
         const contentParts: any[] = [
           {
             type: 'text',

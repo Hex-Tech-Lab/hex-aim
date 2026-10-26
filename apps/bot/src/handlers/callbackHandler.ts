@@ -118,7 +118,7 @@ export async function handleCallbackQuery(
   }
   // 4. ADR-003 Stage 1: Defer to Portfolio
   else if (callbackData.startsWith('save_portfolio:')) {
-    const [, sId, subjId] = callbackData.split(':');
+    const [, sId] = callbackData.split(':');
     const studentDisplayName = sId ? sId.charAt(0).toUpperCase() + sId.slice(1) : 'Student';
     await sendAndTrack(
       cbChatId,
@@ -167,7 +167,7 @@ export async function handleCallbackQuery(
     });
   } else if (callbackData === 'open_main_menu') {
     if (messaging.sendInteractiveMenu) {
-      const menuRes = await messaging.sendInteractiveMenu(cbChatId);
+      const menuRes = (await messaging.sendInteractiveMenu(cbChatId)) as any;
       if (menuRes?.result?.message_id && storage.trackBotMessage) {
         await storage.trackBotMessage(cbChatId, menuRes.result.message_id);
       }
