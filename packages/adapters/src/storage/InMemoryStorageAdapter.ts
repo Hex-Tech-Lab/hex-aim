@@ -156,7 +156,8 @@ export class InMemoryStorageAdapter implements IStoragePort {
   public async recordFileHash(
     guardianId: string,
     hash: string,
-    metadata: { filename?: string; sprintId?: string; timestamp: string }
+    metadata: { filename?: string; sprintId?: string; timestamp: string },
+    _ttlSeconds?: number
   ): Promise<void> {
     this.seenFiles.set(`${guardianId}:${hash}`, { ...metadata });
   }

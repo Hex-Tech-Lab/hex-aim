@@ -298,7 +298,7 @@ export interface IStoragePort {
   getGuardianStrikes(guardianId: string): Promise<GuardianStrikeRecord | null>;
   saveGuardianStrikes(record: GuardianStrikeRecord): Promise<void>;
   hasSeenFileHash(guardianId: string, hash: string): Promise<boolean>;
-  recordFileHash(guardianId: string, hash: string, metadata: { filename?: string; sprintId?: string; timestamp: string }): Promise<void>;
+  recordFileHash(guardianId: string, hash: string, metadata: { filename?: string; sprintId?: string; timestamp: string }, ttlSeconds?: number): Promise<void>;
   getSeenFileMetadata(guardianId: string, hash: string): Promise<{ filename?: string; sprintId?: string; timestamp: string } | null>;
 
   // Multi-Image Album / Batch Buffer Methods

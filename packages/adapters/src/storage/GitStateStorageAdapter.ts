@@ -161,7 +161,8 @@ export class GitStateStorageAdapter implements IStoragePort {
   public async recordFileHash(
     guardianId: string,
     hash: string,
-    metadata: { filename?: string; sprintId?: string; timestamp: string }
+    metadata: { filename?: string; sprintId?: string; timestamp: string },
+    _ttlSeconds?: number
   ): Promise<void> {
     this.writeJson('seen_files', `${guardianId}_${hash}`, metadata);
   }
