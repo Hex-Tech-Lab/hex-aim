@@ -38,6 +38,9 @@ export const DEFAULT_AIM_REGISTRY: Record<string, unknown> = {
   'intake.dedup.max_strikes': 5,
   'intake.dedup.ttl_seconds': 86400,
   'intake.dedup.enabled': true,
+
+  // Compiler & Browser Pool Settings
+  'compiler.chrome_bin': '/usr/bin/google-chrome',
 };
 
 export class SettingsManager implements ISettingsPort {

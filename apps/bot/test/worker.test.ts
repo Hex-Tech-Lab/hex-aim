@@ -8,6 +8,7 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     QueueFactory.reset();
     MessagingFactory.reset();
     VisionFactory.reset();
+    VisionFactory.getVision('mock');
   });
 
   it('GET /health returns 200 OK and service metadata', async () => {
@@ -103,5 +104,70 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     const pack = messaging.deliveredPacks[0]?.packs as any;
     expect(pack.studentPackHtml).toContain('https://aim.getvintel.com/sprint/');
     expect(pack.coachingGuideHtml).toContain('https://aim.getvintel.com/guide/');
+  });
+
+  it('POST /webhook/telegram handles /progress command and view_progress callback', async () => {
+    const messaging = MessagingFactory.getMessaging('mock') as MockMessagingAdapter;
+
+    // 1. Send /progress command
+    const reqProgress = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: {
+          chat: { id: 987654 },
+          text: '/progress',
+        },
+      }),
+    });
+
+    const resProgress = await worker.fetch(reqProgress, {}, {} as any);
+    expect(resProgress.status).toBe(200);
+    const lastMsg = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(lastMsg?.text).toContain('On-Demand Student Mastery & Progress');
+
+    // 2. Click callback query view_progress:lara
+    const reqCallbackLara = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query: {
+          id: 'cb_123',
+          data: 'view_progress:lara',
+          message: {
+            chat: { id: 987654 },
+            message_id: 111,
+          },
+        },
+      }),
+    });
+
+    const resCbLara = await worker.fetch(reqCallbackLara, {}, {} as any);
+    expect(resCbLara.status).toBe(200);
+    const laraCard = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(laraCard?.text).toContain("Lara's Academic Mastery Snapshot");
+    expect(laraCard?.text).toContain('ERR_PHANTOM_ZERO');
+
+    // 3. Click callback query view_progress:maya
+    const reqCallbackMaya = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query: {
+          id: 'cb_124',
+          data: 'view_progress:maya',
+          message: {
+            chat: { id: 987654 },
+            message_id: 112,
+          },
+        },
+      }),
+    });
+
+    const resCbMaya = await worker.fetch(reqCallbackMaya, {}, {} as any);
+    expect(resCbMaya.status).toBe(200);
+    const mayaCard = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(mayaCard?.text).toContain("Maya's Academic Mastery Snapshot");
+    expect(mayaCard?.text).toContain('ERR_SHARED_PREFIX_ORDERING');
   });
 });

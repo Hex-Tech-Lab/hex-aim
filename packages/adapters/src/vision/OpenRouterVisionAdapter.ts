@@ -2,7 +2,7 @@ import type {
   IVisionExtractionPort, 
   AssessmentItem 
 } from '@hex-aim/types';
-import { SettingsManager } from '@hex-aim/core';
+import { SettingsManager, CurriculumTaxonomyService } from '@hex-aim/core';
 
 export interface OpenRouterVisionConfig {
   apiKey?: string;
@@ -18,7 +18,7 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
   constructor(config?: OpenRouterVisionConfig) {
     const settings = SettingsManager.getInstance();
     this.apiKey = config?.apiKey || settings.get<string>('OPENROUTER_API_KEY', '');
-    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
+    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
     this.baseUrl = config?.baseUrl || 'https://openrouter.ai/api/v1';
 
     if (!this.apiKey) {
@@ -46,43 +46,8 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
       throw new Error('[OpenRouterVisionAdapter] Cannot extract assessment: imageUrls array is empty.');
     }
 
-    const prompt = `You are an expert British curriculum primary school diagnostic evaluator analyzing teacher-marked handwritten school worksheets for Year 4 students at Asten College.
-Context hint provided by parent: studentId=${context.studentId}, subjectId=${context.subjectId}, yearGroup=${context.yearGroup}.
-
-CRITICAL INSTRUCTIONS:
-1. Student Identification: Inspect the name header written on the worksheet. Is this child "Lara" or "Maya"? Return "Lara" or "Maya" as detectedStudentName.
-2. Subject Classification: Inspect the content. Is this "English" (reading comprehension, spelling, vocabulary, grammar, punctuation) or "Mathematics" (arithmetic, place value, number lines, calculations)? Return "english" or "maths" as detectedSubject.
-3. Term Week: Inspect any week label (e.g. "Week 3", "Week 4", "October 2026"). Return the integer week number as detectedWeek.
-4. Item Analysis: For each question, extract:
-   - qNum: e.g. "1", "2a"
-   - conceptCode: e.g. "Y4.ENG.COMP.INFERENCE" or "Y4.MATH.NPV.EMPTY_COLUMNS"
-   - studentAnswer: exact handwritten text child wrote
-   - correctAnswer: expected correct answer
-   - status: "pass" | "fail" | "partial" (look for teacher green/red checkmarks and crosses)
-   - errorClass: standard error classification (e.g. "ERR_COMPREHENSION_LITERAL", "ERR_PUNCTUATION_MISSING", "ERR_SPELLING_PHONETIC", "ERR_PHANTOM_ZERO", "ERR_TRANSPOSITION")
-   - cognitiveFactor: cognitive reason (e.g. "working_memory_rush", "context_clue_omission", "phonetic_overgeneralization")
-5. Scoring: Calculate total items, rawScore (items marked pass), and percentage.
-
-Return STRICT JSON ONLY with NO MARKDOWN FENCES matching this exact schema:
-{
-  "detectedStudentName": "Lara" | "Maya" | null,
-  "detectedSubject": "english" | "maths",
-  "detectedWeek": 3,
-  "detectedYearGroup": "Y4",
-  "rawScore": number,
-  "totalScore": number,
-  "items": [
-    {
-      "qNum": "1",
-      "conceptCode": "string",
-      "studentAnswer": "string",
-      "correctAnswer": "string",
-      "status": "pass" | "fail" | "partial",
-      "errorClass": "string",
-      "cognitiveFactor": "string"
-    }
-  ]
-}`;
+    const taxonomy = CurriculumTaxonomyService.getInstance();
+    const prompt = taxonomy.buildVisionInstructionPrompt('Asten College', context.yearGroup || 'Year 4');
 
     const contentParts: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
       { type: 'text', text: prompt }
@@ -131,7 +96,8 @@ Return STRICT JSON ONLY with NO MARKDOWN FENCES matching this exact schema:
             ],
             temperature: 0.1,
             response_format: { type: 'json_object' }
-          })
+          }),
+          signal: AbortSignal.timeout(35000),
         });
 
         if (!res.ok) {

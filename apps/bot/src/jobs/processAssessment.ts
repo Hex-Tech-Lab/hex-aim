@@ -9,7 +9,8 @@ import {
   AdaptiveSprintCompiler,
   SocraticGuideCompiler,
   PdfPackCompiler,
-  SettingsManager
+  SettingsManager,
+  CurriculumTaxonomyService
 } from '@hex-aim/core';
 import type {
   CognitiveGap,
@@ -26,11 +27,93 @@ export interface ProcessAssessmentPayload {
   termWeek?: number;
   schoolId?: string;
   skipMenu?: boolean;
+  autoCompileSprint?: boolean;
+}
+
+export interface CompileSprintOptions {
+  studentId: string;
+  guardianId?: string;
+  chatId: string;
+  subjectId?: string;
+  termWeek?: number;
+  schoolId?: string;
+}
+
+/**
+ * Stage 2 Execution: Compiles and delivers 4-Page Student Sprint & Parent Guide
+ */
+export async function compileAndDeliverSprint(options: CompileSprintOptions): Promise<{
+  sprintId: string;
+  guideId: string;
+}> {
+  const storage = StorageFactory.getStorage();
+  const messaging = MessagingFactory.getMessaging();
+  const settings = SettingsManager.getInstance();
+
+  const student = await storage.getStudent(options.studentId) || {
+    id: options.studentId,
+    name: options.studentId.charAt(0).toUpperCase() + options.studentId.slice(1),
+    schoolId: options.schoolId || settings.get<string>('curriculum.default_school', 'asten-college'),
+    yearGroup: settings.get<string>('curriculum.default_year_group', 'Y4'),
+    curriculumTrack: 'british' as const,
+    neuroProfile: {
+      hasAdhdTraits: true,
+      hasDyslexiaTraits: true,
+      workingMemoryCapacity: 'vulnerable_under_time_pressure',
+      optimalSprintDurationMins: 8,
+    },
+  } as Student;
+
+  const subjectId = (options.subjectId || settings.get<string>('curriculum.default_subject', 'science')).toLowerCase();
+  const week = options.termWeek || settings.get<number>('curriculum.default_term_week', 8);
+  const guardian = options.guardianId ? await storage.getGuardian(options.guardianId) : null;
+
+  const existingGaps = await storage.getStudentGaps(options.studentId);
+  const targetGaps = existingGaps.filter(g => g.status === 'active_priority').slice(0, 4);
+
+  const sprint = AdaptiveSprintCompiler.compile(student, targetGaps, {
+    subjectTitle: subjectId.toUpperCase(),
+    sprintNumber: week,
+  });
+  const sprintPdfBytes = await PdfPackCompiler.compileSprintPdf(student, targetGaps, {
+    subjectTitle: subjectId.toUpperCase(),
+    week,
+  });
+  sprint.pdfBuffer = sprintPdfBytes;
+  await storage.saveRemediationSprint(sprint);
+
+  const guide = SocraticGuideCompiler.compile(student, targetGaps, guardian || undefined);
+  const guidePdfBytes = await PdfPackCompiler.compileGuidePdf(student, targetGaps, guardian || undefined, {
+    subjectTitle: subjectId.toUpperCase(),
+    week,
+  });
+  guide.pdfBuffer = guidePdfBytes;
+  await storage.saveCoachingGuide(guide);
+
+  const rawSprintUrl = `https://aim.getvintel.com/sprint/preview?id=${sprint.id}`;
+  const rawGuideUrl = `https://aim.getvintel.com/guide/preview?id=${guide.id}`;
+
+  const dub = new DubLinkAdapter();
+  const sprintUrl = await dub.createShortLink(rawSprintUrl);
+  const guideUrl = await dub.createShortLink(rawGuideUrl);
+
+  await messaging.deliverRemediationPacks(options.chatId, {
+    studentPackHtml: sprintUrl,
+    studentPackPdf: sprintPdfBytes,
+    coachingGuideHtml: guideUrl,
+    coachingGuidePdf: guidePdfBytes,
+    summaryUrl: 'https://aim.getvintel.com',
+    studentName: student.name,
+    subject: subjectId,
+    week,
+  });
+
+  return { sprintId: sprint.id, guideId: guide.id };
 }
 
 export async function processAssessmentJob(payload: ProcessAssessmentPayload): Promise<{
-  sprintId: string;
-  guideId: string;
+  sprintId?: string;
+  guideId?: string;
   studentId: string;
   subjectId: string;
   score: { raw: number; total: number; percentage: number };
@@ -41,30 +124,30 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
   const settings = SettingsManager.getInstance();
 
   const defaultSchool = settings.get<string>('curriculum.default_school', 'asten-college');
-  const defaultSubject = settings.get<string>('curriculum.default_subject', 'english');
   const defaultYearGroup = settings.get<string>('curriculum.default_year_group', 'Y4');
-  const defaultTermWeek = settings.get<number>('curriculum.default_term_week', 3);
+  const defaultTermWeek = settings.get<number>('curriculum.default_term_week', 8);
 
   const schoolId = payload.schoolId || defaultSchool;
 
   // 1. Run Vision Extraction (OpenRouter AI Multimodal)
   const extraction = await vision.extractAssessment(payload.imageUrls, {
     studentId: payload.studentId || 'auto',
-    subjectId: payload.subjectId || defaultSubject,
+    subjectId: payload.subjectId || 'auto',
     yearGroup: payload.yearGroup || defaultYearGroup,
   });
 
-  // 2. Resolve Dynamic Classification from Vision (Lara vs. Maya, English vs. Maths)
+  // 2. Dynamic Classification via SSOT Taxonomy
   let resolvedStudentId = 'lara';
   if (extraction.detectedStudentName) {
     const lower = extraction.detectedStudentName.toLowerCase();
     if (lower.includes('maya')) resolvedStudentId = 'maya';
     else if (lower.includes('lara')) resolvedStudentId = 'lara';
+    else resolvedStudentId = lower.trim().replace(/\s+/g, '_');
   } else if (payload.studentId && payload.studentId !== 'auto') {
     resolvedStudentId = payload.studentId.toLowerCase();
   }
 
-  const resolvedSubjectId = (extraction.detectedSubject || payload.subjectId || defaultSubject).toLowerCase();
+  const resolvedSubjectId = (extraction.detectedSubject || payload.subjectId || settings.get<string>('curriculum.default_subject', 'science')).toLowerCase();
   const resolvedWeek = (typeof extraction.detectedWeek === 'number' && extraction.detectedWeek > 0)
     ? extraction.detectedWeek
     : (payload.termWeek || defaultTermWeek);
@@ -78,7 +161,7 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
     const isMaya = resolvedStudentId === 'maya';
     student = {
       id: resolvedStudentId,
-      name: isMaya ? 'Maya' : 'Lara',
+      name: resolvedStudentId.charAt(0).toUpperCase() + resolvedStudentId.slice(1),
       schoolId,
       yearGroup: resolvedYearGroup,
       curriculumTrack: 'british' as const,
@@ -94,7 +177,7 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
   const guardian = payload.guardianId ? await storage.getGuardian(payload.guardianId) : null;
   const percentage = Math.round((extraction.rawScore / Math.max(1, extraction.totalScore)) * 100);
 
-  // 3. Check for Duplicate Assessment / Practice Run (Strictly Scoped to Same Student & Subject & Week)
+  // 3. Check for Duplicate Assessment / Practice Run
   const priorAssessments = await storage.getStudentAssessments(resolvedStudentId, resolvedSubjectId);
   const isDuplicateMilestone = priorAssessments.some(a => 
     a.termWeek === resolvedWeek && (a.rawScore === extraction.rawScore || Math.abs(a.percentage - percentage) < 3)
@@ -170,72 +253,71 @@ export async function processAssessmentJob(payload: ProcessAssessmentPayload): P
     }
   }
 
-  // 5. Compile 4-Page Print Sprint & Parent Socratic Guide (HTML + Direct PDF Binary)
-  const sprint = AdaptiveSprintCompiler.compile(student, targetGaps, {
-    subjectTitle: resolvedSubjectId.toUpperCase(),
-    sprintNumber: resolvedWeek,
-  });
-  const sprintPdfBytes = await PdfPackCompiler.compileSprintPdf(student, targetGaps, {
-    subjectTitle: resolvedSubjectId.toUpperCase(),
-    week: resolvedWeek,
-  });
-  sprint.pdfBuffer = sprintPdfBytes;
-  await storage.saveRemediationSprint(sprint);
+  // 5. STAGE 1: Diagnostic Scorecard & Progress Snapshot
+  const shouldAutoCompile = payload.autoCompileSprint || settings.get<boolean>('sprint.auto_deliver', false);
 
-  const guide = SocraticGuideCompiler.compile(student, targetGaps, guardian || undefined);
-  const guidePdfBytes = await PdfPackCompiler.compileGuidePdf(student, targetGaps, guardian || undefined, {
-    subjectTitle: resolvedSubjectId.toUpperCase(),
-    week: resolvedWeek,
-  });
-  guide.pdfBuffer = guidePdfBytes;
-  await storage.saveCoachingGuide(guide);
+  if (!shouldAutoCompile && payload.imageUrls.length > 0) {
+    const passedCount = extraction.items.filter(i => i.status === 'pass').length;
+    const gapItems = extraction.items.filter(i => i.status === 'fail');
+    const taxonomy = CurriculumTaxonomyService.getInstance();
+    const subjectDisplayName = taxonomy.getSubjectDisplayName(resolvedSubjectId);
 
-  // 6. Deliver Links & Documents via Telegram
-  const rawSprintUrl = `https://aim.getvintel.com/sprint/preview?id=${sprint.id}`;
-  const rawGuideUrl = `https://aim.getvintel.com/guide/preview?id=${guide.id}`;
+    const gapDetails = gapItems.slice(0, 3).map(g => 
+      `• <b>Q${g.qNum}:</b> <code>${g.errorClass || 'MISCONCEPTION'}</code> — <i>${g.cognitiveFactor || 'Review recommended'}</i>`
+    ).join('\n') || '• <i>Zero critical misconceptions detected. Core concepts mastered!</i>';
 
-  const dub = new DubLinkAdapter();
-  // Attempt Dub link, but if quota exhausted, gracefully falls back to raw URL
-  const sprintUrl = await dub.createShortLink(rawSprintUrl);
-  const guideUrl = await dub.createShortLink(rawGuideUrl);
+    const scorecardText = 
+      `📊 <b>Assessment Diagnostic Scorecard: ${student.name}</b>\n` +
+      `📚 <b>Subject:</b> ${subjectDisplayName} • <b>Week ${resolvedWeek}</b>\n\n` +
+      `<pre>\n` +
+      `Metric         │ Result       │ Status\n` +
+      `───────────────┼──────────────┼──────────\n` +
+      `Score          │ ${extraction.rawScore} / ${extraction.totalScore}        │ ${percentage}%\n` +
+      `Mastered Items │ ${passedCount} items      │ 🟢 Pass\n` +
+      `Focus Gaps     │ ${gapItems.length} items      │ ${gapItems.length > 0 ? '🟠 Active' : '🟢 None'}\n` +
+      `</pre>\n\n` +
+      `🔍 <b>Key Misconceptions & Focus:</b>\n` +
+      `${gapDetails}\n\n` +
+      `📈 <b>Mastery Progress:</b>\n` +
+      `• Logged to ${student.name}'s continuous learning ledger.\n` +
+      `• Total active priority gaps: <b>${targetGaps.length}</b>.\n\n` +
+      `<i>Would you like to compile tonight's tailored 4-page sprint pack now?</i>`;
 
-  if (isDuplicateMilestone) {
-    await messaging.sendMessage(payload.chatId,
-      `🔁 <b>Practice Run Recognized: ${student.name} (${resolvedSubjectId.toUpperCase()} Week ${resolvedWeek}, Score: ${extraction.rawScore}/${extraction.totalScore})</b>\n\n` +
-      `We noticed this assessment matches ${student.name}'s existing Week ${resolvedWeek} score. ` +
-      `This has been logged as a <b>Practice Run</b> to protect baseline mastery data.\n\n` +
-      `⬇️ <b>Printable PDF attachments are sent below:</b>`
-    );
-    try {
-      await messaging.sendDocument(payload.chatId, {
-        buffer: sprintPdfBytes,
-        filename: `${student.name}_${resolvedSubjectId.toUpperCase()}_Week${resolvedWeek}_Sprint.pdf`,
-        caption: `📄 <b>${student.name}'s 4-Page Targeted Sprint</b> (Practice Run • Week ${resolvedWeek})`,
-      });
-      await messaging.sendDocument(payload.chatId, {
-        buffer: guidePdfBytes,
-        filename: `Parent_Guide_${student.name}_${resolvedSubjectId.toUpperCase()}_Week${resolvedWeek}.pdf`,
-        caption: `🧭 <b>Parent Socratic Coaching Guide</b> (Practice Run • Week ${resolvedWeek})`,
-      });
-    } catch (docErr) {
-      console.warn('[processAssessment] Practice run document delivery error:', docErr);
-    }
-  } else {
-    await messaging.deliverRemediationPacks(payload.chatId, {
-      studentPackHtml: sprintUrl,
-      studentPackPdf: sprintPdfBytes,
-      coachingGuideHtml: guideUrl,
-      coachingGuidePdf: guidePdfBytes,
-      summaryUrl: 'https://aim.getvintel.com',
-      studentName: student.name,
-      subject: resolvedSubjectId,
-      week: resolvedWeek,
-    });
+    const inlineKeyboard = {
+      inline_keyboard: [
+        [
+          { text: '🚀 Generate Follow-up Sprint Now', callback_data: `gen_sprint:${resolvedStudentId}:${resolvedSubjectId}:${resolvedWeek}` },
+          { text: '⏱️ Save to Portfolio / Later', callback_data: `save_portfolio:${resolvedStudentId}:${resolvedSubjectId}:${resolvedWeek}` }
+        ]
+      ]
+    };
+
+    await messaging.sendMessage(payload.chatId, scorecardText, undefined, inlineKeyboard);
+
+    return {
+      studentId: resolvedStudentId,
+      subjectId: resolvedSubjectId,
+      score: {
+        raw: extraction.rawScore,
+        total: extraction.totalScore,
+        percentage,
+      },
+    };
   }
 
+  // 6. STAGE 2: Compile & Deliver Sprint and Parent Guide
+  const compiled = await compileAndDeliverSprint({
+    studentId: resolvedStudentId,
+    guardianId: payload.guardianId,
+    chatId: payload.chatId,
+    subjectId: resolvedSubjectId,
+    termWeek: resolvedWeek,
+    schoolId,
+  });
+
   return {
-    sprintId: sprint.id,
-    guideId: guide.id,
+    sprintId: compiled.sprintId,
+    guideId: compiled.guideId,
     studentId: resolvedStudentId,
     subjectId: resolvedSubjectId,
     score: {
@@ -259,27 +341,31 @@ export async function processBatchAssessmentJob(payload: {
   let mayaImages: string[] = [];
   let laraStatus = 'Partially Attempted';
   let mayaStatus = 'Fully Attempted';
+  let detectedBatchSubject: string | undefined = undefined;
+  let detectedBatchWeek: number | undefined = undefined;
 
   // 1. Run AI Partitioning if multiple images are present
   if (totalCount >= 2) {
     try {
       const settings = SettingsManager.getInstance();
       const apiKey = settings.get<string>('OPENROUTER_API_KEY', '');
-      const model = settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
+      const model = settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
 
       if (apiKey) {
+        const taxonomy = CurriculumTaxonomyService.getInstance();
         const contentParts: any[] = [
           {
             type: 'text',
-            text: `You are an expert curriculum evaluator analyzing ${totalCount} worksheet page photos for Year 4 students Lara and Maya at Asten College.
+            text: `You are an expert curriculum evaluator analyzing ${totalCount} worksheet page photos for primary school students at Asten College.
 CRITICAL CONTEXT:
-- Both students received an identical English practice worksheet set (Vocabulary, Grammar, Punctuation, Word Classes).
-- Inspect the student name header, handwriting style, and question order to separate the images into Lara and Maya.
+- Identify the subject from the page contents based on curriculum rules (science, maths, english, arabic, humanities).
+- Inspect the student name header written on each page, handwriting style, and question sequence to partition the pages between students (e.g. Lara vs Maya).
 Return strict JSON matching this schema:
 {
   "laraPageIndices": number[],
   "mayaPageIndices": number[],
-  "subject": "english",
+  "detectedSubject": string,
+  "detectedWeek": number | null,
   "laraAttemptStatus": string,
   "mayaAttemptStatus": string
 }`
@@ -304,7 +390,8 @@ Return strict JSON matching this schema:
           messages: [{ role: 'user', content: contentParts }],
           temperature: 0.1,
           response_format: { type: 'json_object' }
-        })
+        }),
+        signal: AbortSignal.timeout(35000),
       });
 
       if (res.ok) {
@@ -318,6 +405,8 @@ Return strict JSON matching this schema:
         }
         if (parsed.laraAttemptStatus) laraStatus = parsed.laraAttemptStatus;
         if (parsed.mayaAttemptStatus) mayaStatus = parsed.mayaAttemptStatus;
+        if (parsed.detectedSubject) detectedBatchSubject = parsed.detectedSubject;
+        if (typeof parsed.detectedWeek === 'number' && parsed.detectedWeek > 0) detectedBatchWeek = parsed.detectedWeek;
       }
     }
   } catch (partErr) {
@@ -333,8 +422,11 @@ Return strict JSON matching this schema:
   }
 
   const batchSettings = SettingsManager.getInstance();
-  const batchSubject = batchSettings.get<string>('curriculum.default_subject', 'english');
-  const batchWeek = batchSettings.get<number>('curriculum.default_term_week', 3);
+  const defaultSubject = batchSettings.get<string>('curriculum.default_subject', 'science');
+  const defaultWeek = batchSettings.get<number>('curriculum.default_term_week', 8);
+
+  const batchSubject = (detectedBatchSubject || defaultSubject).toLowerCase();
+  const batchWeek = detectedBatchWeek || defaultWeek;
 
   // 2. Deliver exactly ONE consolidated monospace intake table
   if (messaging.sendBatchIntakeSummary) {

@@ -1,3 +1,8 @@
+import { renderDashboardStyles } from './dashboardStyles.js';
+import { renderStudentProgressTab } from './tabStudentProgress.js';
+import { renderGapLedgerTab } from './tabGapLedger.js';
+import { renderInfraGateTab } from './tabInfraGate.js';
+
 export function renderDashboardHtml(): string {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -5,255 +10,7 @@ export function renderDashboardHtml(): string {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HEX-AIM • Adaptive Individualized Mastery Console</title>
-<style>
-  :root {
-    --bg: #090d16;
-    --card: #111827;
-    --card-border: #1f2937;
-    --cyan: #06b6d4;
-    --accent: #3b82f6;
-    --text: #f3f4f6;
-    --muted: #9ca3af;
-    --green: #10b981;
-    --yellow: #f59e0b;
-    --orange: #f97316;
-    --purple: #a855f7;
-    --red: #ef4444;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    padding: 20px;
-  }
-
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--card-border);
-    padding-bottom: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .logo-group h1 {
-    font-size: 20px;
-    font-weight: 800;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .logo-group h1 span { color: var(--cyan); }
-  .logo-group .sub { font-size: 13px; color: var(--muted); }
-
-  .header-badges {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .badge-tag {
-    background: #1e293b;
-    border: 1px solid #334155;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .badge-region {
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    color: var(--green);
-  }
-
-  /* Metric Grid */
-  .grid-metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .metric-card {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    padding: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .metric-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 3px;
-  }
-
-  .m-green::before { background: var(--green); }
-  .m-yellow::before { background: var(--yellow); }
-  .m-orange::before { background: var(--orange); }
-  .m-purple::before { background: var(--purple); }
-  .m-cyan::before { background: var(--cyan); }
-
-  .metric-card .title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .metric-card .value { font-size: 26px; font-weight: 800; color: #fff; margin: 4px 0; }
-  .metric-card .desc { font-size: 12px; color: var(--muted); }
-
-  /* Main Workspace */
-  .workspace {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 20px;
-    margin-bottom: 24px;
-  }
-
-  @media (max-width: 900px) {
-    .workspace { grid-template-columns: 1fr; }
-  }
-
-  /* Student Roster */
-  .roster {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    padding: 16px;
-  }
-
-  .roster h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-  .student-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-
-  .student-item {
-    background: #1e293b;
-    border: 1px solid #334155;
-    padding: 10px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .student-item:hover, .student-item.active {
-    border-color: var(--cyan);
-    background: #0f172a;
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
-  }
-
-  .student-item .name { font-weight: 700; font-size: 14px; color: #fff; }
-  .student-item .meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-  /* Detail Panel */
-  .detail-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .card {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    padding: 20px;
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--card-border);
-    padding-bottom: 12px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .card-header h2 { font-size: 16px; font-weight: 700; color: #fff; }
-
-  /* Gap Ledger Table */
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 10px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--card-border); }
-  td { padding: 12px 10px; border-bottom: 1px solid #1f2937; }
-
-  .badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  .badge-orange { background: rgba(249, 115, 22, 0.2); color: var(--orange); border: 1px solid rgba(249, 115, 22, 0.3); }
-  .badge-yellow { background: rgba(245, 158, 11, 0.2); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
-  .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
-  .badge-purple { background: rgba(168, 85, 247, 0.2); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
-  .badge-red { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
-
-  /* Actions */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--cyan);
-    color: #000;
-    font-weight: 700;
-    font-size: 13px;
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-
-  .btn:hover { opacity: 0.9; }
-  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--card-border); }
-  .btn-outline:hover { background: #1e293b; }
-  .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.4); }
-
-  /* Dual Grid for Admin Settings & Infra Status */
-  .admin-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 24px;
-  }
-
-  @media (max-width: 900px) {
-    .admin-grid { grid-template-columns: 1fr; }
-  }
-
-  .status-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #1f2937;
-    font-size: 13px;
-  }
-
-  .status-row:last-child { border-bottom: none; }
-  .status-row .key { font-weight: 600; color: #fff; }
-  .status-row .val { color: var(--muted); display: flex; align-items: center; gap: 6px; }
-
-  /* Sandbox */
-  .sandbox-dropzone {
-    border: 2px dashed #374151;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    background: rgba(17, 24, 39, 0.5);
-  }
-
-  .sandbox-dropzone:hover { border-color: var(--cyan); }
-</style>
+${renderDashboardStyles()}
 </head>
 <body>
 
@@ -272,236 +29,150 @@ export function renderDashboardHtml(): string {
     </div>
   </header>
 
-  <div class="grid-metrics">
-    <div class="metric-card m-orange">
-      <div class="title">Active Priority (🟠)</div>
-      <div class="value" id="val-orange">2</div>
-      <div class="desc">Active cognitive bottlenecks</div>
-    </div>
-    <div class="metric-card m-yellow">
-      <div class="title">Progressing (🟡)</div>
-      <div class="value" id="val-yellow">3</div>
-      <div class="desc">Stabilizing under rush/pressure</div>
-    </div>
-    <div class="metric-card m-green">
-      <div class="title">Mastered (🟢)</div>
-      <div class="value" id="val-green">14</div>
-      <div class="desc">Fully resolved curriculum targets</div>
-    </div>
-    <div class="metric-card m-cyan">
-      <div class="title">Dedup Gate Savings (🛡️)</div>
-      <div class="value" id="val-savings">9,600</div>
-      <div class="desc">Tokens saved via duplicate test interception</div>
-    </div>
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('tab-student-view')">
+      📈 Student Progress & Mastery
+    </button>
+    <button class="nav-tab" onclick="switchTab('tab-gap-ledger')">
+      🧠 Cognitive Gap Ledger
+    </button>
+    <button class="nav-tab" onclick="switchTab('tab-infra-gate')">
+      🛡️ Ingestion Gate & Infrastructure
+    </button>
   </div>
 
-  <div class="workspace">
-    <!-- Left: Student List -->
-    <div class="roster">
-      <h2>Pilot Cohort (Year 4)</h2>
-      <ul class="student-list" id="student-list">
-        <li class="student-item active" onclick="selectStudent('lara')">
-          <div class="name">Lara (Y4)</div>
-          <div class="meta">ADHD/Dyslexia traits • 8 min target</div>
-        </li>
-        <li class="student-item" onclick="selectStudent('maya')">
-          <div class="name">Maya (Y4)</div>
-          <div class="meta">Verbal execution • 10 min target</div>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Right: Student Details & Gaps -->
-    <div class="detail-panel">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2 id="active-student-title">Lara's Cognitive Gap Ledger</h2>
-            <div style="font-size: 12px; color: var(--muted);" id="active-student-meta">Target: 8 min sprint • Twin study routine active</div>
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <a href="/sprint/preview" target="_blank" class="btn" id="btn-sprint">📄 Open 4-Page Sprint</a>
-            <a href="/guide/preview" target="_blank" class="btn btn-outline" id="btn-guide">🧭 Parent Socratic Guide</a>
-          </div>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Concept Code</th>
-              <th>Error Class</th>
-              <th>Pedagogical Description</th>
-              <th>Recurrence</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="gaps-tbody">
-            <tr>
-              <td><code>Y4.MATH.NPV.EMPTY_COLUMNS</code></td>
-              <td><code>ERR_PHANTOM_ZERO</code></td>
-              <td>Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)</td>
-              <td>3x</td>
-              <td><span class="badge badge-orange">Active Priority</span></td>
-            </tr>
-            <tr>
-              <td><code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code></td>
-              <td><code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code></td>
-              <td>Orders -4°C as warmer than -1°C</td>
-              <td>2x</td>
-              <td><span class="badge badge-yellow">Progressing</span></td>
-            </tr>
-            <tr>
-              <td><code>Y4.MATH.NPV.WRITING_NUMBERS</code></td>
-              <td><code>ERR_TRANSPOSITION</code></td>
-              <td>Transposing digits under time pressure (writes 03 for thirty)</td>
-              <td>2x</td>
-              <td><span class="badge badge-yellow">Progressing</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Admin & Infra Row -->
-  <div class="admin-grid">
-    <!-- Left: Central Settings Registry & Strike Rules -->
-    <div class="card">
-      <div class="card-header">
-        <h2>⚙️ Central Settings & Intake Strike Rules</h2>
-        <span class="badge badge-green">Registry Active</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Deduplication Gate</span>
-        <span class="val"><span class="badge badge-green">ENABLED</span> (Telegram & WhatsApp)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Maximum Strike Limit</span>
-        <span class="val"><code>3 Strikes</code> (Before Downgrade)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Penalty Action on Max Strikes</span>
-        <span class="val"><span class="badge badge-red">Downgrade to Batch Queue</span></span>
-      </div>
-      <div class="status-row">
-        <span class="key">Cooldown Window</span>
-        <span class="val"><code>24 Hours</code> (Rolling Fingerprint TTL)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Fingerprint Resolution</span>
-        <span class="val">Telegram <code>file_unique_id</code> + Filename + Byte Size</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Shortlink Provider</span>
-        <span class="val"><span class="badge badge-cyan">Dub.co</span> (aim.getvintel.com/s/...)</span>
-      </div>
-    </div>
-
-    <!-- Right: Regional Infrastructure Status -->
-    <div class="card">
-      <div class="card-header">
-        <h2>🌍 Infrastructure & Regional Routing</h2>
-        <span class="badge badge-green">All Systems Operational</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Web & API Console</span>
-        <span class="val">🟢 Vercel Serverless (<code>cdg1</code> Paris Primary / <code>fra1</code> Fallback)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Telegram Intake Worker</span>
-        <span class="val">🟢 Cloudflare Worker (<code>aim-bot.getvintel.com</code> • EU Edge)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">State Storage</span>
-        <span class="val">🟢 Upstash Redis (Prefix: <code>aim:*</code> • Region: <code>eu-west-3</code>)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Asynchronous Queue</span>
-        <span class="val">🟢 Upstash QStash (Callback: <code>/jobs/process-assessment</code>)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Audit Ledger</span>
-        <span class="val">🟢 GitStateStorageAdapter (Private Repo Backup)</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Intake & Strike Simulator -->
-  <div class="card" style="margin-bottom: 24px;">
-    <div class="card-header">
-      <h2>🛡️ Intake Deduplication & Strike Simulator</h2>
-      <div style="display: flex; gap: 8px;">
-        <button class="btn btn-outline" onclick="simulateNewUpload()">Simulate New Quiz Upload (Accept)</button>
-        <button class="btn btn-outline" onclick="simulateDuplicateUpload()">Simulate Duplicate Upload (Strike)</button>
-        <button class="btn btn-danger" onclick="resetSimulatedStrikes()">Reset Guardian Strikes</button>
-      </div>
-    </div>
-    <div class="sandbox-dropzone" onclick="simulateDuplicateUpload()">
-      <div style="font-size: 24px; margin-bottom: 8px;">📸</div>
-      <div style="font-weight: 700; color: #fff;" id="sim-headline">Click to simulate test upload or duplicate submission</div>
-      <div style="font-size: 12px; color: var(--muted); margin-top: 4px;" id="sim-status">
-        Current Guardian: <code>guardian_parent_7788</code> • Strikes: <span id="sim-strikes">0/3</span> • Status: <span class="badge badge-green" id="sim-badge">Active</span>
-      </div>
-    </div>
-    <div id="sim-log" style="margin-top: 14px; font-family: monospace; font-size: 12px; background: #000; padding: 12px; border-radius: 6px; display: none; color: #a5f3fc;"></div>
-  </div>
+  ${renderStudentProgressTab()}
+  ${renderGapLedgerTab()}
+  ${renderInfraGateTab()}
 
   <script>
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+      event.currentTarget.classList.add('active');
+      const pane = document.getElementById(tabId);
+      if (pane) pane.classList.add('active');
+    }
+
+    // Student Data Mock for Dynamic View
+    const studentsData = {
+      lara: {
+        name: "Lara",
+        meta: "Asten College • Year 4 British Track • ADHD/Dyslexia traits active",
+        termAvg: "92%",
+        science: "94%",
+        maths: "82%",
+        english: "88%",
+        status: "Mastery Stable (92% Avg)",
+        score: "19 / 20",
+        scorePct: "(95%)",
+        eval: "Science Midterm: Mastered skeletons, muscles, and medicines. Working memory slipped on negative scale.",
+        strategyTitle: "Target: 8 Min Sprint • Visual Chunking",
+        strategyDesc: "ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.",
+        radar: { recall: 98, concept: 91, steps: 78, speed: 72 },
+        misconceptions: [
+          { code: "Y4.MATH.NPV.EMPTY_COLUMNS", class: "ERR_PHANTOM_ZERO", desc: "Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)", priority: "orange" },
+          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -4°C as warmer than -1°C", priority: "yellow" },
+          { code: "Y4.MATH.NPV.WRITING_NUMBERS", class: "ERR_TRANSPOSITION", desc: "Transposing digits under time rush (writes 03 for thirty)", priority: "yellow" }
+        ],
+        curves: {
+          science: "M 60,110 L 135,100 L 210,85 L 285,75 L 360,60 L 435,45 L 510,35 L 560,25",
+          maths:   "M 60,130 L 135,125 L 210,115 L 285,105 L 360,95 L 435,90 L 510,88 L 560,82",
+          english: "M 60,115 L 135,110 L 210,100 L 285,90 L 360,80 L 435,70 L 510,65 L 560,55"
+        }
+      },
+      maya: {
+        name: "Maya",
+        meta: "Asten College • Year 4 British Track • Verbal strengths & peer teacher",
+        termAvg: "94%",
+        science: "96%",
+        maths: "86%",
+        english: "91%",
+        status: "Mastery Advanced (94% Avg)",
+        score: "20 / 20",
+        scorePct: "(100%)",
+        eval: "Science Midterm: Perfect classification keys and vertebrate traits. Clear methodical execution.",
+        strategyTitle: "Target: 10 Min Sprint • Verbal Peer Teaching",
+        strategyDesc: "High verbal retention and methodical steps. Explaining concepts aloud to Lara reinforces long-term schemas.",
+        radar: { recall: 99, concept: 95, steps: 86, speed: 84 },
+        misconceptions: [
+          { code: "Y4.MATH.NPV.5DIGIT_ORDERING", class: "ERR_SHARED_PREFIX_ORDERING", desc: "Sequencing 5-digit numbers that share leading prefix digits", priority: "orange" },
+          { code: "Y4.MATH.NPV.NUMBER_LINE_SCALES", class: "ERR_INTERVAL_DECODE", desc: "Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)", priority: "yellow" },
+          { code: "Y4.MATH.NPV.CROSSING_ZERO", class: "ERR_FENCEPOST_COUNT", desc: "Counting the starting tick mark across zero bridge", priority: "yellow" }
+        ],
+        curves: {
+          science: "M 60,95 L 135,80 L 210,70 L 285,55 L 360,45 L 435,35 L 510,25 L 560,18",
+          maths:   "M 60,120 L 135,110 L 210,105 L 285,95 L 360,85 L 435,80 L 510,75 L 560,70",
+          english: "M 60,100 L 135,90 L 210,80 L 285,70 L 360,60 L 435,50 L 510,45 L 560,40"
+        }
+      }
+    };
+
+    function setStudent(studentId) {
+      document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('pill-' + studentId);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const data = studentsData[studentId] || studentsData.lara;
+
+      document.getElementById('student-name-header').innerText = data.name + "'s Academic Trajectory & Mastery Progression";
+      document.getElementById('student-meta-sub').innerText = data.meta;
+      document.getElementById('student-overall-status').innerText = data.status;
+
+      document.getElementById('kpi-term-avg').innerText = data.termAvg;
+      document.getElementById('kpi-science').innerText = data.science;
+      document.getElementById('kpi-maths').innerText = data.maths;
+      document.getElementById('kpi-english').innerText = data.english;
+
+      document.getElementById('side-score').innerHTML = data.score + ' <span style="font-size: 16px; color: var(--green);">' + data.scorePct + '</span>';
+      document.getElementById('side-eval').innerText = data.eval;
+      document.getElementById('side-strategy-title').innerText = data.strategyTitle;
+      document.getElementById('side-strategy-desc').innerText = data.strategyDesc;
+
+      // Radar bars
+      document.getElementById('bar-recall').style.width = data.radar.recall + '%';
+      document.getElementById('val-recall').innerText = data.radar.recall + '%';
+      document.getElementById('bar-concept').style.width = data.radar.concept + '%';
+      document.getElementById('val-concept').innerText = data.radar.concept + '%';
+      document.getElementById('bar-steps').style.width = data.radar.steps + '%';
+      document.getElementById('val-steps').innerText = data.radar.steps + '%';
+      document.getElementById('bar-speed').style.width = data.radar.speed + '%';
+      document.getElementById('val-speed').innerText = data.radar.speed + '%';
+
+      // Misconceptions
+      const misContainer = document.getElementById('misconception-list');
+      misContainer.innerHTML = data.misconceptions.map(m => \`
+        <div class="misconception-item \${m.priority === 'yellow' ? 'yellow' : ''}">
+          <div class="misconception-title">
+            <span><code>\${m.code}</code></span>
+            <span class="badge badge-\${m.priority}">\${m.priority === 'orange' ? 'Priority' : 'Progressing'}</span>
+          </div>
+          <div class="misconception-desc">\${m.desc}</div>
+        </div>
+      \`).join('');
+
+      // Curves in SVG
+      const chartPaths = document.getElementById('chart-paths');
+      chartPaths.innerHTML = \`
+        <path d="\${data.curves.science}" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" />
+        <path d="\${data.curves.maths}" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="3 3" />
+        <path d="\${data.curves.english}" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" />
+        <circle cx="560" cy="25" r="4" fill="var(--green)" />
+        <circle cx="560" cy="82" r="4" fill="var(--yellow)" />
+        <circle cx="560" cy="55" r="4" fill="var(--purple)" />
+      \`;
+    }
+
+    // Initialize Default View (Lara)
+    setStudent('lara');
+
+    // Intake Simulator
     let simStrikeCount = 0;
     let simDupCount = 0;
     let simTokens = 9600;
-
-    function selectStudent(id) {
-      document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-
-      if (id === 'maya') {
-        document.getElementById('active-student-title').innerText = "Maya's Cognitive Gap Ledger";
-        document.getElementById('active-student-meta').innerText = "Target: 10 min sprint • Verbal strengths active";
-        document.getElementById('gaps-tbody').innerHTML = \`
-          <tr>
-            <td><code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code></td>
-            <td><code>ERR_INTERVAL_DECODE</code></td>
-            <td>Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)</td>
-            <td>1x</td>
-            <td><span class="badge badge-yellow">Progressing</span></td>
-          </tr>
-          <tr>
-            <td><code>Y4.MATH.NPV.CROSSING_ZERO</code></td>
-            <td><code>ERR_FENCEPOST_COUNT</code></td>
-            <td>Counting the starting tick mark instead of jumps across zero bridge</td>
-            <td>1x</td>
-            <td><span class="badge badge-yellow">Progressing</span></td>
-          </tr>
-          <tr>
-            <td><code>Y4.MATH.NPV.5DIGIT_ORDERING</code></td>
-            <td><code>ERR_SHARED_PREFIX_ORDERING</code></td>
-            <td>Difficulty sequencing 5-digit numbers that share leading digits</td>
-            <td>1x</td>
-            <td><span class="badge badge-orange">Active Priority</span></td>
-          </tr>
-        \`;
-      } else {
-        document.getElementById('active-student-title').innerText = "Lara's Cognitive Gap Ledger";
-        document.getElementById('active-student-meta').innerText = "Target: 8 min sprint • Twin study routine active";
-        document.getElementById('gaps-tbody').innerHTML = \`
-          <tr>
-            <td><code>Y4.MATH.NPV.EMPTY_COLUMNS</code></td>
-            <td><code>ERR_PHANTOM_ZERO</code></td>
-            <td>Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)</td>
-            <td>3x</td>
-            <td><span class="badge badge-orange">Active Priority</span></td>
-          </tr>
-          <tr>
-            <td><code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code></td>
-            <td><code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code></td>
-            <td>Orders -4°C as warmer than -1°C</td>
-            <td>2x</td>
-            <td><span class="badge badge-yellow">Progressing</span></td>
-          </tr>
-        \`;
-      }
-    }
 
     function simulateNewUpload() {
       const log = document.getElementById('sim-log');
@@ -512,7 +183,6 @@ export function renderDashboardHtml(): string {
     function simulateDuplicateUpload() {
       simDupCount += 1;
       simTokens += 3200;
-      document.getElementById('val-savings').innerText = simTokens.toLocaleString();
 
       if (simStrikeCount < 3) {
         simStrikeCount += 1;

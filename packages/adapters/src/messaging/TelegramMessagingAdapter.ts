@@ -73,10 +73,13 @@ export class TelegramMessagingAdapter implements IMessagingPort {
         await this.callApi('deleteMessages', {
           chat_id: chatId,
           message_ids: slice,
-        }).catch(() => {});
+        }).catch(err => {
+          console.warn('[TelegramMessagingAdapter] deleteMessages slice warning:', err);
+        });
       }
       return true;
-    } catch {
+    } catch (err) {
+      console.warn('[TelegramMessagingAdapter] deleteMessages failed:', err);
       return false;
     }
   }
@@ -88,6 +91,10 @@ export class TelegramMessagingAdapter implements IMessagingPort {
 
     const inlineKeyboard = {
       inline_keyboard: [
+        [
+          { text: '📊 Lara Progress Snapshot', callback_data: 'view_progress:lara' },
+          { text: '📊 Maya Progress Snapshot', callback_data: 'view_progress:maya' }
+        ],
         [
           { text: '👧 Lara Sprint (Mini-App)', web_app: { url: 'https://aim.getvintel.com/sprint/preview' } },
           { text: '👧 Maya Sprint (Mini-App)', web_app: { url: 'https://aim.getvintel.com/sprint/preview' } }
@@ -101,7 +108,10 @@ export class TelegramMessagingAdapter implements IMessagingPort {
         ],
         [
           { text: '📚 Change Target Week', callback_data: 'menu_change_week' },
-          { text: '🧹 Clear Chat & Start Over', callback_data: 'clear_chat' }
+          { text: '🔄 Reset Session Quota', callback_data: 'reset_session' }
+        ],
+        [
+          { text: '🧹 Clear Chat History', callback_data: 'clear_chat' }
         ]
       ]
     };

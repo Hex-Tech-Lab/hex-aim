@@ -144,6 +144,25 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
     return exists === 1;
   }
 
+  /**
+   * Atomic Check-and-Record (Anti-Race Condition / TOCTOU Guard):
+   * Uses Redis SET ... NX (Not Exists) to atomically acquire the file hash lock.
+   * Returns true if newly recorded, false if already seen by a concurrent request.
+   */
+  public async recordFileHashAtomic(
+    guardianId: string,
+    hash: string,
+    metadata: { filename?: string; sprintId?: string; timestamp: string },
+    ttlSeconds = 86400
+  ): Promise<boolean> {
+    const res = await this.redis.set(
+      this.k(`seen_files:${guardianId}:${hash}`),
+      metadata,
+      { nx: true, ex: ttlSeconds }
+    );
+    return res !== null;
+  }
+
   public async recordFileHash(
     guardianId: string,
     hash: string,

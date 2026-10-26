@@ -9,6 +9,50 @@ export type CurriculumAuthority =
   | 'second-language' 
   | 'american-diploma';
 
+export type AssessmentType =
+  | 'weekly_quiz'           // Standard weekly formative classroom quiz
+  | 'unit_test'             // End-of-unit summative assessment
+  | 'midterm_exam'          // Midterm examination milestone
+  | 'practice_run'          // Student-completed remediation sprint or revision sheet
+  | 'revision_sprint'       // Rapid revision / targeted review
+  | 'diagnostic_binder'     // Comprehensive multi-unit baseline diagnostic
+  | 'homework_assignment';  // Take-home assisted worksheet (SOS review only)
+
+export type MilestoneType =
+  | 'weekly_formative'
+  | 'midterm_summative'
+  | 'end_of_unit_summative'
+  | 'end_of_year_exam'
+  | 'targeted_remediation';
+
+export interface CurriculumSubjectDefinition {
+  id: string;
+  name: string;
+  authority: CurriculumAuthority;
+  publisher?: string;
+  domains: string[];
+  keywords?: string[];
+}
+
+export interface DiagnosticScorecard {
+  assessmentId: string;
+  studentUid: string;
+  studentDisplayName: string;
+  subjectId: string;
+  assessmentType: AssessmentType;
+  milestoneType: MilestoneType;
+  date: string;
+  termWeek: number;
+  rawScore: number;
+  totalScore: number;
+  percentage: number;
+  status: 'mastered' | 'progressing' | 'priority_remediation';
+  identifiedGapsCount: number;
+  errorClasses: string[];
+  cognitiveFactors: string[];
+  summaryNote: string;
+}
+
 export type TrafficLightStatus = 
   | 'resolved'         // 🟢 Green: Fully mastered & stable
   | 'progressing'      // 🟡 Yellow: Improving, errors under speed/pressure only
@@ -49,13 +93,27 @@ export interface StudentNeuroProfile {
   optimalSprintDurationMins: number; // e.g. 6 to 10 mins
 }
 
+export interface IdentityVaultRecord {
+  studentUid: string;           // Canonical opaque foreign key e.g. "stu_01j9ax8001lara"
+  firstName: string;            // e.g. "Lara"
+  lastName: string;             // e.g. "Bakri"
+  displayName: string;          // e.g. "Lara"
+  preferredTitle?: string;      // e.g. "Student Detective"
+  dateOfBirth?: string;
+  guardianIds: string[];        // e.g. ["guardian_5055012900"]
+  preferredParentTitle: string; // e.g. "Dad" or "Mum"
+  avatarUrl?: string;
+  status: 'active' | 'anonymized' | 'archived';
+}
+
 export interface Student {
-  id: string;
-  externalId?: string; // anonymous public alias e.g. "AST-Y4-012"
+  id: string;                   // Legacy identifier (soft-deprecated in favor of studentUid)
+  studentUid?: string;          // Canonical immutable global ID (ADR-002)
+  externalId?: string;          // Anonymous public alias e.g. "AST-Y4-012"
   name: string;
   schoolId: string;
   cohortId?: string;
-  yearGroup: string; // e.g. "Y4"
+  yearGroup: string;            // e.g. "Y4"
   curriculumTrack: 'british' | 'american';
   neuroProfile: StudentNeuroProfile;
   siblingStudentIds?: string[]; // handles sibling/twin dynamics & zero competition
