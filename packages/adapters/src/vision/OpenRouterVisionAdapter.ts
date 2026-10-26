@@ -17,8 +17,8 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
 
   constructor(config?: OpenRouterVisionConfig) {
     const settings = SettingsManager.getInstance();
-    this.apiKey = config?.apiKey || settings.get<string>('OPENROUTER_API_KEY', process.env.OPENROUTER_API_KEY || '');
-    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', process.env.OPENROUTER_VISION_MODEL || 'google/gemini-3.5-flash-lite');
+    this.apiKey = config?.apiKey || settings.get<string>('OPENROUTER_API_KEY', '');
+    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
     this.baseUrl = config?.baseUrl || 'https://openrouter.ai/api/v1';
 
     if (!this.apiKey) {

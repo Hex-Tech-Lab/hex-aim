@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-26T12:00:00.000Z",
+  "project": "hex-aim",
+  "architecture": "Hexagonal Lite / Ports & Adapters",
+  "rules": {
+    "HexagonalBoundaryRule": {
+      "level": "CRITICAL",
+      "description": "Packages/core and packages/types must remain pure domain and contracts with zero direct I/O or SDK dependencies."
+    },
+    "CredentialLeakRule": {
+      "level": "CRITICAL",
+      "description": "Never allow hardcoded API keys or secrets in source code."
+    },
+    "ContractAuditorRules": {
+      "level": "CRITICAL",
+      "description": "Zero hardcoded timeouts, zero blind array slicing, zero unregistered process.env access."
+    }
+  },
+  "metrics": {
+    "criticalViolations": 0,
+    "highViolations": 0,
+    "mediumViolations": 2
+  }
+}

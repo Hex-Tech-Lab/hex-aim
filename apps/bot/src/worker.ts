@@ -1,6 +1,17 @@
-import { MessagingFactory, StorageFactory, TelegramMessagingAdapter } from '@hex-aim/adapters';
+import { MessagingFactory, QueueFactory, StorageFactory, TelegramMessagingAdapter } from '@hex-aim/adapters';
 import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
 import { processAssessmentJob, processBatchAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
+
+export const PERSISTENT_REPLY_KEYBOARD = {
+  keyboard: [
+    [
+      { text: '🎛️ Menu' },
+      { text: '📱 Cons.', web_app: { url: 'https://aim.getvintel.com' } }
+    ]
+  ],
+  resize_keyboard: true,
+  is_persistent: true,
+};
 
 export interface Env {
   STORAGE_PROVIDER?: string;
@@ -62,7 +73,8 @@ export default {
 
         // Helper to send message, track messageId for deletion, and record in chat history
         const sendAndTrack = async (cId: string, txt: string, replyTo?: number, markup?: any) => {
-          const res = await messaging.sendMessage(cId, txt, replyTo, markup);
+          const finalMarkup = markup !== undefined ? markup : PERSISTENT_REPLY_KEYBOARD;
+          const res = await messaging.sendMessage(cId, txt, replyTo, finalMarkup);
           const sentMsgId = res?.result?.message_id;
           if (sentMsgId && storage.trackBotMessage) {
             await storage.trackBotMessage(cId, sentMsgId);
@@ -303,7 +315,8 @@ export default {
         }
 
         // 3. Menu and Control Commands
-        if (text.startsWith('/menu')) {
+        const isMenuCommand = text.startsWith('/menu') || /^(\/?menu|🎛️|\s*🎛️\s*menu\s*)$/i.test(text.trim()) || text.includes('Menu');
+        if (isMenuCommand) {
           if (messaging.sendInteractiveMenu) {
             const menuRes = await messaging.sendInteractiveMenu(chatId);
             if (menuRes?.result?.message_id && storage.trackBotMessage) {
@@ -461,18 +474,19 @@ export default {
             // Minimal temporary receipt notice (deleted when batch starts processing)
             const receiptMsg = await sendAndTrack(chatId, '📥 <b>Receiving worksheet pages...</b> <i>(Gathering all pages in batch)</i>');
 
-            // Sliding debounce: wait until at least 5.5s of silence after the LAST photo arrives
+            // Sliding debounce: wait until silence gate (from settings) after the LAST photo arrives
             const runUnifiedBatch = async () => {
               try {
                 const startTime = Date.now();
-                const maxWaitMs = 28000; // max 28s ceiling
+                const silenceMs = settings.get<number>('intake.debounce.silence_ms', 5500);
+                const maxWaitMs = settings.get<number>('intake.debounce.max_ceiling_ms', 28000);
 
                 while (Date.now() - startTime < maxWaitMs) {
                   await new Promise(r => setTimeout(r, 2000));
                   const lastSeen = storage.getIntakeLastSeen 
                     ? await storage.getIntakeLastSeen(activeBatchKey) 
                     : 0;
-                  if (Date.now() - lastSeen >= 5500) {
+                  if (Date.now() - lastSeen >= silenceMs) {
                     break;
                   }
                 }
@@ -506,12 +520,38 @@ export default {
 
                 console.log(`[Worker] Processing unified batch for ${chatId} with ${batchImages.length} images`);
 
-                if (batchImages.length > 1) {
+                const largeBatchThreshold = settings.get<number>('intake.batch.large_batch_threshold', 18);
+                const chunkSize = settings.get<number>('intake.batch.chunk_size', 12);
+                const defaultSchool = settings.get<string>('curriculum.default_school', 'asten-college');
+                const defaultSubject = settings.get<string>('curriculum.default_subject', 'english');
+                const defaultYearGroup = settings.get<string>('curriculum.default_year_group', 'Y4');
+                const defaultTermWeek = settings.get<number>('curriculum.default_term_week', 3);
+
+                if (batchImages.length > largeBatchThreshold) {
+                  await sendAndTrack(chatId,
+                    `📥 <b>Large Archive Intake Received (${batchImages.length} Pages)</b>\n\n` +
+                    `⚡ <i>Offloading to background processing queue in slices of ${chunkSize} pages to ensure zero edge timeouts...</i>`
+                  );
+
+                  const queue = QueueFactory.getQueue();
+                  const totalChunks = Math.ceil(batchImages.length / chunkSize);
+                  for (let i = 0; i < batchImages.length; i += chunkSize) {
+                    const chunk = batchImages.slice(i, i + chunkSize);
+                    await queue.enqueueJob('process-assessment', {
+                      chatId,
+                      guardianId,
+                      imageUrls: chunk,
+                      schoolId: defaultSchool,
+                      chunkIndex: Math.floor(i / chunkSize) + 1,
+                      totalChunks,
+                    });
+                  }
+                } else if (batchImages.length > 1) {
                   await processBatchAssessmentJob({
                     chatId,
                     guardianId,
                     imageUrls: batchImages,
-                    schoolId: 'asten-college',
+                    schoolId: defaultSchool,
                   });
                 } else {
                   await processAssessmentJob({
@@ -519,10 +559,10 @@ export default {
                     guardianId,
                     chatId,
                     imageUrls: batchImages,
-                    subjectId: 'auto',
-                    yearGroup: 'Y4',
-                    termWeek: 3,
-                    schoolId: 'asten-college',
+                    subjectId: defaultSubject,
+                    yearGroup: defaultYearGroup,
+                    termWeek: defaultTermWeek,
+                    schoolId: defaultSchool,
                   });
                 }
               } catch (err: any) {
