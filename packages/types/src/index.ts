@@ -278,6 +278,11 @@ export interface IStoragePort {
   saveAssessment(submission: AssessmentSubmission): Promise<void>;
   getStudentAssessments(studentId: string, subjectId?: string): Promise<AssessmentSubmission[]>;
 
+  // Canonical Assessment Master (Classroom Deduplication)
+  saveCanonicalMaster?(master: CanonicalAssessmentMaster): Promise<void>;
+  getCanonicalMaster?(id: string): Promise<CanonicalAssessmentMaster | null>;
+  findCanonicalMaster?(schoolId: string, yearGroup: string, subjectId: string, termWeek: number): Promise<CanonicalAssessmentMaster | null>;
+
   getStudentGaps(studentId: string): Promise<CognitiveGap[]>;
   saveStudentGaps(studentId: string, gaps: CognitiveGap[]): Promise<void>;
 

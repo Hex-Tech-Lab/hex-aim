@@ -3,6 +3,7 @@ import type {
   Student,
   Guardian,
   AssessmentSubmission,
+  CanonicalAssessmentMaster,
   CognitiveGap,
   RemediationSprint,
   CoachingGuide,
@@ -19,6 +20,7 @@ export class InMemoryStorageAdapter implements IStoragePort {
   private guides = new Map<string, CoachingGuide>();
   private strikes = new Map<string, GuardianStrikeRecord>();
   private seenFiles = new Map<string, { filename?: string; sprintId?: string; timestamp: string }>();
+  private canonicalMasters = new Map<string, CanonicalAssessmentMaster>();
 
   public async getStudent(id: string): Promise<Student | null> {
     return this.students.get(id) || null;
@@ -66,6 +68,37 @@ export class InMemoryStorageAdapter implements IStoragePort {
       return list.filter(a => a.subjectId === subjectId);
     }
     return list;
+  }
+
+  public async saveCanonicalMaster(master: CanonicalAssessmentMaster): Promise<void> {
+    this.canonicalMasters.set(master.id, { ...master });
+  }
+
+  public async getCanonicalMaster(id: string): Promise<CanonicalAssessmentMaster | null> {
+    return this.canonicalMasters.get(id) || null;
+  }
+
+  public async findCanonicalMaster(
+    schoolId: string,
+    yearGroup: string,
+    subjectId: string,
+    termWeek: number
+  ): Promise<CanonicalAssessmentMaster | null> {
+    const targetSchool = schoolId.toLowerCase().trim();
+    const targetYear = yearGroup.toUpperCase().trim();
+    const targetSubject = subjectId.toLowerCase().trim();
+
+    for (const master of this.canonicalMasters.values()) {
+      if (
+        master.schoolId.toLowerCase().trim() === targetSchool &&
+        master.yearGroup.toUpperCase().trim() === targetYear &&
+        master.subjectId.toLowerCase().trim() === targetSubject &&
+        master.termWeek === termWeek
+      ) {
+        return { ...master };
+      }
+    }
+    return null;
   }
 
   public async getStudentGaps(studentId: string): Promise<CognitiveGap[]> {

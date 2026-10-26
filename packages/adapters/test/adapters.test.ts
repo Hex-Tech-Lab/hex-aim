@@ -59,6 +59,35 @@ describe('Adapters & Factory Hierarchy', () => {
     expect(gaps[0]?.errorClass).toBe('ERR_PHANTOM_ZERO');
   });
 
+  it('Storage adapter saves and finds Canonical Assessment Master', async () => {
+    const storage = StorageFactory.getStorage('memory');
+    const master = {
+      id: 'master_asten_y4_science_w8',
+      schoolId: 'asten-college',
+      yearGroup: 'Y4',
+      subjectId: 'science',
+      termWeek: 8,
+      title: 'Science Midterm Sprint Exam',
+      schemaQuestions: [
+        { qNum: 'Q1', conceptCode: 'Y4.SCI.VERTEBRATES', maxMarks: 1, promptText: 'Classify animals' },
+        { qNum: 'Q2', conceptCode: 'Y4.SCI.SKELETONS', maxMarks: 1, promptText: 'Bones and muscles' },
+      ],
+    };
+
+    if (storage.saveCanonicalMaster) {
+      await storage.saveCanonicalMaster(master);
+    }
+    const retrieved = storage.getCanonicalMaster 
+      ? await storage.getCanonicalMaster(master.id) 
+      : null;
+    expect(retrieved?.title).toBe('Science Midterm Sprint Exam');
+
+    const found = storage.findCanonicalMaster
+      ? await storage.findCanonicalMaster('Asten-College', 'y4', 'Science', 8)
+      : null;
+    expect(found?.id).toBe(master.id);
+  });
+
   it('QueueFactory returns DirectExecutionQueueAdapter as fallback', async () => {
     const queue = QueueFactory.getQueue('direct');
     expect(queue).toBeInstanceOf(DirectExecutionQueueAdapter);
