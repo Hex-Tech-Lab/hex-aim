@@ -8,3 +8,5 @@ export { WarmBrowserPoolCompiler } from './compilers/WarmBrowserPoolCompiler.js'
 export * from './dedup/CanonicalDeduplicator.js';
 export * from './dedup/IntakeDeduplicator.js';
 export * from './curriculum/CurriculumTaxonomyService.js';
+export * from './identity/StudentIdentityVault.js';
+export * from './identity/DynamicPresentationHydrator.js';
