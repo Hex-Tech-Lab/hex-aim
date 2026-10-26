@@ -170,4 +170,83 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     expect(mayaCard?.text).toContain("Maya's Academic Mastery Snapshot");
     expect(mayaCard?.text).toContain('ERR_SHARED_PREFIX_ORDERING');
   });
+
+  it('Stage 1 vs Stage 2 Ingestion: emits scorecard first, compiles sprint only on demand', async () => {
+    const messaging = MessagingFactory.getMessaging('mock') as MockMessagingAdapter;
+
+    // Stage 1: Assessment processed without auto-compile
+    const reqStage1 = new Request('https://worker/jobs/process-assessment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentId: 'lara',
+        chatId: '987654',
+        imageUrls: ['https://example.com/quiz_science_1.jpg'],
+        subjectId: 'science',
+        termWeek: 8,
+        autoCompileSprint: false,
+      }),
+    });
+
+    const resStage1 = await worker.fetch(reqStage1, {}, {} as any);
+    expect(resStage1.status).toBe(200);
+
+    // Verify Scorecard was emitted in chat
+    const scorecardMsg = messaging.sentMessages.find(m => m.text.includes('Assessment Diagnostic Scorecard'));
+    expect(scorecardMsg).toBeTruthy();
+    expect(scorecardMsg?.text).toContain('Assessment Diagnostic Scorecard: Lara');
+    expect(scorecardMsg?.text).toContain('Science');
+
+    // In Stage 1, zero PDF packs should be delivered
+    expect(messaging.deliveredPacks).toHaveLength(0);
+
+    // Stage 2: Parent taps "Generate Follow-up Sprint Now" callback
+    const reqGenSprint = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query: {
+          id: 'cb_gen_sprint_1',
+          data: 'gen_sprint:lara:science:8',
+          message: {
+            chat: { id: 987654 },
+            message_id: 301,
+          },
+        },
+      }),
+    });
+
+    const resGenSprint = await worker.fetch(reqGenSprint, {}, {} as any);
+    expect(resGenSprint.status).toBe(200);
+
+    // Now PDF packs must be delivered
+    expect(messaging.deliveredPacks.length).toBeGreaterThan(0);
+    expect(messaging.deliveredPacks[0]?.chatId).toBe('987654');
+  });
+
+  it('Stage 1 Defer: save_portfolio confirms save without compiling PDFs', async () => {
+    const messaging = MessagingFactory.getMessaging('mock') as MockMessagingAdapter;
+
+    const reqSave = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query: {
+          id: 'cb_save_1',
+          data: 'save_portfolio:maya:maths:8',
+          message: {
+            chat: { id: 987654 },
+            message_id: 401,
+          },
+        },
+      }),
+    });
+
+    const resSave = await worker.fetch(reqSave, {}, {} as any);
+    expect(resSave.status).toBe(200);
+
+    const confirmMsg = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(confirmMsg?.text).toContain("Saved to Maya's Portfolio!");
+    expect(messaging.deliveredPacks).toHaveLength(0);
+  });
 });
