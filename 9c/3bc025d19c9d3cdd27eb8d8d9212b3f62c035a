@@ -1,0 +1,24 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 253-254,256-315,318-329,339,346,349,359,372,380-381
+apps/bot/src/worker.ts
+  h_cdd764b4030252 461-462,464,467-488
+apps/bot/test/worker.test.ts
+  h_cdd764b4030252 70-71
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 181,184-187,189-195,197,199-201,221,288-291
+packages/adapters/src/storage/UpstashRedisStorageAdapter.ts
+  h_cdd764b4030252 167-172
+packages/types/src/index.ts
+  h_cdd764b4030252 245,313
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9c3bc025d19c9d3cdd27eb8d8d9212b3f62c035a",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
