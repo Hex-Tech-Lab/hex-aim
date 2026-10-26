@@ -320,7 +320,15 @@ export interface IStoragePort {
   getFamilyByChatId?(chatId: string): Promise<FamilyUnit | null>;
 }
 
-export type GuardianRole = 'primary_coach' | 'observer' | 'co_guardian';
+export type GuardianRole = 
+  | 'primary_coach'      // Head guardian / parent with full administration & intake rights
+  | 'co_guardian'        // Co-parent / second guardian with intake & review rights
+  | 'observer'           // Read-only family observer (receives weekly executive digests)
+  | 'teacher'            // School classroom teacher (cohort heatmap, curriculum alignment, intake)
+  | 'head_of_year'       // Year Group Lead / Academic Coordinator (cross-class gradebook & milestone reporting)
+  | 'sen_coordinator'    // Special Educational Needs Coordinator / SENCO (ADHD/Dyslexia accommodations)
+  | 'private_tutor'      // External private tutor (targeted Socratic drills & gap remediation)
+  | 'therapist';         // Speech / Occupational / Behavioral therapist (focus & executive function telemetry)
 
 export interface FamilyGuardianMember {
   guardianId: string;

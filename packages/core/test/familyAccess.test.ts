@@ -95,7 +95,7 @@ describe('Wave 14: Multi-Guardian Role-Based Access Control (RBAC) & Synchronize
     expect(unknownChat).toBeNull();
   });
 
-  it('enforces RBAC permissions: primary_coach vs co_guardian vs observer', () => {
+  it('enforces RBAC permissions across domestic, school, and external specialist roles', () => {
     // Primary Coach has full rights
     expect(manager.canPerformAction('primary_coach', 'intake')).toBe(true);
     expect(manager.canPerformAction('primary_coach', 'review')).toBe(true);
@@ -113,6 +113,25 @@ describe('Wave 14: Multi-Guardian Role-Based Access Control (RBAC) & Synchronize
     expect(manager.canPerformAction('observer', 'review')).toBe(true);
     expect(manager.canPerformAction('observer', 'admin')).toBe(false);
     expect(manager.canPerformAction('observer', 'reset')).toBe(false);
+
+    // School Teacher: cohort view, curriculum edit, intake, review
+    expect(manager.canPerformAction('teacher', 'cohort_view')).toBe(true);
+    expect(manager.canPerformAction('teacher', 'curriculum_edit')).toBe(true);
+    expect(manager.canPerformAction('teacher', 'intake')).toBe(true);
+    expect(manager.canPerformAction('teacher', 'reset')).toBe(false);
+
+    // Head of Year: cohort view, admin, curriculum edit
+    expect(manager.canPerformAction('head_of_year', 'cohort_view')).toBe(true);
+    expect(manager.canPerformAction('head_of_year', 'admin')).toBe(true);
+
+    // SEN Coordinator: SENCO neuroprofile overrides & cohort review
+    expect(manager.canPerformAction('sen_coordinator', 'senco_override')).toBe(true);
+    expect(manager.canPerformAction('sen_coordinator', 'admin')).toBe(false);
+
+    // Private Tutor: Targeted student review & intake (practice drills)
+    expect(manager.canPerformAction('private_tutor', 'intake')).toBe(true);
+    expect(manager.canPerformAction('private_tutor', 'review')).toBe(true);
+    expect(manager.canPerformAction('private_tutor', 'admin')).toBe(false);
   });
 
   it('selectively targets notification broadcast channels based on event type', () => {

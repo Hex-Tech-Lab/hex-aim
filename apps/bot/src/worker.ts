@@ -3,6 +3,7 @@ import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
 import { processAssessmentJob, processBatchAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
 import { handleCallbackQuery } from './handlers/callbackHandler.js';
 import { purgeAndResetSession, resetSessionOnly } from './handlers/sessionHandler.js';
+import { handleDiagRoutes } from './handlers/diagHandler.js';
 
 export const PERSISTENT_REPLY_KEYBOARD = {
   keyboard: [
@@ -66,49 +67,9 @@ export default {
       });
     }
 
-    // Live OpenRouter Connectivity Diagnostic
-    if (url.pathname === '/diag/openrouter') {
-      const apiKey = env.OPENROUTER_API_KEY || settings.get<string>('OPENROUTER_API_KEY', '');
-      const model = env.OPENROUTER_VISION_MODEL || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
-      if (!apiKey) {
-        return new Response(JSON.stringify({ ok: false, error: 'OPENROUTER_API_KEY is not configured in worker environment' }), {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-      try {
-        const pingRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://aim.getvintel.com',
-            'X-Title': 'HEX-AIM Diagnostics',
-          },
-          body: JSON.stringify({
-            model,
-            messages: [{ role: 'user', content: 'Reply with exact text: OPENROUTER_ONLINE' }],
-            max_tokens: 10,
-          }),
-          signal: AbortSignal.timeout(15000),
-        });
-        const pingData = await pingRes.json() as any;
-        return new Response(JSON.stringify({
-          ok: pingRes.ok,
-          status: pingRes.status,
-          model,
-          response: pingData?.choices?.[0]?.message?.content || pingData,
-          timestamp: new Date().toISOString(),
-        }), {
-          headers: { 'Content-Type': 'application/json' },
-        });
-      } catch (err: any) {
-        return new Response(JSON.stringify({ ok: false, error: err?.message || String(err) }), {
-          status: 502,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-    }
+    // Diagnostic Probes
+    const diagResponse = await handleDiagRoutes(url, env);
+    if (diagResponse) return diagResponse;
 
     // Telegram Webhook Intake
     if (url.pathname === '/webhook/telegram' && request.method === 'POST') {
