@@ -178,34 +178,27 @@ export class TelegramMessagingAdapter implements IMessagingPort {
       pageCount: number;
       isPractice?: boolean;
       score?: string;
-      fileItems?: string[];
+      statusDescription?: string;
     }>;
   }): Promise<void> {
-    const today = new Date().toISOString().split('T')[0]!;
-    let text = `📥 <b>Worksheet Batch Ingested (${summary.totalPhotos} Pages Received)</b>\n\n`;
+    let table = `<pre>`;
+    table += `──────────────────────────────────────────────\n`;
+    table += `STUDENT  SUBJECT  WEEK  PAGES  STATUS\n`;
+    table += `──────────────────────────────────────────────\n`;
 
-    for (let i = 0; i < summary.students.length; i++) {
-      const s = summary.students[i]!;
-      const mode = s.isPractice ? 'Practice' : 'Worksheet';
-      const subj = s.subject.toUpperCase();
-      text += `<b>${s.name} (Year 4 • ${subj} • Week ${s.week} • ${s.pageCount} Pages):</b>\n`;
-      
-      if (s.fileItems && s.fileItems.length > 0) {
-        for (const item of s.fileItems) {
-          text += `• <code>${item}</code>\n`;
-        }
-      } else {
-        for (let p = 1; p <= s.pageCount; p++) {
-          text += `• <code>${s.name} | ${mode} | ${subj} | W${s.week} | ${today} | Page ${p}/${s.pageCount}</code>\n`;
-        }
-      }
-
-      if (i < summary.students.length - 1) {
-        text += '\n'; // visual gap between students!
-      }
+    for (const s of summary.students) {
+      const nameCol = s.name.padEnd(8);
+      const subjCol = s.subject.toUpperCase().slice(0, 7).padEnd(8);
+      const wkCol = (`W${s.week}`).padEnd(5);
+      const pagesCol = (`${s.pageCount}`).padEnd(6);
+      const statusCol = s.statusDescription || (s.isPractice ? 'Practice' : 'Graded');
+      table += `${nameCol} ${subjCol} ${wkCol} ${pagesCol} ${statusCol}\n`;
     }
+    table += `──────────────────────────────────────────────</pre>`;
 
-    text += `\n💡 <i>All pages classified. Cognitive gap ledger updated & printable PDF packs compiling below...</i>`;
+    const text = `📋 <b>Worksheet Batch Verified (${summary.totalPhotos} Pages Received)</b>\n\n` +
+      table + `\n\n` +
+      `💡 <i>Zero Drill Sheets: Personalized 4-page sprint packs & parent guides are attaching below...</i>`;
 
     await this.callApi('sendMessage', {
       chat_id: chatId,
@@ -225,6 +218,7 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     studentName?: string;
     subject?: string;
     week?: number;
+    skipMenu?: boolean;
   }): Promise<void> {
     const name = packs.studentName || 'Student';
     const subj = packs.subject ? packs.subject.toUpperCase() : 'MASTERY';
@@ -291,7 +285,9 @@ export class TelegramMessagingAdapter implements IMessagingPort {
       }
     }
 
-    // 4. Always present the Parent Control Center Interactive Menu
-    await this.sendInteractiveMenu(chatId);
+    // 4. Present the Parent Control Center Interactive Menu unless skipped
+    if (!packs.skipMenu) {
+      await this.sendInteractiveMenu(chatId);
+    }
   }
 }

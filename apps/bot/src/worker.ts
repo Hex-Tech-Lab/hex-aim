@@ -458,20 +458,34 @@ export default {
           if (isFirstPhoto) {
             await storage.recordFileHash('intake_active_seen', chatId, { timestamp: new Date().toISOString() });
 
-            // Send confirmation card acknowledging receipt
-            await messaging.sendConfirmationCard(chatId, {
-              jobId,
-              imageUrl: resolvedImageUrl,
-              detectedStudent: 'Student',
-              detectedSubject: 'Worksheet',
-              detectedWeek: 'Week 3',
-            });
+            // Minimal temporary receipt notice (deleted when batch starts processing)
+            const receiptMsg = await sendAndTrack(chatId, '📥 <b>Receiving worksheet pages...</b> <i>(Gathering all pages in batch)</i>');
 
-            // Debounce 4.5s for all photos (across multiple Telegram albums like 10+2) to arrive
+            // Sliding debounce: wait until at least 5.5s of silence after the LAST photo arrives
             const runUnifiedBatch = async () => {
               try {
-                await new Promise(resolve => setTimeout(resolve, 4500));
-                
+                const startTime = Date.now();
+                const maxWaitMs = 28000; // max 28s ceiling
+
+                while (Date.now() - startTime < maxWaitMs) {
+                  await new Promise(r => setTimeout(r, 2000));
+                  const lastSeen = storage.getIntakeLastSeen 
+                    ? await storage.getIntakeLastSeen(activeBatchKey) 
+                    : 0;
+                  if (Date.now() - lastSeen >= 5500) {
+                    break;
+                  }
+                }
+
+                // Delete the temporary receiving notice to keep chat clean
+                if (receiptMsg?.result?.message_id && env.TELEGRAM_BOT_TOKEN) {
+                  await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, message_id: receiptMsg.result.message_id }),
+                  }).catch(() => {});
+                }
+
                 // Clear active seen marker so subsequent batches start clean
                 const redisStorage = storage as any;
                 if (redisStorage.redis) {

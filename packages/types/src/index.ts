@@ -242,6 +242,7 @@ export interface IStoragePort {
   addIntakeBatchItem?(batchId: string, item: { url: string; fileUniqueId: string; messageId?: number }): Promise<void>;
   getIntakeBatchItems?(batchId: string): Promise<Array<{ url: string; fileUniqueId: string; messageId?: number }>>;
   clearIntakeBatch?(batchId: string): Promise<void>;
+  getIntakeLastSeen?(batchId: string): Promise<number>;
 
   // Instruction Loop & Chat History
   recordChatMessage?(chatId: string, message: { role: 'user' | 'assistant'; text: string; timestamp: string; messageId?: number }): Promise<void>;
@@ -309,6 +310,7 @@ export interface IMessagingPort {
     studentName?: string;
     subject?: string;
     week?: number;
+    skipMenu?: boolean;
   }): Promise<void>;
 }
 
