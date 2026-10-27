@@ -1,0 +1,54 @@
+apps/bot/src/handlers/voiceHandler.ts
+  h_cdd764b4030252 1-86
+apps/bot/src/worker.ts
+  h_cdd764b4030252 7,299-304
+apps/web/public/manifest.json
+  h_cdd764b4030252 1-17
+apps/web/public/sw.js
+  h_cdd764b4030252 1-68
+apps/web/src/server.ts
+  h_cdd764b4030252 2-3,22-52
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 13-17,423-433
+apps/web/test/pwa.test.ts
+  h_cdd764b4030252 1-49
+packages/adapters/src/audio/AudioFactory.ts
+  h_cdd764b4030252 1-36
+packages/adapters/src/audio/MockAudioAdapter.ts
+  h_cdd764b4030252 1-29
+packages/adapters/src/audio/WhisperAudioAdapter.ts
+  h_cdd764b4030252 1-68
+packages/adapters/src/index.ts
+  h_cdd764b4030252 24-28
+packages/adapters/test/audio.test.ts
+  h_cdd764b4030252 1-29
+packages/core/src/curriculum/CohortAnalyticsEngine.ts
+  h_cdd764b4030252 1-108
+packages/core/src/curriculum/MultiSubjectCurriculumService.ts
+  h_cdd764b4030252 1-116
+packages/core/src/index.ts
+  h_cdd764b4030252 15-18
+packages/core/src/socratic/SocraticOralEvaluator.ts
+  h_cdd764b4030252 1-103
+packages/core/src/taxonomy/BloomTaxonomyEngine.ts
+  h_cdd764b4030252 1-134
+packages/core/test/bloomTaxonomy.test.ts
+  h_cdd764b4030252 1-72
+packages/core/test/cohortAnalytics.test.ts
+  h_cdd764b4030252 1-102
+packages/core/test/socraticOral.test.ts
+  h_cdd764b4030252 1-53
+packages/types/src/index.ts
+  h_cdd764b4030252 218-219,418-477
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bbfdffdd4f0ba83b650d0b5e8e7459921f8d83fc",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
