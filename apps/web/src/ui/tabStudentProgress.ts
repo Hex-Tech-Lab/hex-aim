@@ -64,8 +64,8 @@ export function renderStudentProgressTab(): string {
           <!-- Dual Animated Visual Graphics: Cognitive Radar & Confidence Gauge -->
           <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 16px;">
             <!-- Chart.js Cognitive Domain Radar -->
-            <div style="background: #0d131f; border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
-              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="background: var(--card-elevated); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
                 <span class="flex items-center gap-1.5"><i data-lucide="brain" class="w-3.5 h-3.5 text-cyan-400"></i> Cognitive Domain Radar</span>
                 <span style="font-size: 10px; color: var(--cyan); font-family: monospace;">ASTEN Y4 RADAR</span>
               </div>
@@ -75,15 +75,15 @@ export function renderStudentProgressTab(): string {
             </div>
 
             <!-- Chart.js Mastery Gauge / Doughnut -->
-            <div style="background: #0d131f; border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
-              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="background: var(--card-elevated); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
                 <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Zero-Alarm Confidence</span>
                 <span class="badge badge-green" id="gauge-badge">High</span>
               </div>
               <div style="position: relative; height: 140px; width: 100%; display: flex; align-items: center; justify-content: center;">
                 <canvas id="masteryGaugeCanvas"></canvas>
                 <div id="gauge-center-text" style="position: absolute; top: 58%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
-                  <div id="gauge-val" style="font-size: 22px; font-weight: 800; color: #fff; font-family: monospace;">94%</div>
+                  <div id="gauge-val" style="font-size: 22px; font-weight: 800; color: var(--astryx-text-contrast); font-family: monospace;">94%</div>
                   <div style="font-size: 9px; color: var(--muted); text-transform: uppercase;">Retention</div>
                 </div>
               </div>
@@ -95,7 +95,7 @@ export function renderStudentProgressTab(): string {
 
           <!-- Misconceptions Summary -->
           <div style="margin-top: 16px;">
-            <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Active Priority Cognitive Errors (Targeted in Sprints)
             </div>
             <div id="misconception-list"></div>
