@@ -4,6 +4,7 @@ import { processAssessmentJob, processBatchAssessmentJob, type ProcessAssessment
 import { handleCallbackQuery } from './handlers/callbackHandler.js';
 import { purgeAndResetSession, resetSessionOnly } from './handlers/sessionHandler.js';
 import { handleDiagRoutes } from './handlers/diagHandler.js';
+import { handleVoiceMessage } from './handlers/voiceHandler.js';
 
 export const PERSISTENT_REPLY_KEYBOARD = {
   keyboard: [
@@ -295,7 +296,12 @@ export default {
           }
         }
 
-        // 2. Photo & Document intake (Assessment upload)
+        // 2. Voice & Audio note intake (Wave 15: Voice-First Socratic Oral Drill)
+        if (message.voice || message.audio) {
+          return await handleVoiceMessage(message, env, chatId);
+        }
+
+        // 3. Photo & Document intake (Assessment upload)
         const doc = message.document;
         const hasPhoto = photos && Array.isArray(photos) && photos.length > 0;
         const hasDoc = doc && (doc.mime_type?.startsWith('image/') || doc.mime_type === 'application/pdf');

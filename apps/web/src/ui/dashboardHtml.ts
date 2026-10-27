@@ -10,6 +10,11 @@ export function renderDashboardHtml(): string {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HEX-AIM • Adaptive Individualized Mastery Console</title>
+<!-- Wave 18: PWA Manifest & App Configuration -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#06b6d4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <!-- Meta Astryx & Tailwind CSS Centralized Bridge -->
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Chart.js Graphics & Animation Library -->
@@ -414,6 +419,17 @@ ${renderDashboardStyles()}
       badge.innerText = 'Active';
       const log = document.getElementById('sim-log');
       log.innerHTML = '🟢 Guardian strikes reset to 0/3. Normal priority restored.';
+    }
+
+    // Wave 18: Progressive Web App (PWA) Offline Synchronization Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+          console.log('[AIM-PWA] ServiceWorker registered with scope:', reg.scope);
+        }).catch(function(err) {
+          console.warn('[AIM-PWA] ServiceWorker registration warning:', err);
+        });
+      });
     }
   </script>
 </body>
