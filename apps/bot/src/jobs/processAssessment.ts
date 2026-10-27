@@ -364,12 +364,13 @@ export async function processBatchAssessmentJob(payload: {
 
   // 1. Run AI Partitioning if multiple images are present
   if (totalCount >= 2) {
-    try {
-      const settings = SettingsManager.getInstance();
-      const apiKey = settings.get<string>('OPENROUTER_API_KEY', '');
-      const model = settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
+    const settings = SettingsManager.getInstance();
+    const routing = settings.getOpenRouterRoutingConfig();
+    const apiKey = settings.get<string>('ai.openrouter.api_key', settings.get<string>('OPENROUTER_API_KEY', ''));
+    const model = routing.primaryModel;
 
-      if (apiKey) {
+    if (apiKey) {
+      try {
         const contentParts: any[] = [
           {
             type: 'text',
@@ -389,71 +390,74 @@ Return strict JSON matching this schema:
           }
         ];
 
-      for (let i = 0; i < payload.imageUrls.length; i++) {
-        const rawUrl = payload.imageUrls[i];
-        if (!rawUrl) continue;
-        let finalUrl = rawUrl;
-        if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
-          try {
-            const imgRes = await fetch(rawUrl, {
-              headers: { 'User-Agent': 'Mozilla/5.0 (compatible; HEX-AIM-Intake/1.0)' },
-              signal: AbortSignal.timeout(15000),
-            });
-            if (imgRes.ok) {
-              const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
-              const arrayBuf = await imgRes.arrayBuffer();
-              const base64 = Buffer.from(arrayBuf).toString('base64');
-              finalUrl = `data:${mimeType};base64,${base64}`;
+        for (let i = 0; i < payload.imageUrls.length; i++) {
+          const rawUrl = payload.imageUrls[i];
+          if (!rawUrl) continue;
+          let finalUrl = rawUrl;
+          if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
+            try {
+              const imgRes = await fetch(rawUrl, {
+                headers: { 'User-Agent': 'Mozilla/5.0 (compatible; HEX-AIM-Intake/1.0)' },
+                signal: AbortSignal.timeout(routing.imageFetchTimeoutMs),
+              });
+              if (imgRes.ok) {
+                const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
+                const arrayBuf = await imgRes.arrayBuffer();
+                const base64 = Buffer.from(arrayBuf).toString('base64');
+                finalUrl = `data:${mimeType};base64,${base64}`;
+              }
+            } catch (fetchErr) {
+              console.warn('[processBatchAssessmentJob] Unable to inline image buffer to base64; sending raw URL:', fetchErr);
             }
-          } catch (fetchErr) {
-            console.warn('[processBatchAssessmentJob] Unable to inline image buffer to base64; sending raw URL:', fetchErr);
           }
+          contentParts.push({ type: 'text', text: `PAGE INDEX ${i}:` });
+          contentParts.push({ type: 'image_url', image_url: { url: finalUrl } });
         }
-        contentParts.push({ type: 'text', text: `PAGE INDEX ${i}:` });
-        contentParts.push({ type: 'image_url', image_url: { url: finalUrl } });
-      }
 
-      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://aim.getvintel.com',
-          'X-Title': 'HEX-AIM Cognitive Intake'
-        },
-        body: JSON.stringify({
-          model,
-          provider: {
-            order: ['Google'],
-            ignore: ['Google AI Studio'],
-            allow_fallbacks: false,
+        const res = await fetch(routing.chatEndpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': routing.httpReferer,
+            'X-Title': routing.appTitle,
           },
-          messages: [{ role: 'user', content: contentParts }],
-          temperature: 0.1,
-          response_format: { type: 'json_object' }
-        }),
-        signal: AbortSignal.timeout(35000),
-      });
+          body: JSON.stringify({
+            model,
+            provider: {
+              order: routing.providerOrder,
+              ignore: routing.providerIgnore,
+              allow_fallbacks: routing.allowFallbacks,
+            },
+            messages: [{ role: 'user', content: contentParts }],
+            temperature: routing.temperature,
+            response_format: { type: 'json_object' }
+          }),
+          signal: AbortSignal.timeout(routing.timeoutMs),
+        });
 
-      if (res.ok) {
-        const d = await res.json() as any;
-        const parsed = JSON.parse(d?.choices?.[0]?.message?.content || '{}');
-        if (Array.isArray(parsed.laraPageIndices) && parsed.laraPageIndices.length > 0) {
-          laraImages = parsed.laraPageIndices.map((idx: number) => payload.imageUrls[idx]).filter(Boolean);
+        if (res.ok) {
+          const d = await res.json() as any;
+          const parsed = JSON.parse(d?.choices?.[0]?.message?.content || '{}');
+          if (Array.isArray(parsed.laraPageIndices) && parsed.laraPageIndices.length > 0) {
+            laraImages = parsed.laraPageIndices.map((idx: number) => payload.imageUrls[idx]).filter(Boolean);
+          }
+          if (Array.isArray(parsed.mayaPageIndices) && parsed.mayaPageIndices.length > 0) {
+            mayaImages = parsed.mayaPageIndices.map((idx: number) => payload.imageUrls[idx]).filter(Boolean);
+          }
+          if (parsed.laraAttemptStatus) laraStatus = parsed.laraAttemptStatus;
+          if (parsed.mayaAttemptStatus) mayaStatus = parsed.mayaAttemptStatus;
+          if (parsed.detectedSubject) detectedBatchSubject = parsed.detectedSubject;
+          if (typeof parsed.detectedWeek === 'number' && parsed.detectedWeek > 0) detectedBatchWeek = parsed.detectedWeek;
+        } else {
+          const errText = await res.text();
+          settings.logLoudFailure('processBatchAssessmentJob:aiPartition', model, `HTTP ${res.status}: ${errText}`);
         }
-        if (Array.isArray(parsed.mayaPageIndices) && parsed.mayaPageIndices.length > 0) {
-          mayaImages = parsed.mayaPageIndices.map((idx: number) => payload.imageUrls[idx]).filter(Boolean);
-        }
-        if (parsed.laraAttemptStatus) laraStatus = parsed.laraAttemptStatus;
-        if (parsed.mayaAttemptStatus) mayaStatus = parsed.mayaAttemptStatus;
-        if (parsed.detectedSubject) detectedBatchSubject = parsed.detectedSubject;
-        if (typeof parsed.detectedWeek === 'number' && parsed.detectedWeek > 0) detectedBatchWeek = parsed.detectedWeek;
+      } catch (partErr) {
+        settings.logLoudFailure('processBatchAssessmentJob:aiPartition', model, partErr);
       }
     }
-  } catch (partErr) {
-    console.warn('[processBatchAssessmentJob] AI partition warning, falling back to sequential split:', partErr);
   }
-}
 
   // Fallback partition: if AI partition did not assign images, do NOT blindly slice 50/50.
   // Treat entire batch as belonging to the primary detected student rather than guessing.
