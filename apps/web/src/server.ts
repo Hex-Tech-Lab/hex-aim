@@ -12,10 +12,22 @@ export function createServer(): http.Server {
   return http.createServer(async (req, res) => {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
 
+    // Favicon handler
+    if (url.pathname === '/favicon.ico') {
+      res.writeHead(204, { 'Content-Type': 'image/x-icon' });
+      res.end();
+      return;
+    }
+
     // Health check
     if (url.pathname === '/health') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ status: 'ok', service: 'hex-aim-web', timestamp: new Date().toISOString() }));
+      const payload = JSON.stringify({ status: 'ok', service: 'hex-aim-web', timestamp: new Date().toISOString() });
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload),
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(payload);
       return;
     }
 
@@ -52,8 +64,13 @@ export function createServer(): http.Server {
 
     // Interactive Console HTML
     if (url.pathname === '/' || url.pathname === '/index.html') {
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(renderDashboardHtml());
+      const html = renderDashboardHtml();
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': Buffer.byteLength(html, 'utf8'),
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(html);
       return;
     }
 
@@ -201,7 +218,11 @@ export function createServer(): http.Server {
 // Start server if run directly
 if (process.argv[1] && process.argv[1].endsWith('server.js')) {
   const server = createServer();
-  server.listen(PORT, () => {
-    console.log(`[hex-aim-web] Console listening on http://localhost:${PORT}`);
+  const HOST = process.env.HOST || '0.0.0.0';
+  server.listen(PORT, HOST, () => {
+    console.log(`[hex-aim-web] Console listening on:`);
+    console.log(`  - Local:   http://localhost:${PORT}`);
+    console.log(`  - Loopback: http://127.0.0.1:${PORT}`);
+    console.log(`  - Network:  http://172.30.43.101:${PORT}`);
   });
 }

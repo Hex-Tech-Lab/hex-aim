@@ -52,7 +52,14 @@ export default {
     if (env.VISION_PROVIDER) settings.set('vision.provider', env.VISION_PROVIDER);
     if (env.UPSTASH_REDIS_REST_URL) settings.set('UPSTASH_REDIS_REST_URL', env.UPSTASH_REDIS_REST_URL);
     if (env.UPSTASH_REDIS_REST_TOKEN) settings.set('UPSTASH_REDIS_REST_TOKEN', env.UPSTASH_REDIS_REST_TOKEN);
-    if (env.OPENROUTER_API_KEY) settings.set('OPENROUTER_API_KEY', env.OPENROUTER_API_KEY);
+    if (env.OPENROUTER_API_KEY) {
+      settings.set('OPENROUTER_API_KEY', env.OPENROUTER_API_KEY);
+      settings.set('ai.openrouter.api_key', env.OPENROUTER_API_KEY);
+    }
+    if (env.OPENROUTER_VISION_MODEL) {
+      settings.set('OPENROUTER_VISION_MODEL', env.OPENROUTER_VISION_MODEL);
+      settings.set('vision.model.primary', env.OPENROUTER_VISION_MODEL);
+    }
     if (env.TELEGRAM_BOT_TOKEN) settings.set('TELEGRAM_BOT_TOKEN', env.TELEGRAM_BOT_TOKEN);
 
     // Health check

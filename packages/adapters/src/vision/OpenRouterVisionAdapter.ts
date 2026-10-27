@@ -2,7 +2,7 @@ import type {
   IVisionExtractionPort, 
   AssessmentItem 
 } from '@hex-aim/types';
-import { SettingsManager, CurriculumTaxonomyService } from '@hex-aim/core';
+import { SettingsManager, CurriculumTaxonomyService, type OpenRouterRoutingConfig } from '@hex-aim/core';
 
 export interface OpenRouterVisionConfig {
   apiKey?: string;
@@ -14,15 +14,17 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
   private apiKey: string;
   private model: string;
   private baseUrl: string;
+  private routingConfig: OpenRouterRoutingConfig;
 
   constructor(config?: OpenRouterVisionConfig) {
     const settings = SettingsManager.getInstance();
-    this.apiKey = config?.apiKey || settings.get<string>('OPENROUTER_API_KEY', '');
-    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
-    this.baseUrl = config?.baseUrl || 'https://openrouter.ai/api/v1';
+    this.routingConfig = settings.getOpenRouterRoutingConfig();
+    this.apiKey = config?.apiKey || settings.get<string>('ai.openrouter.api_key', settings.get<string>('OPENROUTER_API_KEY', ''));
+    this.model = config?.model || this.routingConfig.primaryModel;
+    this.baseUrl = config?.baseUrl || this.routingConfig.baseUrl;
 
     if (!this.apiKey) {
-      throw new Error('[OpenRouterVisionAdapter] Fatal: OPENROUTER_API_KEY is not configured. Zero silent fallback enforced.');
+      throw new Error('[OpenRouterVisionAdapter] Fatal: OPENROUTER_API_KEY is not configured in Centralized Settings Registry. Zero silent fallback enforced.');
     }
   }
 
@@ -38,8 +40,10 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
     detectedWeek?: number;
     detectedYearGroup?: string;
   }> {
+    const settings = SettingsManager.getInstance();
+
     if (!this.apiKey) {
-      throw new Error('[OpenRouterVisionAdapter] Cannot extract assessment: OPENROUTER_API_KEY is missing.');
+      throw new Error('[OpenRouterVisionAdapter] Fatal: OPENROUTER_API_KEY is missing from Centralized Settings Registry.');
     }
 
     if (!imageUrls || imageUrls.length === 0) {
@@ -55,14 +59,12 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
 
     for (const rawUrl of imageUrls) {
       let finalUrl = rawUrl;
-      // In-line buffer remote images (e.g. Telegram CDN) to base64 data URIs.
-      // This prevents upstream OpenRouter providers from failing when fetching from Telegram CDN
-      // and prevents leaking Telegram bot tokens in transit.
+      // In-line buffer remote images to base64 data URIs.
       if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
         try {
           const imgRes = await fetch(rawUrl, {
             headers: { 'User-Agent': 'Mozilla/5.0 (compatible; HEX-AIM-Intake/1.0)' },
-            signal: AbortSignal.timeout(15000),
+            signal: AbortSignal.timeout(this.routingConfig.imageFetchTimeoutMs),
           });
           if (imgRes.ok) {
             const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
@@ -89,30 +91,31 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
     }
 
     const endpoint = `${this.baseUrl}/chat/completions`;
-    const candidateModels = [this.model];
-    if (this.model !== 'google/gemini-3.8-flash') {
-      candidateModels.push('google/gemini-3.8-flash');
-    }
+    const candidateModels = Array.from(new Set([this.model, ...this.routingConfig.fallbackCascade]));
 
     let lastError = '';
     let data: any = null;
 
-    for (const modelCandidate of candidateModels) {
+    for (let i = 0; i < candidateModels.length; i++) {
+      const modelCandidate = candidateModels[i];
+      if (!modelCandidate) continue;
+      const nextCandidate = i + 1 < candidateModels.length ? candidateModels[i + 1] : undefined;
+
       try {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${this.apiKey}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://aim.getvintel.com',
-            'X-Title': 'HEX-AIM Cognitive Intake'
+            'HTTP-Referer': this.routingConfig.httpReferer,
+            'X-Title': this.routingConfig.appTitle,
           },
           body: JSON.stringify({
             model: modelCandidate,
             provider: {
-              order: ['Google'],
-              ignore: ['Google AI Studio'],
-              allow_fallbacks: false,
+              order: this.routingConfig.providerOrder,
+              ignore: this.routingConfig.providerIgnore,
+              allow_fallbacks: this.routingConfig.allowFallbacks,
             },
             messages: [
               {
@@ -120,26 +123,29 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
                 content: contentParts
               }
             ],
-            temperature: 0.1,
+            temperature: this.routingConfig.temperature,
             response_format: { type: 'json_object' }
           }),
-          signal: AbortSignal.timeout(35000),
+          signal: AbortSignal.timeout(this.routingConfig.timeoutMs),
         });
 
         if (!res.ok) {
           const errText = await res.text();
-          console.warn(`[OpenRouterVisionAdapter] Model ${modelCandidate} failed with HTTP ${res.status}:`, errText);
           lastError = `Status ${res.status}: ${errText}`;
+          settings.logLoudFailure('OpenRouterVisionAdapter:extractAssessment', modelCandidate, lastError, nextCandidate);
           continue;
         }
 
         data = await res.json() as any;
         if (data?.choices?.[0]?.message?.content) {
           break; // successfully got completion
+        } else {
+          lastError = 'Empty completion choices payload';
+          settings.logLoudFailure('OpenRouterVisionAdapter:extractAssessment', modelCandidate, lastError, nextCandidate);
         }
       } catch (reqErr: any) {
         lastError = String(reqErr?.message || reqErr);
-        console.warn(`[OpenRouterVisionAdapter] Model ${modelCandidate} request error:`, lastError);
+        settings.logLoudFailure('OpenRouterVisionAdapter:extractAssessment', modelCandidate, lastError, nextCandidate);
       }
     }
 
