@@ -190,6 +190,7 @@ export function renderDashboardStyles(): string {
 
   .tab-pane {
     display: none;
+    contain: content;
   }
 
   .tab-pane.active {
@@ -986,17 +987,11 @@ export function renderDashboardStyles(): string {
     background: #fafafa;
   }
 
-  /* Fluid UI Animations */
+  /* Fluid UI Animations - Zero Layout Thrashing */
   @keyframes pulseGlow {
     0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
     50% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.7); }
   }
   .pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
-
-  @keyframes cardSlideIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .tab-pane.active { animation: cardSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
 </style>`;
 }
