@@ -6,7 +6,7 @@ export async function handleDiagRoutes(url: URL, env: Env): Promise<Response | n
 
   if (url.pathname === '/diag/openrouter') {
     const apiKey = env.OPENROUTER_API_KEY || settings.get<string>('OPENROUTER_API_KEY', '');
-    const model = env.OPENROUTER_VISION_MODEL || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
+    const model = env.OPENROUTER_VISION_MODEL || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
     if (!apiKey) {
       return new Response(JSON.stringify({ ok: false, error: 'OPENROUTER_API_KEY is not configured in worker environment' }), {
         status: 500,
@@ -24,6 +24,11 @@ export async function handleDiagRoutes(url: URL, env: Env): Promise<Response | n
         },
         body: JSON.stringify({
           model,
+          provider: {
+            order: ['Google'],
+            ignore: ['Google AI Studio'],
+            allow_fallbacks: false,
+          },
           messages: [{ role: 'user', content: 'Reply with exact text: OPENROUTER_ONLINE' }],
           max_tokens: 10,
         }),
@@ -34,6 +39,7 @@ export async function handleDiagRoutes(url: URL, env: Env): Promise<Response | n
         ok: pingRes.ok,
         status: pingRes.status,
         model,
+        provider: pingData?.provider || 'Google (Vertex)',
         response: pingData?.choices?.[0]?.message?.content || pingData,
         timestamp: new Date().toISOString(),
       }), {

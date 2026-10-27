@@ -18,7 +18,7 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
   constructor(config?: OpenRouterVisionConfig) {
     const settings = SettingsManager.getInstance();
     this.apiKey = config?.apiKey || settings.get<string>('OPENROUTER_API_KEY', '');
-    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
+    this.model = config?.model || settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
     this.baseUrl = config?.baseUrl || 'https://openrouter.ai/api/v1';
 
     if (!this.apiKey) {
@@ -90,8 +90,8 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
 
     const endpoint = `${this.baseUrl}/chat/completions`;
     const candidateModels = [this.model];
-    if (this.model !== 'google/gemini-2.5-flash') {
-      candidateModels.push('google/gemini-2.5-flash');
+    if (this.model !== 'google/gemini-3.8-flash') {
+      candidateModels.push('google/gemini-3.8-flash');
     }
 
     let lastError = '';
@@ -109,6 +109,11 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
           },
           body: JSON.stringify({
             model: modelCandidate,
+            provider: {
+              order: ['Google'],
+              ignore: ['Google AI Studio'],
+              allow_fallbacks: false,
+            },
             messages: [
               {
                 role: 'user',

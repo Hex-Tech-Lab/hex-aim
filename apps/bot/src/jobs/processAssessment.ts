@@ -367,7 +367,7 @@ export async function processBatchAssessmentJob(payload: {
     try {
       const settings = SettingsManager.getInstance();
       const apiKey = settings.get<string>('OPENROUTER_API_KEY', '');
-      const model = settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-2.5-flash');
+      const model = settings.get<string>('OPENROUTER_VISION_MODEL', 'google/gemini-3.5-flash-lite');
 
       if (apiKey) {
         const contentParts: any[] = [
@@ -423,6 +423,11 @@ Return strict JSON matching this schema:
         },
         body: JSON.stringify({
           model,
+          provider: {
+            order: ['Google'],
+            ignore: ['Google AI Studio'],
+            allow_fallbacks: false,
+          },
           messages: [{ role: 'user', content: contentParts }],
           temperature: 0.1,
           response_format: { type: 'json_object' }
