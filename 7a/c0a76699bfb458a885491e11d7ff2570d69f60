@@ -1,0 +1,18 @@
+apps/web/public/index.html
+  h_cdd764b4030252 316-353,356-357,360,362-365,368-371,374-429,431-506,509-512,1236-1272,2911-2915,3126-3140,3142,3146,3160-3161
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 79-115,427-431,642-656,658,662,676-677
+apps/web/src/ui/dashboardStyles.ts
+  h_cdd764b4030252 270-307,310-311,314,316-319,322-325,328-383,385-455,458-466
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ac0a76699bfb458a885491e11d7ff2570d69f60",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
