@@ -1,15 +1,6 @@
 export function renderStudentProgressTab(): string {
   return `  <!-- TAB 1: Student Progress & Mastery (2/3 + 1/3 Split) -->
   <div id="tab-student-view" class="tab-pane active">
-    <div class="student-pills">
-      <button class="pill-btn active" id="pill-lara" onclick="setStudent('lara')">
-        <i data-lucide="user" class="inline w-4 h-4 mr-1"></i> 👧 Lara (Year 4)
-      </button>
-      <button class="pill-btn" id="pill-maya" onclick="setStudent('maya')">
-        <i data-lucide="user-check" class="inline w-4 h-4 mr-1"></i> 👧 Maya (Year 4)
-      </button>
-    </div>
-
     <div class="tab1-layout">
       <!-- Left 2/3: Progress Charts & Trend Analytics -->
       <div class="tab1-main">

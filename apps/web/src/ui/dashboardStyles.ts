@@ -267,31 +267,202 @@ export function renderDashboardStyles(): string {
 
   .card-header h2 { font-size: 16px; font-weight: 700; color: var(--astryx-text-contrast); }
 
-  /* Student Selector Pills */
+  /* Rotating Conic Scope-Ring Primitive (from hex-yt-intel) */
+  @property --hx-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+  @keyframes hx-rotate-ring { to { --hx-angle: 360deg; } }
+
+  /* Global Student Scope Bar (Partition Root above Tabs) */
+  .student-scope-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-lg);
+    padding: 10px 18px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: var(--astryx-shadow-card);
+  }
+
+  .scope-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .scope-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
   .student-pills {
     display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
+  /* Scope Ring Button with rotating conic-gradient edge */
   .pill-btn {
-    padding: 8px 18px;
-    border-radius: var(--astryx-radius-full);
-    border: 1px solid var(--astryx-border-subtle);
+    position: relative;
+    padding: 2px;
+    border-radius: var(--astryx-radius-lg);
+    border: 1px solid var(--card-border);
     background: var(--card-elevated);
-    color: var(--text);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    display: inline-flex;
+    outline: none;
+  }
+
+  .pill-btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--astryx-border-subtle);
+  }
+
+  .pill-ring-spin {
+    display: none;
+    position: absolute;
+    inset: -100%;
+    background: conic-gradient(from var(--hx-angle), transparent 45%, var(--cyan) 75%, transparent 95%);
+    animation: hx-rotate-ring 3s linear infinite;
+    z-index: 1;
+  }
+
+  .pill-btn.active .pill-ring-spin {
+    display: block;
+  }
+
+  .pill-btn.active {
+    border-color: transparent;
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.25);
+  }
+
+  .pill-inner {
+    position: relative;
+    z-index: 2;
+    background: var(--card);
+    border-radius: calc(var(--astryx-radius-lg) - 2px);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .pill-btn.active .pill-inner {
+    background: var(--card-elevated);
+  }
+
+  /* Pulsating Avatar Badge */
+  .avatar-ring {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+    border: 1.5px solid var(--card-border);
+    transition: all 0.2s ease;
+  }
+
+  .avatar-lara { color: var(--cyan); }
+  .avatar-maya { color: var(--purple); }
+
+  .pill-btn.active .avatar-lara {
+    border-color: var(--cyan);
+    background: rgba(6, 182, 212, 0.15);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.7);
+    animation: pulseGlow 2s infinite ease-in-out;
+  }
+
+  .pill-btn.active .avatar-maya {
+    border-color: var(--purple);
+    background: rgba(168, 85, 247, 0.15);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    animation: pulseGlow 2s infinite ease-in-out;
+  }
+
+  .student-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .student-info .name {
     font-size: 13px;
     font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s ease;
+    color: var(--astryx-text-contrast);
+    line-height: 1.2;
   }
 
-  .pill-btn:hover, .pill-btn.active {
-    background: var(--cyan);
-    color: #ffffff;
-    border-color: var(--cyan);
-    box-shadow: var(--astryx-shadow-glow);
+  .student-info .meta {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.2;
   }
+
+  .active-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--card-border);
+    margin-left: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .pill-btn.active .active-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  /* Non-Blocking Toast Notification Container */
+  #toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--card-elevated);
+    color: var(--astryx-text-contrast);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 12px 18px;
+    font-size: 13px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: auto;
+    max-width: 420px;
+    line-height: 1.4;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .toast-success { border-left: 4px solid var(--green); }
+  .toast-cyan { border-left: 4px solid var(--cyan); }
+  .toast-orange { border-left: 4px solid var(--orange); }
 
   /* Mini Metric Row */
   .mini-kpi-row {

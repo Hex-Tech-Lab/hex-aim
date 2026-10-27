@@ -76,6 +76,43 @@ ${renderDashboardStyles()}
     </div>
   </header>
 
+  <!-- Global Student Scope Partition (Lifted Above Tabs) -->
+  <div class="student-scope-bar">
+    <div class="scope-label">
+      <span class="scope-indicator"></span>
+      <span>Active Student Profile:</span>
+    </div>
+    <div class="student-pills">
+      <button class="pill-btn active" id="pill-lara" onclick="setStudent('lara')" title="Switch to Lara's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring avatar-lara">
+            <i data-lucide="user" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name">Lara</span>
+            <span class="meta">Year 4 • British Primary Track</span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-maya" onclick="setStudent('maya')" title="Switch to Maya's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring avatar-maya">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name">Maya</span>
+            <span class="meta">Year 4 • British Primary Track</span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="switchTab('tab-student-view', this)">
@@ -387,6 +424,11 @@ ${renderDashboardStyles()}
           const valEl = document.getElementById('gauge-val');
           if (valEl) valEl.textContent = data.gaugeVal + '%';
         }
+
+        // Cascade active student filter to Tab 4 (Scanned Submissions)
+        if (typeof filterSubmissions === 'function') {
+          filterSubmissions(studentId, null);
+        }
       });
     }
 
@@ -597,12 +639,27 @@ ${renderDashboardStyles()}
       }
     }
 
+    // Non-blocking Toast Notification System (0ms Main Thread Block)
+    function showToast(message, type = 'cyan') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = message;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
     function downloadVectorPdf(templateId) {
-      alert('📄 Generating 300-DPI Vector PDF for ' + templateId + ' without scan artifacts. Ready for high-volume classroom printing or offline tablet practice.');
+      showToast('📄 <strong>Vector PDF Generation</strong>: Compiling 300-DPI clean worksheet for ' + templateId + ' without scan artifacts.', 'success');
     }
 
     function launchDryRun(templateId) {
-      alert('🧪 Launching interactive timed dry-run for ' + templateId + '. Student input is recorded into the diagnostic gap ledger upon completion.');
+      showToast('🧪 <strong>Interactive Dry-Run</strong>: Initialized timed practice session for ' + templateId + '. Responses record directly to gap ledger.', 'cyan');
     }
 
     // Wave 18: Progressive Web App (PWA) Offline Synchronization Registration
@@ -616,6 +673,8 @@ ${renderDashboardStyles()}
       });
     }
   </script>
+
+  <div id="toast-container"></div>
 </body>
 </html>`;
 }
