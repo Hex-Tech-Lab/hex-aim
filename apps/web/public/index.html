@@ -313,31 +313,202 @@
 
   .card-header h2 { font-size: 16px; font-weight: 700; color: var(--astryx-text-contrast); }
 
-  /* Student Selector Pills */
+  /* Rotating Conic Scope-Ring Primitive (from hex-yt-intel) */
+  @property --hx-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+  @keyframes hx-rotate-ring { to { --hx-angle: 360deg; } }
+
+  /* Global Student Scope Bar (Partition Root above Tabs) */
+  .student-scope-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-lg);
+    padding: 10px 18px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: var(--astryx-shadow-card);
+  }
+
+  .scope-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .scope-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
   .student-pills {
     display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
+  /* Scope Ring Button with rotating conic-gradient edge */
   .pill-btn {
-    padding: 8px 18px;
-    border-radius: var(--astryx-radius-full);
-    border: 1px solid var(--astryx-border-subtle);
+    position: relative;
+    padding: 2px;
+    border-radius: var(--astryx-radius-lg);
+    border: 1px solid var(--card-border);
     background: var(--card-elevated);
-    color: var(--text);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    display: inline-flex;
+    outline: none;
+  }
+
+  .pill-btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--astryx-border-subtle);
+  }
+
+  .pill-ring-spin {
+    display: none;
+    position: absolute;
+    inset: -100%;
+    background: conic-gradient(from var(--hx-angle), transparent 45%, var(--cyan) 75%, transparent 95%);
+    animation: hx-rotate-ring 3s linear infinite;
+    z-index: 1;
+  }
+
+  .pill-btn.active .pill-ring-spin {
+    display: block;
+  }
+
+  .pill-btn.active {
+    border-color: transparent;
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.25);
+  }
+
+  .pill-inner {
+    position: relative;
+    z-index: 2;
+    background: var(--card);
+    border-radius: calc(var(--astryx-radius-lg) - 2px);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .pill-btn.active .pill-inner {
+    background: var(--card-elevated);
+  }
+
+  /* Pulsating Avatar Badge */
+  .avatar-ring {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+    border: 1.5px solid var(--card-border);
+    transition: all 0.2s ease;
+  }
+
+  .avatar-lara { color: var(--cyan); }
+  .avatar-maya { color: var(--purple); }
+
+  .pill-btn.active .avatar-lara {
+    border-color: var(--cyan);
+    background: rgba(6, 182, 212, 0.15);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.7);
+    animation: pulseGlow 2s infinite ease-in-out;
+  }
+
+  .pill-btn.active .avatar-maya {
+    border-color: var(--purple);
+    background: rgba(168, 85, 247, 0.15);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    animation: pulseGlow 2s infinite ease-in-out;
+  }
+
+  .student-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .student-info .name {
     font-size: 13px;
     font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s ease;
+    color: var(--astryx-text-contrast);
+    line-height: 1.2;
   }
 
-  .pill-btn:hover, .pill-btn.active {
-    background: var(--cyan);
-    color: #ffffff;
-    border-color: var(--cyan);
-    box-shadow: var(--astryx-shadow-glow);
+  .student-info .meta {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.2;
   }
+
+  .active-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--card-border);
+    margin-left: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .pill-btn.active .active-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  /* Non-Blocking Toast Notification Container */
+  #toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--card-elevated);
+    color: var(--astryx-text-contrast);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 12px 18px;
+    font-size: 13px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: auto;
+    max-width: 420px;
+    line-height: 1.4;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .toast-success { border-left: 4px solid var(--green); }
+  .toast-cyan { border-left: 4px solid var(--cyan); }
+  .toast-orange { border-left: 4px solid var(--orange); }
 
   /* Mini Metric Row */
   .mini-kpi-row {
@@ -1062,6 +1233,43 @@
     </div>
   </header>
 
+  <!-- Global Student Scope Partition (Lifted Above Tabs) -->
+  <div class="student-scope-bar">
+    <div class="scope-label">
+      <span class="scope-indicator"></span>
+      <span>Active Student Profile:</span>
+    </div>
+    <div class="student-pills">
+      <button class="pill-btn active" id="pill-lara" onclick="setStudent('lara')" title="Switch to Lara's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring avatar-lara">
+            <i data-lucide="user" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name">Lara</span>
+            <span class="meta">Year 4 • British Primary Track</span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-maya" onclick="setStudent('maya')" title="Switch to Maya's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring avatar-maya">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name">Maya</span>
+            <span class="meta">Year 4 • British Primary Track</span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="switchTab('tab-student-view', this)">
@@ -1083,15 +1291,6 @@
 
     <!-- TAB 1: Student Progress & Mastery (2/3 + 1/3 Split) -->
   <div id="tab-student-view" class="tab-pane active">
-    <div class="student-pills">
-      <button class="pill-btn active" id="pill-lara" onclick="setStudent('lara')">
-        <i data-lucide="user" class="inline w-4 h-4 mr-1"></i> 👧 Lara (Year 4)
-      </button>
-      <button class="pill-btn" id="pill-maya" onclick="setStudent('maya')">
-        <i data-lucide="user-check" class="inline w-4 h-4 mr-1"></i> 👧 Maya (Year 4)
-      </button>
-    </div>
-
     <div class="tab1-layout">
       <!-- Left 2/3: Progress Charts & Trend Analytics -->
       <div class="tab1-main">
@@ -2709,6 +2908,11 @@
           const valEl = document.getElementById('gauge-val');
           if (valEl) valEl.textContent = data.gaugeVal + '%';
         }
+
+        // Cascade active student filter to Tab 4 (Scanned Submissions)
+        if (typeof filterSubmissions === 'function') {
+          filterSubmissions(studentId, null);
+        }
       });
     }
 
@@ -2919,12 +3123,27 @@
       }
     }
 
+    // Non-blocking Toast Notification System (0ms Main Thread Block)
+    function showToast(message, type = 'cyan') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = message;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
     function downloadVectorPdf(templateId) {
-      alert('📄 Generating 300-DPI Vector PDF for ' + templateId + ' without scan artifacts. Ready for high-volume classroom printing or offline tablet practice.');
+      showToast('📄 <strong>Vector PDF Generation</strong>: Compiling 300-DPI clean worksheet for ' + templateId + ' without scan artifacts.', 'success');
     }
 
     function launchDryRun(templateId) {
-      alert('🧪 Launching interactive timed dry-run for ' + templateId + '. Student input is recorded into the diagnostic gap ledger upon completion.');
+      showToast('🧪 <strong>Interactive Dry-Run</strong>: Initialized timed practice session for ' + templateId + '. Responses record directly to gap ledger.', 'cyan');
     }
 
     // Wave 18: Progressive Web App (PWA) Offline Synchronization Registration
@@ -2938,5 +3157,7 @@
       });
     }
   </script>
+
+  <div id="toast-container"></div>
 </body>
 </html>
