@@ -4,36 +4,134 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HEX-AIM • Adaptive Individualized Mastery Console</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Wave 18: PWA Manifest & App Configuration -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#06b6d4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Meta Astryx & Tailwind CSS Centralized Bridge -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js Graphics & Animation Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Lucide Modern Vector Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
 <script>
-  if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand();
-  }
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          astryx: {
+            bg: '#090d16',
+            surface: '#111827',
+            elevated: '#1e293b',
+            border: '#1f2937',
+            subtle: '#334155',
+            primary: '#06b6d4',
+            accent: '#3b82f6',
+            success: '#10b981',
+            warning: '#f59e0b',
+            priority: '#f97316',
+            purple: '#a855f7',
+            danger: '#ef4444',
+          }
+        },
+        borderRadius: {
+          'astryx-sm': '6px',
+          'astryx-md': '8px',
+          'astryx-lg': '12px',
+        }
+      }
+    }
+  };
 </script>
 <style>
+  /* Meta Astryx Centralized Design Tokens (Theme: Neutral Dark - Default) */
   :root {
-    --bg: #090d16;
-    --card: #111827;
-    --card-border: #1f2937;
-    --cyan: #06b6d4;
-    --accent: #3b82f6;
-    --text: #f3f4f6;
-    --muted: #9ca3af;
-    --green: #10b981;
-    --yellow: #f59e0b;
-    --orange: #f97316;
-    --purple: #a855f7;
-    --red: #ef4444;
+    --astryx-bg: #090d16;
+    --astryx-surface: #111827;
+    --astryx-surface-elevated: #1e293b;
+    --astryx-border: #1f2937;
+    --astryx-border-subtle: #334155;
+    --astryx-primary: #06b6d4;
+    --astryx-accent: #3b82f6;
+    --astryx-text: #f3f4f6;
+    --astryx-text-contrast: #ffffff;
+    --astryx-text-muted: #9ca3af;
+    --astryx-success: #10b981;
+    --astryx-warning: #f59e0b;
+    --astryx-priority: #f97316;
+    --astryx-purple: #a855f7;
+    --astryx-danger: #ef4444;
+
+    /* Astryx Elevation & Radii */
+    --astryx-radius-sm: 6px;
+    --astryx-radius-md: 8px;
+    --astryx-radius-lg: 12px;
+    --astryx-radius-full: 9999px;
+    --astryx-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --astryx-shadow-glow: 0 0 15px rgba(6, 182, 212, 0.25);
+
+    /* Token Aliases */
+    --bg: var(--astryx-bg);
+    --card: var(--astryx-surface);
+    --card-border: var(--astryx-border);
+    --card-elevated: var(--astryx-surface-elevated);
+    --cyan: var(--astryx-primary);
+    --accent: var(--astryx-accent);
+    --text: var(--astryx-text);
+    --muted: var(--astryx-text-muted);
+    --green: var(--astryx-success);
+    --yellow: var(--astryx-warning);
+    --orange: var(--astryx-priority);
+    --purple: var(--astryx-purple);
+    --red: var(--astryx-danger);
+  }
+
+  /* Meta Astryx Centralized Design Tokens (Theme: Neutral Light) */
+  body.theme-light {
+    --astryx-bg: #f8fafc;
+    --astryx-surface: #ffffff;
+    --astryx-surface-elevated: #f1f5f9;
+    --astryx-border: #e2e8f0;
+    --astryx-border-subtle: #cbd5e1;
+    --astryx-primary: #0891b2;
+    --astryx-accent: #2563eb;
+    --astryx-text: #0f172a;
+    --astryx-text-contrast: #0f172a;
+    --astryx-text-muted: #64748b;
+    --astryx-success: #059669;
+    --astryx-warning: #d97706;
+    --astryx-priority: #ea580c;
+    --astryx-purple: #9333ea;
+    --astryx-danger: #dc2626;
+
+    --astryx-shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    --astryx-shadow-glow: 0 4px 14px 0 rgba(8, 145, 178, 0.15);
+
+    --bg: var(--astryx-bg);
+    --card: var(--astryx-surface);
+    --card-border: var(--astryx-border);
+    --card-elevated: var(--astryx-surface-elevated);
+    --cyan: var(--astryx-primary);
+    --accent: var(--astryx-accent);
+    --text: var(--astryx-text);
+    --muted: var(--astryx-text-muted);
+    --green: var(--astryx-success);
+    --yellow: var(--astryx-warning);
+    --orange: var(--astryx-priority);
+    --purple: var(--astryx-purple);
+    --red: var(--astryx-danger);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--astryx-bg);
+    color: var(--astryx-text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     padding: 20px;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   header {
@@ -42,7 +140,7 @@
     align-items: center;
     border-bottom: 1px solid var(--card-border);
     padding-bottom: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 12px;
   }
@@ -50,7 +148,7 @@
   .logo-group h1 {
     font-size: 20px;
     font-weight: 800;
-    color: #fff;
+    color: var(--astryx-text-contrast);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -66,18 +164,82 @@
   }
 
   .badge-tag {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: var(--card-elevated);
+    border: 1px solid var(--astryx-border-subtle);
     padding: 6px 14px;
-    border-radius: 8px;
+    border-radius: var(--astryx-radius-md);
     font-size: 12px;
     font-weight: 600;
+    color: var(--text);
   }
 
   .badge-region {
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
     color: var(--green);
+  }
+
+  /* Theme Switcher Button */
+  .theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--astryx-radius-md);
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .theme-toggle-btn:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: var(--astryx-shadow-glow);
+  }
+
+  /* Nav Tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 24px;
+  }
+
+  .nav-tab {
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-tab:hover {
+    color: var(--astryx-text-contrast);
+  }
+
+  .nav-tab.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+    background: rgba(6, 182, 212, 0.08);
+    border-radius: var(--astryx-radius-md) var(--astryx-radius-md) 0 0;
+  }
+
+  .tab-pane {
+    display: none;
+  }
+
+  .tab-pane.active {
+    display: block;
   }
 
   /* Metric Grid */
@@ -91,10 +253,12 @@
   .metric-card {
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 12px;
+    border-radius: var(--astryx-radius-lg);
     padding: 16px;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--astryx-shadow-card);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
   }
 
   .metric-card::before {
@@ -110,62 +274,29 @@
   .m-cyan::before { background: var(--cyan); }
 
   .metric-card .title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .metric-card .value { font-size: 26px; font-weight: 800; color: #fff; margin: 4px 0; }
+  .metric-card .value { font-size: 26px; font-weight: 800; color: var(--astryx-text-contrast); margin: 4px 0; }
   .metric-card .desc { font-size: 12px; color: var(--muted); }
 
-  /* Main Workspace */
-  .workspace {
+  /* Responsive Split Layout for Tab 1 */
+  .tab1-layout {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 2fr 1fr;
     gap: 20px;
     margin-bottom: 24px;
   }
 
-  @media (max-width: 900px) {
-    .workspace { grid-template-columns: 1fr; }
-  }
-
-  /* Student Roster */
-  .roster {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    padding: 16px;
-  }
-
-  .roster h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-  .student-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-
-  .student-item {
-    background: #1e293b;
-    border: 1px solid #334155;
-    padding: 10px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .student-item:hover, .student-item.active {
-    border-color: var(--cyan);
-    background: #0f172a;
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
-  }
-
-  .student-item .name { font-weight: 700; font-size: 14px; color: #fff; }
-  .student-item .meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-  /* Detail Panel */
-  .detail-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  @media (max-width: 1024px) {
+    .tab1-layout { grid-template-columns: 1fr; }
   }
 
   .card {
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 12px;
+    border-radius: var(--astryx-radius-lg);
     padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--astryx-shadow-card);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
   }
 
   .card-header {
@@ -179,50 +310,183 @@
     gap: 10px;
   }
 
-  .card-header h2 { font-size: 16px; font-weight: 700; color: #fff; }
+  .card-header h2 { font-size: 16px; font-weight: 700; color: var(--astryx-text-contrast); }
 
-  /* Gap Ledger Table */
+  /* Student Selector Pills */
+  .student-pills {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .pill-btn {
+    padding: 8px 18px;
+    border-radius: var(--astryx-radius-full);
+    border: 1px solid var(--astryx-border-subtle);
+    background: var(--card-elevated);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .pill-btn:hover, .pill-btn.active {
+    background: var(--cyan);
+    color: #ffffff;
+    border-color: var(--cyan);
+    box-shadow: var(--astryx-shadow-glow);
+  }
+
+  /* Mini Metric Row */
+  .mini-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .mini-kpi-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .mini-kpi {
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 10px;
+    text-align: center;
+  }
+
+  .mini-kpi .kpi-label { font-size: 10px; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .mini-kpi .kpi-val { font-size: 20px; font-weight: 800; color: var(--astryx-text-contrast); margin-top: 2px; }
+
+  /* Interactive Chart Boxes */
+  .chart-box {
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .chart-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--astryx-text-contrast);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 14px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Right Pane Scorecard & Misconceptions */
+  .scorecard-banner {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--astryx-radius-md);
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
+  .scorecard-banner .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .scorecard-banner .big-score {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--astryx-text-contrast);
+    margin: 4px 0;
+  }
+
+  .misconception-item {
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--orange);
+    padding: 10px;
+    border-radius: 0 var(--astryx-radius-sm) var(--astryx-radius-sm) 0;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+
+  .misconception-item.yellow {
+    border-left-color: var(--yellow);
+  }
+
+  .misconception-title {
+    font-weight: 700;
+    color: var(--astryx-text-contrast);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+
+  .misconception-desc {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  /* Tables */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { text-align: left; padding: 10px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--card-border); }
-  td { padding: 12px 10px; border-bottom: 1px solid #1f2937; }
+  td { padding: 12px 10px; border-bottom: 1px solid var(--card-border); }
 
   .badge {
     display: inline-block;
     padding: 3px 8px;
-    border-radius: 6px;
+    border-radius: var(--astryx-radius-sm);
     font-size: 11px;
     font-weight: 700;
   }
 
-  .badge-orange { background: rgba(249, 115, 22, 0.2); color: var(--orange); border: 1px solid rgba(249, 115, 22, 0.3); }
-  .badge-yellow { background: rgba(245, 158, 11, 0.2); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
-  .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
-  .badge-purple { background: rgba(168, 85, 247, 0.2); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
-  .badge-red { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-orange { background: rgba(249, 115, 22, 0.15); color: var(--orange); border: 1px solid rgba(249, 115, 22, 0.3); }
+  .badge-yellow { background: rgba(245, 158, 11, 0.15); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+  .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-cyan { background: rgba(6, 182, 212, 0.15); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
 
-  /* Actions */
+  /* Buttons */
   .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     background: var(--cyan);
-    color: #000;
+    color: #ffffff;
     font-weight: 700;
     font-size: 13px;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 10px 18px;
+    border-radius: var(--astryx-radius-md);
     border: none;
     cursor: pointer;
     text-decoration: none;
     transition: opacity 0.2s;
+    width: 100%;
+    margin-top: 6px;
   }
 
   .btn:hover { opacity: 0.9; }
   .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--card-border); }
-  .btn-outline:hover { background: #1e293b; }
-  .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.4); }
+  .btn-outline:hover { background: var(--card-elevated); }
+  .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.4); }
 
-  /* Dual Grid for Admin Settings & Infra Status */
+  /* Admin & Infra Grid */
   .admin-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -239,26 +503,39 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #1f2937;
+    border-bottom: 1px solid var(--card-border);
     font-size: 13px;
   }
 
   .status-row:last-child { border-bottom: none; }
-  .status-row .key { font-weight: 600; color: #fff; }
+  .status-row .key { font-weight: 600; color: var(--astryx-text-contrast); }
   .status-row .val { color: var(--muted); display: flex; align-items: center; gap: 6px; }
 
   /* Sandbox */
   .sandbox-dropzone {
-    border: 2px dashed #374151;
-    border-radius: 8px;
-    padding: 20px;
+    border: 2px dashed var(--astryx-border-subtle);
+    border-radius: var(--astryx-radius-md);
+    padding: 24px;
     text-align: center;
     cursor: pointer;
     transition: border-color 0.2s;
-    background: rgba(17, 24, 39, 0.5);
+    background: var(--card-elevated);
   }
 
   .sandbox-dropzone:hover { border-color: var(--cyan); }
+
+  /* Fluid UI Animations */
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
+    50% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.7); }
+  }
+  .pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
+
+  @keyframes cardSlideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .tab-pane.active { animation: cardSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
 </style>
 </head>
 <body>
@@ -270,228 +547,226 @@
     </div>
     <div class="header-badges">
       <div class="badge-tag badge-region">
-        📍 Primary: cdg1 (Paris) • Sec: fra1 (Frankfurt)
+        <i data-lucide="server" class="inline w-3.5 h-3.5 mr-1"></i> cdg1 (Paris) • fra1 (Frankfurt)
       </div>
       <div class="badge-tag">
-        🏫 Asten College • Year 4 British Primary
+        <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i> Asten College • Y4 British Primary
       </div>
+      <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="Switch Light / Dark Theme">
+        <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+        <span id="theme-label">Light Mode</span>
+      </button>
     </div>
   </header>
 
-  <div class="grid-metrics">
-    <div class="metric-card m-orange">
-      <div class="title">Active Priority (🟠)</div>
-      <div class="value" id="val-orange">2</div>
-      <div class="desc">Active cognitive bottlenecks</div>
-    </div>
-    <div class="metric-card m-yellow">
-      <div class="title">Progressing (🟡)</div>
-      <div class="value" id="val-yellow">3</div>
-      <div class="desc">Stabilizing under rush/pressure</div>
-    </div>
-    <div class="metric-card m-green">
-      <div class="title">Mastered (🟢)</div>
-      <div class="value" id="val-green">14</div>
-      <div class="desc">Fully resolved curriculum targets</div>
-    </div>
-    <div class="metric-card m-cyan">
-      <div class="title">Dedup Gate Savings (🛡️)</div>
-      <div class="value" id="val-savings">9,600</div>
-      <div class="desc">Tokens saved via duplicate test interception</div>
-    </div>
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('tab-student-view', this)">
+      <i data-lucide="line-chart" class="w-4 h-4"></i> Student Progress & Mastery
+    </button>
+    <button class="nav-tab" onclick="switchTab('tab-gap-ledger', this)">
+      <i data-lucide="brain-circuit" class="w-4 h-4"></i> Cognitive Gap Ledger
+    </button>
+    <button class="nav-tab" onclick="switchTab('tab-infra-gate', this)">
+      <i data-lucide="shield-alert" class="w-4 h-4"></i> Ingestion Gate & Infrastructure
+    </button>
   </div>
 
-  <div class="workspace">
-    <!-- Left: Student List -->
-    <div class="roster">
-      <h2>Pilot Cohort (Year 4)</h2>
-      <ul class="student-list" id="student-list">
-        <li class="student-item active" onclick="selectStudent('lara')">
-          <div class="name">Lara (Y4)</div>
-          <div class="meta">ADHD/Dyslexia traits • 8 min target</div>
-        </li>
-        <li class="student-item" onclick="selectStudent('maya')">
-          <div class="name">Maya (Y4)</div>
-          <div class="meta">Verbal execution • 10 min target</div>
-        </li>
-      </ul>
+    <!-- TAB 1: Student Progress & Mastery (2/3 + 1/3 Split) -->
+  <div id="tab-student-view" class="tab-pane active">
+    <div class="student-pills">
+      <button class="pill-btn active" id="pill-lara" onclick="setStudent('lara')">
+        <i data-lucide="user" class="inline w-4 h-4 mr-1"></i> 👧 Lara (Year 4)
+      </button>
+      <button class="pill-btn" id="pill-maya" onclick="setStudent('maya')">
+        <i data-lucide="user-check" class="inline w-4 h-4 mr-1"></i> 👧 Maya (Year 4)
+      </button>
     </div>
 
-    <!-- Right: Student Details & Gaps -->
-    <div class="detail-panel">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2 id="active-student-title">Lara's Cognitive Gap Ledger</h2>
-            <div style="font-size: 12px; color: var(--muted);" id="active-student-meta">Target: 8 min sprint • Twin study routine active</div>
+    <div class="tab1-layout">
+      <!-- Left 2/3: Progress Charts & Trend Analytics -->
+      <div class="tab1-main">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 id="student-name-header">Lara's Academic Trajectory & Mastery Progression</h2>
+              <div style="font-size: 12px; color: var(--muted);" id="student-meta-sub">Asten College • Year 4 British Track • Term 1 Diagnostic Trajectory</div>
+            </div>
+            <span class="badge badge-green pulse-glow" id="student-overall-status">Mastery Stable (92% Avg)</span>
           </div>
-          <div style="display: flex; gap: 8px;">
-            <a href="/sprint/preview" target="_blank" class="btn" id="btn-sprint">📄 Download / Print Sprint (PDF)</a>
-            <a href="/guide/preview" target="_blank" class="btn btn-outline" id="btn-guide">🧭 Parent Socratic Guide (PDF)</a>
+
+          <!-- Mini KPIs -->
+          <div class="mini-kpi-row">
+            <div class="mini-kpi">
+              <div class="kpi-label">Term Average</div>
+              <div class="kpi-val" id="kpi-term-avg" style="color: var(--cyan);">92%</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="kpi-label">Science (Midterm)</div>
+              <div class="kpi-val" id="kpi-science" style="color: var(--green);">94%</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="kpi-label">Maths (NPV)</div>
+              <div class="kpi-val" id="kpi-maths" style="color: var(--yellow);">82%</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="kpi-label">English (Spelling)</div>
+              <div class="kpi-val" id="kpi-english" style="color: var(--purple);">88%</div>
+            </div>
+          </div>
+
+          <!-- Interactive Animated Chart.js Trajectory -->
+          <div class="chart-box">
+            <div class="chart-title">
+              <span class="flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+                Weekly Assessment Performance (Weeks 1 - 8)
+              </span>
+              <div class="chart-legend">
+                <div class="legend-item"><div class="dot" style="background: var(--green);"></div> Science</div>
+                <div class="legend-item"><div class="dot" style="background: var(--yellow);"></div> Maths</div>
+                <div class="legend-item"><div class="dot" style="background: var(--purple);"></div> English</div>
+                <div class="legend-item"><div class="dot" style="background: #64748b;"></div> 80% Benchmark</div>
+              </div>
+            </div>
+            <div style="position: relative; height: 210px; width: 100%;">
+              <canvas id="trajectoryCanvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Dual Animated Visual Graphics: Cognitive Radar & Confidence Gauge -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 16px;">
+            <!-- Chart.js Cognitive Domain Radar -->
+            <div style="background: var(--card-elevated); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <span class="flex items-center gap-1.5"><i data-lucide="brain" class="w-3.5 h-3.5 text-cyan-400"></i> Cognitive Domain Radar</span>
+                <span style="font-size: 10px; color: var(--cyan); font-family: monospace;">ASTEN Y4 RADAR</span>
+              </div>
+              <div style="position: relative; height: 180px; width: 100%;">
+                <canvas id="cognitiveRadarCanvas"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart.js Mastery Gauge / Doughnut -->
+            <div style="background: var(--card-elevated); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Zero-Alarm Confidence</span>
+                <span class="badge badge-green" id="gauge-badge">High</span>
+              </div>
+              <div style="position: relative; height: 140px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                <canvas id="masteryGaugeCanvas"></canvas>
+                <div id="gauge-center-text" style="position: absolute; top: 58%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                  <div id="gauge-val" style="font-size: 22px; font-weight: 800; color: var(--astryx-text-contrast); font-family: monospace;">94%</div>
+                  <div style="font-size: 9px; color: var(--muted); text-transform: uppercase;">Retention</div>
+                </div>
+              </div>
+              <div style="font-size: 10px; color: var(--muted); text-align: center; margin-top: 4px;" id="gauge-sub">
+                Working memory load protected under sprint timer
+              </div>
+            </div>
+          </div>
+
+          <!-- Misconceptions Summary -->
+          <div style="margin-top: 16px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Active Priority Cognitive Errors (Targeted in Sprints)
+            </div>
+            <div id="misconception-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 1/3: Materials, Scorecard & Action Trigger -->
+      <div class="tab1-sidebar">
+        <!-- Recent Worksheet Scorecard -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="flex items-center gap-1.5"><i data-lucide="file-check-2" class="w-4 h-4 text-emerald-400"></i> Latest Intake Scorecard</h2>
+            <span class="badge badge-green">Passed</span>
+          </div>
+          <div class="scorecard-banner">
+            <div class="top">
+              <span>SCIENCE MIDTERM (UNITS 1.1–1.5)</span>
+              <span>ASTEN Y4</span>
+            </div>
+            <div class="big-score" id="side-score">19 / 20 <span style="font-size: 16px; color: var(--green);">(95%)</span></div>
+            <div class="sub-eval" id="side-eval">Science Midterm: Mastered skeletons, muscles, and medicines. Working memory slipped on negative scale.</div>
+          </div>
+
+          <!-- Action / Sprint Trigger -->
+          <div class="sprint-box">
+            <div class="title" id="side-strategy-title">Target: 8 Min Sprint • Visual Chunking</div>
+            <div class="desc" id="side-strategy-desc">ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.</div>
+            <button class="btn-sprint" onclick="alert('⚡ Compiling tailored 4-page sprint pack via Warm Browser Pool (Approach C)...')">
+              <i data-lucide="zap" class="inline w-4 h-4 mr-1"></i> 🚀 Generate Targeted Practice Pack
+            </button>
           </div>
         </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Concept Code</th>
-              <th>Error Class</th>
-              <th>Pedagogical Description</th>
-              <th>Recurrence</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="gaps-tbody">
-            <tr>
-              <td><code>Y4.MATH.NPV.EMPTY_COLUMNS</code></td>
-              <td><code>ERR_PHANTOM_ZERO</code></td>
-              <td>Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)</td>
-              <td>3x</td>
-              <td><span class="badge badge-orange">Active Priority</span></td>
-            </tr>
-            <tr>
-              <td><code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code></td>
-              <td><code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code></td>
-              <td>Orders -4°C as warmer than -1°C</td>
-              <td>2x</td>
-              <td><span class="badge badge-yellow">Progressing</span></td>
-            </tr>
-            <tr>
-              <td><code>Y4.MATH.NPV.WRITING_NUMBERS</code></td>
-              <td><code>ERR_TRANSPOSITION</code></td>
-              <td>Transposing digits under time pressure (writes 03 for thirty)</td>
-              <td>2x</td>
-              <td><span class="badge badge-yellow">Progressing</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Socratic Guide Preview Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="flex items-center gap-1.5"><i data-lucide="compass" class="w-4 h-4 text-cyan-400"></i> Parent Coaching Script</h2>
+            <span class="badge badge-blue">Socratic</span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">
+            "Imagine our number lives in an apartment with reserved rooms: Ones, Tens, Hundreds, Thousands. If a room has nothing in it, does it disappear, or do we put a 0 guard in the chair?"
+          </div>
+          <a href="/guide/preview" target="_blank" style="display: block; text-align: center; background: #1e293b; border: 1px solid #334155; color: var(--cyan); padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none;">
+            🧭 Open Socratic Guide Companion (2-Page A4)
+          </a>
+        </div>
       </div>
     </div>
   </div>
+    <!-- TAB 2: Cognitive Gap Ledger & Socratic Guidance -->
+  <div id="tab-gap-ledger" class="tab-pane">
+    <div class="grid-metrics">
+      <div class="metric-card m-orange">
+        <div class="title">Active Priority (🟠)</div>
+        <div class="value">2</div>
+        <div class="desc">Active cognitive bottlenecks</div>
+      </div>
+      <div class="metric-card m-yellow">
+        <div class="title">Progressing (🟡)</div>
+        <div class="value">3</div>
+        <div class="desc">Stabilizing under rush/pressure</div>
+      </div>
+      <div class="metric-card m-green">
+        <div class="title">Mastered (🟢)</div>
+        <div class="value">14</div>
+        <div class="desc">Fully resolved curriculum targets</div>
+      </div>
+      <div class="metric-card m-cyan">
+        <div class="title">Dedup Gate Savings (🛡️)</div>
+        <div class="value">9,600</div>
+        <div class="desc">Tokens saved via duplicate test interception</div>
+      </div>
+    </div>
 
-  <!-- Admin & Infra Row -->
-  <div class="admin-grid">
-    <!-- Left: Central Settings Registry & Strike Rules -->
     <div class="card">
       <div class="card-header">
-        <h2>⚙️ Central Settings & Intake Strike Rules</h2>
-        <span class="badge badge-green">Registry Active</span>
+        <h2>Detailed Cognitive Gap Ledger (All Students)</h2>
+        <div style="display: flex; gap: 8px;">
+          <a href="/sprint/preview" target="_blank" class="btn" style="width: auto; margin-top: 0;">📄 Open 4-Page Sprint</a>
+          <a href="/guide/preview" target="_blank" class="btn btn-outline" style="width: auto; margin-top: 0;">🧭 Parent Socratic Guide</a>
+        </div>
       </div>
-      <div class="status-row">
-        <span class="key">Deduplication Gate</span>
-        <span class="val"><span class="badge badge-green">ENABLED</span> (Telegram & WhatsApp)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Maximum Strike Limit</span>
-        <span class="val"><code>3 Strikes</code> (Before Downgrade)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Penalty Action on Max Strikes</span>
-        <span class="val"><span class="badge badge-red">Downgrade to Batch Queue</span></span>
-      </div>
-      <div class="status-row">
-        <span class="key">Cooldown Window</span>
-        <span class="val"><code>24 Hours</code> (Rolling Fingerprint TTL)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Fingerprint Resolution</span>
-        <span class="val">Telegram <code>file_unique_id</code> + Filename + Byte Size</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Shortlink Provider</span>
-        <span class="val"><span class="badge badge-cyan">Dub.co</span> (aim.getvintel.com/s/...)</span>
-      </div>
-    </div>
 
-    <!-- Right: Regional Infrastructure Status -->
-    <div class="card">
-      <div class="card-header">
-        <h2>🌍 Infrastructure & Regional Routing</h2>
-        <span class="badge badge-green">All Systems Operational</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Web & API Console</span>
-        <span class="val">🟢 Vercel Serverless (<code>cdg1</code> Paris Primary / <code>fra1</code> Fallback)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Telegram Intake Worker</span>
-        <span class="val">🟢 Cloudflare Worker (<code>aim-bot.getvintel.com</code> • EU Edge)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">State Storage</span>
-        <span class="val">🟢 Upstash Redis (Prefix: <code>aim:*</code> • Region: <code>eu-west-3</code>)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Asynchronous Queue</span>
-        <span class="val">🟢 Upstash QStash (Callback: <code>/jobs/process-assessment</code>)</span>
-      </div>
-      <div class="status-row">
-        <span class="key">Audit Ledger</span>
-        <span class="val">🟢 GitStateStorageAdapter (Private Repo Backup)</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Intake & Strike Simulator -->
-  <div class="card" style="margin-bottom: 24px;">
-    <div class="card-header">
-      <h2>🛡️ Intake Deduplication & Strike Simulator</h2>
-      <div style="display: flex; gap: 8px;">
-        <button class="btn btn-outline" onclick="simulateNewUpload()">Simulate New Quiz Upload (Accept)</button>
-        <button class="btn btn-outline" onclick="simulateDuplicateUpload()">Simulate Duplicate Upload (Strike)</button>
-        <button class="btn btn-danger" onclick="resetSimulatedStrikes()">Reset Guardian Strikes</button>
-      </div>
-    </div>
-    <div class="sandbox-dropzone" onclick="simulateDuplicateUpload()">
-      <div style="font-size: 24px; margin-bottom: 8px;">📸</div>
-      <div style="font-weight: 700; color: #fff;" id="sim-headline">Click to simulate test upload or duplicate submission</div>
-      <div style="font-size: 12px; color: var(--muted); margin-top: 4px;" id="sim-status">
-        Current Guardian: <code>guardian_parent_7788</code> • Strikes: <span id="sim-strikes">0/3</span> • Status: <span class="badge badge-green" id="sim-badge">Active</span>
-      </div>
-    </div>
-    <div id="sim-log" style="margin-top: 14px; font-family: monospace; font-size: 12px; background: #000; padding: 12px; border-radius: 6px; display: none; color: #a5f3fc;"></div>
-  </div>
-
-  <script>
-    let simStrikeCount = 0;
-    let simDupCount = 0;
-    let simTokens = 9600;
-
-    function selectStudent(id) {
-      document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-
-      if (id === 'maya') {
-        document.getElementById('active-student-title').innerText = "Maya's Cognitive Gap Ledger";
-        document.getElementById('active-student-meta').innerText = "Target: 10 min sprint • Verbal strengths active";
-        document.getElementById('gaps-tbody').innerHTML = `
+      <table>
+        <thead>
           <tr>
-            <td><code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code></td>
-            <td><code>ERR_INTERVAL_DECODE</code></td>
-            <td>Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)</td>
-            <td>1x</td>
-            <td><span class="badge badge-yellow">Progressing</span></td>
+            <th>Student</th>
+            <th>Concept Code</th>
+            <th>Error Class</th>
+            <th>Pedagogical Description</th>
+            <th>Recurrence</th>
+            <th>Status</th>
           </tr>
+        </thead>
+        <tbody>
           <tr>
-            <td><code>Y4.MATH.NPV.CROSSING_ZERO</code></td>
-            <td><code>ERR_FENCEPOST_COUNT</code></td>
-            <td>Counting the starting tick mark instead of jumps across zero bridge</td>
-            <td>1x</td>
-            <td><span class="badge badge-yellow">Progressing</span></td>
-          </tr>
-          <tr>
-            <td><code>Y4.MATH.NPV.5DIGIT_ORDERING</code></td>
-            <td><code>ERR_SHARED_PREFIX_ORDERING</code></td>
-            <td>Difficulty sequencing 5-digit numbers that share leading digits</td>
-            <td>1x</td>
-            <td><span class="badge badge-orange">Active Priority</span></td>
-          </tr>
-        `;
-      } else {
-        document.getElementById('active-student-title').innerText = "Lara's Cognitive Gap Ledger";
-        document.getElementById('active-student-meta').innerText = "Target: 8 min sprint • Twin study routine active";
-        document.getElementById('gaps-tbody').innerHTML = `
-          <tr>
+            <td><strong>Lara</strong></td>
             <td><code>Y4.MATH.NPV.EMPTY_COLUMNS</code></td>
             <td><code>ERR_PHANTOM_ZERO</code></td>
             <td>Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)</td>
@@ -499,15 +774,525 @@
             <td><span class="badge badge-orange">Active Priority</span></td>
           </tr>
           <tr>
+            <td><strong>Lara</strong></td>
             <td><code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code></td>
             <td><code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code></td>
             <td>Orders -4°C as warmer than -1°C</td>
             <td>2x</td>
             <td><span class="badge badge-yellow">Progressing</span></td>
           </tr>
-        `;
+          <tr>
+            <td><strong>Lara</strong></td>
+            <td><code>Y4.MATH.NPV.WRITING_NUMBERS</code></td>
+            <td><code>ERR_TRANSPOSITION</code></td>
+            <td>Transposing digits under time pressure (writes 03 for thirty)</td>
+            <td>2x</td>
+            <td><span class="badge badge-yellow">Progressing</span></td>
+          </tr>
+          <tr>
+            <td><strong>Maya</strong></td>
+            <td><code>Y4.MATH.NPV.5DIGIT_ORDERING</code></td>
+            <td><code>ERR_SHARED_PREFIX_ORDERING</code></td>
+            <td>Difficulty sequencing 5-digit numbers that share leading digits</td>
+            <td>1x</td>
+            <td><span class="badge badge-orange">Active Priority</span></td>
+          </tr>
+          <tr>
+            <td><strong>Maya</strong></td>
+            <td><code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code></td>
+            <td><code>ERR_INTERVAL_DECODE</code></td>
+            <td>Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)</td>
+            <td>1x</td>
+            <td><span class="badge badge-yellow">Progressing</span></td>
+          </tr>
+          <tr>
+            <td><strong>Maya</strong></td>
+            <td><code>Y4.MATH.NPV.CROSSING_ZERO</code></td>
+            <td><code>ERR_FENCEPOST_COUNT</code></td>
+            <td>Counting the starting tick mark instead of jumps across zero bridge</td>
+            <td>1x</td>
+            <td><span class="badge badge-yellow">Progressing</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Socratic Dialogue Guidance -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🧭 Socratic Dialogue Scripts for Dad</h2>
+        <span class="badge badge-purple">Pedagogical Blueprint</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="background: #1e293b; padding: 16px; border-radius: 8px;">
+          <div style="font-weight: 700; color: var(--green); margin-bottom: 6px;">🟢 Say This (Socratic Questioning):</div>
+          <ul style="padding-left: 18px; font-size: 13px; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px;">
+            <li>"If there are NO hundreds mentioned in 24 thousand and sixteen, what room guardian stays in that chair?"</li>
+            <li>"Think of our elevator underwater: does going deeper from -1°C to -4°C make you feel colder or warmer?"</li>
+            <li>"Read that number backwards to your sister Maya and tell me what value is in the tens column."</li>
+          </ul>
+        </div>
+        <div style="background: #1e293b; padding: 16px; border-radius: 8px;">
+          <div style="font-weight: 700; color: var(--red); margin-bottom: 6px;">🔴 Avoid Saying (Working Memory Killers):</div>
+          <ul style="padding-left: 18px; font-size: 13px; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px;">
+            <li>"No, you forgot the zero again, write a zero right there." (Destroys self-monitoring)</li>
+            <li>"Hurry up, we have two minutes left!" (Induces transposition spike under ADHD pressure)</li>
+            <li>"Why did you write 4 instead of 1?" (Creates cognitive freeze instead of visualization)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- TAB 3: Ingestion Gate & Infrastructure -->
+  <div id="tab-infra-gate" class="tab-pane">
+    <div class="admin-grid">
+      <!-- Left: Central Settings Registry & Strike Rules -->
+      <div class="card">
+        <div class="card-header">
+          <h2>⚙️ Central Settings & Intake Strike Rules</h2>
+          <span class="badge badge-green">Registry Active</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Deduplication Gate</span>
+          <span class="val"><span class="badge badge-green">ENABLED</span> (Telegram & WhatsApp)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Maximum Strike Limit</span>
+          <span class="val"><code>3 Strikes</code> (Before Downgrade)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Penalty Action on Max Strikes</span>
+          <span class="val"><span class="badge badge-red">Downgrade to Batch Queue</span></span>
+        </div>
+        <div class="status-row">
+          <span class="key">Cooldown Window</span>
+          <span class="val"><code>24 Hours</code> (Rolling Fingerprint TTL)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Fingerprint Resolution</span>
+          <span class="val">Telegram <code>file_unique_id</code> + Filename + Byte Size</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Shortlink Provider</span>
+          <span class="val"><span class="badge badge-cyan">Dub.co</span> (aim.getvintel.com/s/...)</span>
+        </div>
+      </div>
+
+      <!-- Right: Regional Infrastructure Status -->
+      <div class="card">
+        <div class="card-header">
+          <h2>🌍 Infrastructure & Regional Routing</h2>
+          <span class="badge badge-green">All Systems Operational</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Web & API Console</span>
+          <span class="val">🟢 Vercel Serverless (<code>cdg1</code> Paris Primary / <code>fra1</code> Fallback)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Telegram Intake Worker</span>
+          <span class="val">🟢 Cloudflare Worker (<code>aim-bot.getvintel.com</code> • EU Edge)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">State Storage</span>
+          <span class="val">🟢 Upstash Redis (Prefix: <code>aim:*</code> • Region: <code>eu-west-3</code>)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Warm Chromium Pool (Approach C)</span>
+          <span class="val">🟢 Puppeteer Warm Pool (46ms–125ms render latency)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Asynchronous Queue</span>
+          <span class="val">🟢 Upstash QStash (Callback: <code>/jobs/process-assessment</code>)</span>
+        </div>
+        <div class="status-row">
+          <span class="key">Audit Ledger</span>
+          <span class="val">🟢 GitStateStorageAdapter (Private Repo Backup)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Intake & Strike Simulator -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🛡️ Intake Deduplication & Strike Simulator</h2>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-outline" style="width: auto; margin-top: 0;" onclick="simulateNewUpload()">Simulate New Quiz Upload (Accept)</button>
+          <button class="btn btn-outline" style="width: auto; margin-top: 0;" onclick="simulateDuplicateUpload()">Simulate Duplicate Upload (Strike)</button>
+          <button class="btn btn-danger" style="width: auto; margin-top: 0;" onclick="resetSimulatedStrikes()">Reset Guardian Strikes</button>
+        </div>
+      </div>
+      <div class="sandbox-dropzone" onclick="simulateDuplicateUpload()">
+        <div style="font-size: 24px; margin-bottom: 8px;">📸</div>
+        <div style="font-weight: 700; color: var(--astryx-text-contrast);" id="sim-headline">Click to simulate test upload or duplicate submission</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;" id="sim-status">
+          Current Guardian: <code>guardian_parent_7788</code> • Strikes: <span id="sim-strikes">0/3</span> • Status: <span class="badge badge-green" id="sim-badge">Active</span>
+        </div>
+      </div>
+      <div id="sim-log" style="margin-top: 14px; font-family: monospace; font-size: 12px; background: #000; padding: 12px; border-radius: 6px; display: none; color: #a5f3fc;"></div>
+    </div>
+  </div>
+
+  <script>
+    // Tab Switching
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+      if (el) el.classList.add('active');
+      const pane = document.getElementById(tabId);
+      if (pane) pane.classList.add('active');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Dynamic Student Telemetry
+    const studentsData = {
+      lara: {
+        name: "Lara",
+        meta: "Asten College • Year 4 British Track • ADHD/Dyslexia traits active",
+        termAvg: "92%",
+        science: "94%",
+        maths: "82%",
+        english: "88%",
+        status: "Mastery Stable (92% Avg)",
+        score: "19 / 20",
+        scorePct: "(95%)",
+        eval: "Science Midterm: Mastered skeletons, muscles, and medicines. Working memory slipped on negative scale.",
+        strategyTitle: "Target: 8 Min Sprint • Visual Chunking",
+        strategyDesc: "ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.",
+        radar: [98, 91, 78, 72],
+        gaugeVal: 94,
+        series: {
+          science: [52, 64, 72, 80, 85, 88, 91, 94],
+          maths:   [45, 55, 62, 70, 75, 78, 80, 82],
+          english: [60, 68, 75, 80, 82, 85, 86, 88]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.NPV.EMPTY_COLUMNS", class: "ERR_PHANTOM_ZERO", desc: "Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)", priority: "orange" },
+          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -4°C as warmer than -1°C", priority: "yellow" },
+          { code: "Y4.MATH.NPV.WRITING_NUMBERS", class: "ERR_TRANSPOSITION", desc: "Transposing digits under time rush (writes 03 for thirty)", priority: "yellow" }
+        ]
+      },
+      maya: {
+        name: "Maya",
+        meta: "Asten College • Year 4 British Track • Verbal strengths & peer teacher",
+        termAvg: "94%",
+        science: "96%",
+        maths: "86%",
+        english: "91%",
+        status: "Mastery Advanced (94% Avg)",
+        score: "20 / 20",
+        scorePct: "(100%)",
+        eval: "Science Midterm: Perfect classification keys and vertebrate traits. Clear methodical execution.",
+        strategyTitle: "Target: 10 Min Sprint • Verbal Peer Teaching",
+        strategyDesc: "High verbal retention and methodical steps. Explaining concepts aloud to Lara reinforces long-term schemas.",
+        radar: [99, 95, 86, 84],
+        gaugeVal: 96,
+        series: {
+          science: [60, 72, 80, 85, 89, 92, 94, 96],
+          maths:   [50, 62, 70, 76, 80, 82, 84, 86],
+          english: [65, 75, 82, 86, 88, 89, 90, 91]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.NPV.5DIGIT_ORDERING", class: "ERR_SHARED_PREFIX_ORDERING", desc: "Sequencing 5-digit numbers that share leading prefix digits", priority: "orange" },
+          { code: "Y4.MATH.NPV.NUMBER_LINE_SCALES", class: "ERR_INTERVAL_DECODE", desc: "Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)", priority: "yellow" },
+          { code: "Y4.MATH.NPV.CROSSING_ZERO", class: "ERR_FENCEPOST_COUNT", desc: "Counting the starting tick mark across zero bridge", priority: "yellow" }
+        ]
+      }
+    };
+
+    // Chart.js References
+    let trajectoryChart = null;
+    let cognitiveRadarChart = null;
+    let masteryGaugeChart = null;
+
+    function initCharts() {
+      // 1. Trajectory Multi-Line Chart
+      const trajCtx = document.getElementById('trajectoryCanvas')?.getContext('2d');
+      if (trajCtx) {
+        trajectoryChart = new Chart(trajCtx, {
+          type: 'line',
+          data: {
+            labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8 (Mid)'],
+            datasets: [
+              {
+                label: 'Science',
+                data: studentsData.lara.series.science,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                fill: true,
+                tension: 0.38,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#10b981',
+              },
+              {
+                label: 'Maths',
+                data: studentsData.lara.series.maths,
+                borderColor: '#f59e0b',
+                borderDash: [4, 4],
+                fill: false,
+                tension: 0.38,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#f59e0b',
+              },
+              {
+                label: 'English',
+                data: studentsData.lara.series.english,
+                borderColor: '#a855f7',
+                fill: false,
+                tension: 0.38,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#a855f7',
+              },
+              {
+                label: '80% Goal',
+                data: [80, 80, 80, 80, 80, 80, 80, 80],
+                borderColor: '#64748b',
+                borderDash: [6, 6],
+                borderWidth: 1.5,
+                pointRadius: 0,
+                fill: false,
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 900, easing: 'easeOutQuart' },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#111827',
+                titleColor: '#f3f4f6',
+                bodyColor: '#9ca3af',
+                borderColor: '#374151',
+                borderWidth: 1,
+                padding: 10,
+                callbacks: {
+                  label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: '#1f2937' },
+                ticks: { color: '#9ca3af', font: { size: 10 } }
+              },
+              y: {
+                min: 40,
+                max: 100,
+                grid: { color: '#1f2937' },
+                ticks: {
+                  color: '#9ca3af',
+                  font: { size: 10 },
+                  callback: v => v + '%'
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 2. Cognitive Domain Radar Chart
+      const radarCtx = document.getElementById('cognitiveRadarCanvas')?.getContext('2d');
+      if (radarCtx) {
+        cognitiveRadarChart = new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: ['Recall', 'Concepts', 'Multi-Step', 'Pressure'],
+            datasets: [{
+              label: 'Mastery Level',
+              data: studentsData.lara.radar,
+              borderColor: '#06b6d4',
+              backgroundColor: 'rgba(6, 182, 212, 0.25)',
+              pointBackgroundColor: '#06b6d4',
+              pointBorderColor: '#fff',
+              pointRadius: 3,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 800, easing: 'easeOutCubic' },
+            plugins: { legend: { display: false } },
+            scales: {
+              r: {
+                min: 50,
+                max: 100,
+                grid: { color: '#1f2937' },
+                angleLines: { color: '#334155' },
+                pointLabels: { color: '#cbd5e1', font: { size: 10, weight: 'bold' } },
+                ticks: { display: false }
+              }
+            }
+          }
+        });
+      }
+
+      // 3. Zero-Alarm Mastery Gauge (Doughnut)
+      const gaugeCtx = document.getElementById('masteryGaugeCanvas')?.getContext('2d');
+      if (gaugeCtx) {
+        masteryGaugeChart = new Chart(gaugeCtx, {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: [94, 6],
+              backgroundColor: ['#10b981', '#1e293b'],
+              borderWidth: 0,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            circumference: 240,
+            rotation: 240,
+            cutout: '76%',
+            plugins: { tooltip: { enabled: false }, legend: { display: false } },
+            animation: { duration: 1000, easing: 'easeOutBack' }
+          }
+        });
       }
     }
+
+    function setStudent(studentId) {
+      document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('pill-' + studentId);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const data = studentsData[studentId] || studentsData.lara;
+
+      document.getElementById('student-name-header').innerText = data.name + "'s Academic Trajectory & Mastery Progression";
+      document.getElementById('student-meta-sub').innerText = data.meta;
+      document.getElementById('student-overall-status').innerText = data.status;
+
+      document.getElementById('kpi-term-avg').innerText = data.termAvg;
+      document.getElementById('kpi-science').innerText = data.science;
+      document.getElementById('kpi-maths').innerText = data.maths;
+      document.getElementById('kpi-english').innerText = data.english;
+
+      document.getElementById('side-score').innerHTML = data.score + ' <span style="font-size: 16px; color: var(--green);">' + data.scorePct + '</span>';
+      document.getElementById('side-eval').innerText = data.eval;
+      document.getElementById('side-strategy-title').innerText = data.strategyTitle;
+      document.getElementById('side-strategy-desc').innerText = data.strategyDesc;
+
+      // Update Animated Chart.js Trajectory
+      if (trajectoryChart) {
+        trajectoryChart.data.datasets[0].data = data.series.science;
+        trajectoryChart.data.datasets[1].data = data.series.maths;
+        trajectoryChart.data.datasets[2].data = data.series.english;
+        trajectoryChart.update();
+      }
+
+      // Update Animated Chart.js Radar
+      if (cognitiveRadarChart) {
+        cognitiveRadarChart.data.datasets[0].data = data.radar;
+        cognitiveRadarChart.update();
+      }
+
+      // Update Animated Chart.js Gauge
+      if (masteryGaugeChart) {
+        masteryGaugeChart.data.datasets[0].data = [data.gaugeVal, 100 - data.gaugeVal];
+        masteryGaugeChart.update();
+        document.getElementById('gauge-val').innerText = data.gaugeVal + '%';
+      }
+
+      // Misconceptions
+      const misContainer = document.getElementById('misconception-list');
+      if (misContainer) {
+        misContainer.innerHTML = data.misconceptions.map(m => `
+          <div class="misconception-item ${m.priority === 'yellow' ? 'yellow' : ''}">
+            <div class="misconception-title">
+              <span><code>${m.code}</code></span>
+              <span class="badge badge-${m.priority}">${m.priority === 'orange' ? 'Priority' : 'Progressing'}</span>
+            </div>
+            <div class="misconception-desc">${m.desc}</div>
+          </div>
+        `).join('');
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Meta Astryx Dynamic Light / Dark Theme Controller
+    function applyTheme(theme) {
+      const isLight = theme === 'light';
+      if (isLight) {
+        document.body.classList.add('theme-light');
+      } else {
+        document.body.classList.remove('theme-light');
+      }
+      localStorage.setItem('aim_theme', theme);
+
+      const icon = document.getElementById('theme-icon');
+      const label = document.getElementById('theme-label');
+      if (icon && label) {
+        icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
+        label.innerText = isLight ? 'Dark Mode' : 'Light Mode';
+        if (window.lucide) lucide.createIcons();
+      }
+
+      updateChartThemes(isLight);
+    }
+
+    function toggleTheme() {
+      const isCurrentlyLight = document.body.classList.contains('theme-light');
+      applyTheme(isCurrentlyLight ? 'dark' : 'light');
+    }
+
+    function updateChartThemes(isLight) {
+      const gridColor = isLight ? '#e2e8f0' : '#1f2937';
+      const tickColor = isLight ? '#64748b' : '#9ca3af';
+      const tooltipBg = isLight ? '#ffffff' : '#111827';
+      const tooltipTitle = isLight ? '#0f172a' : '#f3f4f6';
+      const tooltipBody = isLight ? '#64748b' : '#9ca3af';
+      const tooltipBorder = isLight ? '#cbd5e1' : '#374151';
+
+      if (trajectoryChart && trajectoryChart.options && trajectoryChart.options.scales) {
+        if (trajectoryChart.options.scales.x) {
+          trajectoryChart.options.scales.x.grid.color = gridColor;
+          trajectoryChart.options.scales.x.ticks.color = tickColor;
+        }
+        if (trajectoryChart.options.scales.y) {
+          trajectoryChart.options.scales.y.grid.color = gridColor;
+          trajectoryChart.options.scales.y.ticks.color = tickColor;
+        }
+        if (trajectoryChart.options.plugins && trajectoryChart.options.plugins.tooltip) {
+          trajectoryChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+          trajectoryChart.options.plugins.tooltip.titleColor = tooltipTitle;
+          trajectoryChart.options.plugins.tooltip.bodyColor = tooltipBody;
+          trajectoryChart.options.plugins.tooltip.borderColor = tooltipBorder;
+        }
+        trajectoryChart.update();
+      }
+
+      if (cognitiveRadarChart && cognitiveRadarChart.options && cognitiveRadarChart.options.scales && cognitiveRadarChart.options.scales.r) {
+        cognitiveRadarChart.options.scales.r.grid.color = gridColor;
+        cognitiveRadarChart.options.scales.r.angleLines.color = gridColor;
+        cognitiveRadarChart.options.scales.r.pointLabels.color = tickColor;
+        cognitiveRadarChart.update();
+      }
+
+      if (masteryGaugeChart && masteryGaugeChart.data && masteryGaugeChart.data.datasets && masteryGaugeChart.data.datasets[0]) {
+        masteryGaugeChart.data.datasets[0].backgroundColor[1] = isLight ? '#e2e8f0' : '#1e293b';
+        masteryGaugeChart.update();
+      }
+    }
+
+    // Initialize on window load
+    window.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+      setStudent('lara');
+      const savedTheme = localStorage.getItem('aim_theme') || 'dark';
+      applyTheme(savedTheme);
+      if (window.lucide) lucide.createIcons();
+    });
+
+    // Intake Simulator
+    let simStrikeCount = 0;
+    let simDupCount = 0;
 
     function simulateNewUpload() {
       const log = document.getElementById('sim-log');
@@ -517,12 +1302,7 @@
 
     function simulateDuplicateUpload() {
       simDupCount += 1;
-      simTokens += 3200;
-      document.getElementById('val-savings').innerText = simTokens.toLocaleString();
-
-      if (simStrikeCount < 3) {
-        simStrikeCount += 1;
-      }
+      if (simStrikeCount < 3) simStrikeCount += 1;
 
       const log = document.getElementById('sim-log');
       log.style.display = 'block';
@@ -534,11 +1314,11 @@
       if (simStrikeCount >= 3) {
         badge.className = 'badge badge-red';
         badge.innerText = 'Downgraded';
-        log.innerHTML = '🚫 [Intake Intercepted] REPEATED UPLOAD DETECTED (' + simDupCount + ' duplicates). STRIKE 3 APPLIED. Quota downgraded to delayed batch. Zero LLM tokens wasted. Message sent to parent.';
+        log.innerHTML = '🚫 [Intake Intercepted] REPEATED UPLOAD DETECTED (' + simDupCount + ' duplicates). STRIKE 3 APPLIED. Quota downgraded. Zero LLM tokens wasted. Message sent to parent.';
       } else {
         badge.className = 'badge badge-yellow';
         badge.innerText = 'Warned';
-        log.innerHTML = '⚠️ [Intake Intercepted] REPEATED UPLOAD DETECTED. Strike ' + simStrikeCount + ' of 3 recorded. Saved 3,200 vision tokens. Educational warning & previous sprint link dispatched to parent.';
+        log.innerHTML = '⚠️ [Intake Intercepted] REPEATED UPLOAD DETECTED. Strike ' + simStrikeCount + ' of 3 recorded. Saved 3,200 vision tokens. Educational warning dispatched to parent.';
       }
     }
 
@@ -551,6 +1331,17 @@
       badge.innerText = 'Active';
       const log = document.getElementById('sim-log');
       log.innerHTML = '🟢 Guardian strikes reset to 0/3. Normal priority restored.';
+    }
+
+    // Wave 18: Progressive Web App (PWA) Offline Synchronization Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+          console.log('[AIM-PWA] ServiceWorker registered with scope:', reg.scope);
+        }).catch(function(err) {
+          console.warn('[AIM-PWA] ServiceWorker registration warning:', err);
+        });
+      });
     }
   </script>
 </body>

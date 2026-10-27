@@ -6,7 +6,7 @@
   "type": "module",
   "types": "./dist/server.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node --input-type=module -e \"import { renderDashboardHtml } from './dist/ui/dashboardHtml.js'; import fs from 'fs'; fs.writeFileSync('./public/index.html', renderDashboardHtml());\"",
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "test": "vitest run",

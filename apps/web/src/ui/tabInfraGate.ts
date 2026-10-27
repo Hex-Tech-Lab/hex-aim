@@ -79,7 +79,7 @@ export function renderInfraGateTab(): string {
       </div>
       <div class="sandbox-dropzone" onclick="simulateDuplicateUpload()">
         <div style="font-size: 24px; margin-bottom: 8px;">📸</div>
-        <div style="font-weight: 700; color: #fff;" id="sim-headline">Click to simulate test upload or duplicate submission</div>
+        <div style="font-weight: 700; color: var(--astryx-text-contrast);" id="sim-headline">Click to simulate test upload or duplicate submission</div>
         <div style="font-size: 12px; color: var(--muted); margin-top: 4px;" id="sim-status">
           Current Guardian: <code>guardian_parent_7788</code> • Strikes: <span id="sim-strikes">0/3</span> • Status: <span class="badge badge-green" id="sim-badge">Active</span>
         </div>

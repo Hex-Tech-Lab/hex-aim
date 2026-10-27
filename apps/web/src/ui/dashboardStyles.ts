@@ -1,6 +1,6 @@
 export function renderDashboardStyles(): string {
   return `<style>
-  /* Meta Astryx Centralized Design Tokens (Theme: Neutral Dark) */
+  /* Meta Astryx Centralized Design Tokens (Theme: Neutral Dark - Default) */
   :root {
     --astryx-bg: #090d16;
     --astryx-surface: #111827;
@@ -10,6 +10,7 @@ export function renderDashboardStyles(): string {
     --astryx-primary: #06b6d4;
     --astryx-accent: #3b82f6;
     --astryx-text: #f3f4f6;
+    --astryx-text-contrast: #ffffff;
     --astryx-text-muted: #9ca3af;
     --astryx-success: #10b981;
     --astryx-warning: #f59e0b;
@@ -25,10 +26,47 @@ export function renderDashboardStyles(): string {
     --astryx-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
     --astryx-shadow-glow: 0 0 15px rgba(6, 182, 212, 0.25);
 
-    /* Token Aliases mapped to Meta Astryx */
+    /* Token Aliases */
     --bg: var(--astryx-bg);
     --card: var(--astryx-surface);
     --card-border: var(--astryx-border);
+    --card-elevated: var(--astryx-surface-elevated);
+    --cyan: var(--astryx-primary);
+    --accent: var(--astryx-accent);
+    --text: var(--astryx-text);
+    --muted: var(--astryx-text-muted);
+    --green: var(--astryx-success);
+    --yellow: var(--astryx-warning);
+    --orange: var(--astryx-priority);
+    --purple: var(--astryx-purple);
+    --red: var(--astryx-danger);
+  }
+
+  /* Meta Astryx Centralized Design Tokens (Theme: Neutral Light) */
+  body.theme-light {
+    --astryx-bg: #f8fafc;
+    --astryx-surface: #ffffff;
+    --astryx-surface-elevated: #f1f5f9;
+    --astryx-border: #e2e8f0;
+    --astryx-border-subtle: #cbd5e1;
+    --astryx-primary: #0891b2;
+    --astryx-accent: #2563eb;
+    --astryx-text: #0f172a;
+    --astryx-text-contrast: #0f172a;
+    --astryx-text-muted: #64748b;
+    --astryx-success: #059669;
+    --astryx-warning: #d97706;
+    --astryx-priority: #ea580c;
+    --astryx-purple: #9333ea;
+    --astryx-danger: #dc2626;
+
+    --astryx-shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    --astryx-shadow-glow: 0 4px 14px 0 rgba(8, 145, 178, 0.15);
+
+    --bg: var(--astryx-bg);
+    --card: var(--astryx-surface);
+    --card-border: var(--astryx-border);
+    --card-elevated: var(--astryx-surface-elevated);
     --cyan: var(--astryx-primary);
     --accent: var(--astryx-accent);
     --text: var(--astryx-text);
@@ -47,6 +85,7 @@ export function renderDashboardStyles(): string {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     padding: 20px;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   header {
@@ -63,7 +102,7 @@ export function renderDashboardStyles(): string {
   .logo-group h1 {
     font-size: 20px;
     font-weight: 800;
-    color: #fff;
+    color: var(--astryx-text-contrast);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -79,18 +118,40 @@ export function renderDashboardStyles(): string {
   }
 
   .badge-tag {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: var(--card-elevated);
+    border: 1px solid var(--astryx-border-subtle);
     padding: 6px 14px;
-    border-radius: 8px;
+    border-radius: var(--astryx-radius-md);
     font-size: 12px;
     font-weight: 600;
+    color: var(--text);
   }
 
   .badge-region {
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
     color: var(--green);
+  }
+
+  /* Theme Switcher Button */
+  .theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--astryx-radius-md);
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .theme-toggle-btn:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: var(--astryx-shadow-glow);
   }
 
   /* Nav Tabs */
@@ -117,14 +178,14 @@ export function renderDashboardStyles(): string {
   }
 
   .nav-tab:hover {
-    color: #fff;
+    color: var(--astryx-text-contrast);
   }
 
   .nav-tab.active {
     color: var(--cyan);
     border-bottom-color: var(--cyan);
-    background: rgba(6, 182, 212, 0.05);
-    border-radius: 8px 8px 0 0;
+    background: rgba(6, 182, 212, 0.08);
+    border-radius: var(--astryx-radius-md) var(--astryx-radius-md) 0 0;
   }
 
   .tab-pane {
@@ -146,10 +207,12 @@ export function renderDashboardStyles(): string {
   .metric-card {
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 12px;
+    border-radius: var(--astryx-radius-lg);
     padding: 16px;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--astryx-shadow-card);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
   }
 
   .metric-card::before {
@@ -165,10 +228,10 @@ export function renderDashboardStyles(): string {
   .m-cyan::before { background: var(--cyan); }
 
   .metric-card .title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .metric-card .value { font-size: 26px; font-weight: 800; color: #fff; margin: 4px 0; }
+  .metric-card .value { font-size: 26px; font-weight: 800; color: var(--astryx-text-contrast); margin: 4px 0; }
   .metric-card .desc { font-size: 12px; color: var(--muted); }
 
-  /* 2/3 and 1/3 Responsive Split Layout for Tab 1 */
+  /* Responsive Split Layout for Tab 1 */
   .tab1-layout {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -183,9 +246,11 @@ export function renderDashboardStyles(): string {
   .card {
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 12px;
+    border-radius: var(--astryx-radius-lg);
     padding: 20px;
     margin-bottom: 20px;
+    box-shadow: var(--astryx-shadow-card);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
   }
 
   .card-header {
@@ -199,7 +264,7 @@ export function renderDashboardStyles(): string {
     gap: 10px;
   }
 
-  .card-header h2 { font-size: 16px; font-weight: 700; color: #fff; }
+  .card-header h2 { font-size: 16px; font-weight: 700; color: var(--astryx-text-contrast); }
 
   /* Student Selector Pills */
   .student-pills {
@@ -210,10 +275,10 @@ export function renderDashboardStyles(): string {
 
   .pill-btn {
     padding: 8px 18px;
-    border-radius: 20px;
-    border: 1px solid #334155;
-    background: #1e293b;
-    color: #fff;
+    border-radius: var(--astryx-radius-full);
+    border: 1px solid var(--astryx-border-subtle);
+    background: var(--card-elevated);
+    color: var(--text);
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
@@ -222,9 +287,9 @@ export function renderDashboardStyles(): string {
 
   .pill-btn:hover, .pill-btn.active {
     background: var(--cyan);
-    color: #000;
+    color: #ffffff;
     border-color: var(--cyan);
-    box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+    box-shadow: var(--astryx-shadow-glow);
   }
 
   /* Mini Metric Row */
@@ -240,21 +305,21 @@ export function renderDashboardStyles(): string {
   }
 
   .mini-kpi {
-    background: #0f172a;
-    border: 1px solid #1e293b;
-    border-radius: 8px;
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
     padding: 10px;
     text-align: center;
   }
 
   .mini-kpi .kpi-label { font-size: 10px; text-transform: uppercase; color: var(--muted); font-weight: 700; }
-  .mini-kpi .kpi-val { font-size: 20px; font-weight: 800; color: #fff; margin-top: 2px; }
+  .mini-kpi .kpi-val { font-size: 20px; font-weight: 800; color: var(--astryx-text-contrast); margin-top: 2px; }
 
-  /* Interactive SVG Chart */
+  /* Interactive Chart Boxes */
   .chart-box {
-    background: #0b1120;
-    border: 1px solid #1e293b;
-    border-radius: 8px;
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
     padding: 16px;
     margin-bottom: 20px;
   }
@@ -262,7 +327,7 @@ export function renderDashboardStyles(): string {
   .chart-title {
     font-size: 13px;
     font-weight: 700;
-    color: #fff;
+    color: var(--astryx-text-contrast);
     margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
@@ -278,41 +343,11 @@ export function renderDashboardStyles(): string {
   .legend-item { display: flex; align-items: center; gap: 4px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  svg.trend-svg {
-    width: 100%;
-    height: 180px;
-    display: block;
-    overflow: visible;
-  }
-
-  /* Dimension Bars */
-  .dim-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 12px;
-  }
-
-  .bar-container {
-    width: 55%;
-    background: #1e293b;
-    height: 8px;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.5s ease;
-  }
-
   /* Right Pane Scorecard & Misconceptions */
   .scorecard-banner {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(16, 185, 129, 0.08);
     border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 8px;
+    border-radius: var(--astryx-radius-md);
     padding: 14px;
     margin-bottom: 16px;
   }
@@ -329,15 +364,16 @@ export function renderDashboardStyles(): string {
   .scorecard-banner .big-score {
     font-size: 28px;
     font-weight: 800;
-    color: #fff;
+    color: var(--astryx-text-contrast);
     margin: 4px 0;
   }
 
   .misconception-item {
-    background: #1e293b;
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
     border-left: 3px solid var(--orange);
     padding: 10px;
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 var(--astryx-radius-sm) var(--astryx-radius-sm) 0;
     margin-bottom: 8px;
     font-size: 12px;
   }
@@ -348,7 +384,7 @@ export function renderDashboardStyles(): string {
 
   .misconception-title {
     font-weight: 700;
-    color: #fff;
+    color: var(--astryx-text-contrast);
     display: flex;
     justify-content: space-between;
     margin-bottom: 2px;
@@ -362,22 +398,22 @@ export function renderDashboardStyles(): string {
   /* Tables */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { text-align: left; padding: 10px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--card-border); }
-  td { padding: 12px 10px; border-bottom: 1px solid #1f2937; }
+  td { padding: 12px 10px; border-bottom: 1px solid var(--card-border); }
 
   .badge {
     display: inline-block;
     padding: 3px 8px;
-    border-radius: 6px;
+    border-radius: var(--astryx-radius-sm);
     font-size: 11px;
     font-weight: 700;
   }
 
-  .badge-orange { background: rgba(249, 115, 22, 0.2); color: var(--orange); border: 1px solid rgba(249, 115, 22, 0.3); }
-  .badge-yellow { background: rgba(245, 158, 11, 0.2); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
-  .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
-  .badge-purple { background: rgba(168, 85, 247, 0.2); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
-  .badge-red { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
-  .badge-cyan { background: rgba(6, 182, 212, 0.2); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
+  .badge-orange { background: rgba(249, 115, 22, 0.15); color: var(--orange); border: 1px solid rgba(249, 115, 22, 0.3); }
+  .badge-yellow { background: rgba(245, 158, 11, 0.15); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+  .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-cyan { background: rgba(6, 182, 212, 0.15); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
 
   /* Buttons */
   .btn {
@@ -386,11 +422,11 @@ export function renderDashboardStyles(): string {
     justify-content: center;
     gap: 6px;
     background: var(--cyan);
-    color: #000;
+    color: #ffffff;
     font-weight: 700;
     font-size: 13px;
     padding: 10px 18px;
-    border-radius: 8px;
+    border-radius: var(--astryx-radius-md);
     border: none;
     cursor: pointer;
     text-decoration: none;
@@ -401,8 +437,8 @@ export function renderDashboardStyles(): string {
 
   .btn:hover { opacity: 0.9; }
   .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--card-border); }
-  .btn-outline:hover { background: #1e293b; }
-  .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.4); }
+  .btn-outline:hover { background: var(--card-elevated); }
+  .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.4); }
 
   /* Admin & Infra Grid */
   .admin-grid {
@@ -421,23 +457,23 @@ export function renderDashboardStyles(): string {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #1f2937;
+    border-bottom: 1px solid var(--card-border);
     font-size: 13px;
   }
 
   .status-row:last-child { border-bottom: none; }
-  .status-row .key { font-weight: 600; color: #fff; }
+  .status-row .key { font-weight: 600; color: var(--astryx-text-contrast); }
   .status-row .val { color: var(--muted); display: flex; align-items: center; gap: 6px; }
 
   /* Sandbox */
   .sandbox-dropzone {
-    border: 2px dashed #374151;
-    border-radius: 8px;
+    border: 2px dashed var(--astryx-border-subtle);
+    border-radius: var(--astryx-radius-md);
     padding: 24px;
     text-align: center;
     cursor: pointer;
     transition: border-color 0.2s;
-    background: rgba(17, 24, 39, 0.5);
+    background: var(--card-elevated);
   }
 
   .sandbox-dropzone:hover { border-color: var(--cyan); }

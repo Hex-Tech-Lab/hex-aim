@@ -67,6 +67,10 @@ ${renderDashboardStyles()}
       <div class="badge-tag">
         <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i> Asten College • Y4 British Primary
       </div>
+      <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="Switch Light / Dark Theme">
+        <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+        <span id="theme-label">Light Mode</span>
+      </button>
     </div>
   </header>
 
@@ -371,10 +375,77 @@ ${renderDashboardStyles()}
       if (window.lucide) lucide.createIcons();
     }
 
+    // Meta Astryx Dynamic Light / Dark Theme Controller
+    function applyTheme(theme) {
+      const isLight = theme === 'light';
+      if (isLight) {
+        document.body.classList.add('theme-light');
+      } else {
+        document.body.classList.remove('theme-light');
+      }
+      localStorage.setItem('aim_theme', theme);
+
+      const icon = document.getElementById('theme-icon');
+      const label = document.getElementById('theme-label');
+      if (icon && label) {
+        icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
+        label.innerText = isLight ? 'Dark Mode' : 'Light Mode';
+        if (window.lucide) lucide.createIcons();
+      }
+
+      updateChartThemes(isLight);
+    }
+
+    function toggleTheme() {
+      const isCurrentlyLight = document.body.classList.contains('theme-light');
+      applyTheme(isCurrentlyLight ? 'dark' : 'light');
+    }
+
+    function updateChartThemes(isLight) {
+      const gridColor = isLight ? '#e2e8f0' : '#1f2937';
+      const tickColor = isLight ? '#64748b' : '#9ca3af';
+      const tooltipBg = isLight ? '#ffffff' : '#111827';
+      const tooltipTitle = isLight ? '#0f172a' : '#f3f4f6';
+      const tooltipBody = isLight ? '#64748b' : '#9ca3af';
+      const tooltipBorder = isLight ? '#cbd5e1' : '#374151';
+
+      if (trajectoryChart && trajectoryChart.options && trajectoryChart.options.scales) {
+        if (trajectoryChart.options.scales.x) {
+          trajectoryChart.options.scales.x.grid.color = gridColor;
+          trajectoryChart.options.scales.x.ticks.color = tickColor;
+        }
+        if (trajectoryChart.options.scales.y) {
+          trajectoryChart.options.scales.y.grid.color = gridColor;
+          trajectoryChart.options.scales.y.ticks.color = tickColor;
+        }
+        if (trajectoryChart.options.plugins && trajectoryChart.options.plugins.tooltip) {
+          trajectoryChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+          trajectoryChart.options.plugins.tooltip.titleColor = tooltipTitle;
+          trajectoryChart.options.plugins.tooltip.bodyColor = tooltipBody;
+          trajectoryChart.options.plugins.tooltip.borderColor = tooltipBorder;
+        }
+        trajectoryChart.update();
+      }
+
+      if (cognitiveRadarChart && cognitiveRadarChart.options && cognitiveRadarChart.options.scales && cognitiveRadarChart.options.scales.r) {
+        cognitiveRadarChart.options.scales.r.grid.color = gridColor;
+        cognitiveRadarChart.options.scales.r.angleLines.color = gridColor;
+        cognitiveRadarChart.options.scales.r.pointLabels.color = tickColor;
+        cognitiveRadarChart.update();
+      }
+
+      if (masteryGaugeChart && masteryGaugeChart.data && masteryGaugeChart.data.datasets && masteryGaugeChart.data.datasets[0]) {
+        masteryGaugeChart.data.datasets[0].backgroundColor[1] = isLight ? '#e2e8f0' : '#1e293b';
+        masteryGaugeChart.update();
+      }
+    }
+
     // Initialize on window load
     window.addEventListener('DOMContentLoaded', () => {
       initCharts();
       setStudent('lara');
+      const savedTheme = localStorage.getItem('aim_theme') || 'dark';
+      applyTheme(savedTheme);
       if (window.lucide) lucide.createIcons();
     });
 
