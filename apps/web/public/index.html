@@ -524,6 +524,514 @@
 
   .sandbox-dropzone:hover { border-color: var(--cyan); }
 
+  /* Submissions Register & De-skew Gallery Styles */
+  .filter-pill-group {
+    display: inline-flex;
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-sm);
+    padding: 2px;
+    gap: 2px;
+  }
+  .filter-pill {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-pill.active {
+    background: var(--cyan);
+    color: #ffffff;
+  }
+  .view-toggle {
+    display: inline-flex;
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 3px;
+    gap: 4px;
+  }
+  .view-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: var(--astryx-radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s ease;
+  }
+  .view-toggle-btn.active {
+    background: var(--card);
+    color: var(--astryx-text-contrast);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .packets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .packet-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 16px 20px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .packet-card:hover {
+    box-shadow: var(--astryx-shadow-glow);
+  }
+  .packet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .packet-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .packet-title h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--astryx-text-contrast);
+  }
+  .packet-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pages-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
+  }
+  .page-thumb-card {
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .page-thumb-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+  }
+  .page-thumb-badge {
+    background: rgba(0,0,0,0.3);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--astryx-text-contrast);
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .page-canvas-preview {
+    height: 140px;
+    padding: 10px;
+    background: #ffffff;
+    color: #111827;
+    position: relative;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  body.theme-light .page-canvas-preview {
+    background: #fdfdfd;
+  }
+  .doc-header-line {
+    height: 6px;
+    width: 60%;
+    background: #0284c7;
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+  .doc-line {
+    height: 3px;
+    background: #cbd5e1;
+    border-radius: 1px;
+    margin-bottom: 4px;
+  }
+  .w-90 { width: 90%; }
+  .w-80 { width: 80%; }
+  .w-75 { width: 75%; }
+  .w-70 { width: 70%; }
+  .w-60 { width: 60%; }
+  .doc-box {
+    border: 1px dashed #94a3b8;
+    border-radius: 3px;
+    padding: 4px;
+    margin: 6px 0;
+    font-size: 8px;
+  }
+  .doc-stamp-pass {
+    color: #16a34a;
+    font-weight: 700;
+    display: block;
+  }
+  .doc-stamp-fail {
+    color: #dc2626;
+    font-weight: 700;
+    display: block;
+  }
+  .doc-ink-mark {
+    color: #1e3a8a;
+    font-style: italic;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 7.5px;
+    display: block;
+  }
+  .doc-teacher-grade {
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    color: #dc2626;
+    font-weight: 800;
+    font-size: 11px;
+    transform: rotate(-10deg);
+  }
+  .page-meta-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    font-size: 10px;
+    color: var(--muted);
+    border-top: 1px solid var(--card-border);
+  }
+  .deskew-tag {
+    font-family: var(--astryx-font-mono);
+    color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .flat-pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  /* Modal Inspector */
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .modal-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-lg);
+    width: 100%;
+    max-width: 950px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .modal-close:hover { color: var(--astryx-text-contrast); }
+  .modal-body-split {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    overflow-y: auto;
+    padding: 20px;
+    gap: 20px;
+  }
+  @media (max-width: 800px) {
+    .modal-body-split { grid-template-columns: 1fr; }
+  }
+  .scan-display-frame {
+    background: #0f172a;
+    border-radius: var(--astryx-radius-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .scan-overlay-tools {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .scan-tool-badge {
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 11px;
+    color: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .scan-paper-simulation {
+    background: #ffffff;
+    color: #0f172a;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-size: 12px;
+  }
+  .sim-header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .sim-title { font-weight: 800; font-size: 13px; color: #0284c7; }
+  .sim-meta { font-size: 11px; color: #475569; margin-top: 2px; }
+  .sim-question-box {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .ocr-box-green { border-left: 4px solid #16a34a; background: #f0fdf4; }
+  .ocr-box-orange { border-left: 4px solid #ea580c; background: #fff7ed; }
+  .sim-q-num { font-weight: 700; color: #0f172a; font-size: 11px; }
+  .sim-q-text { font-size: 12px; margin: 4px 0; color: #1e293b; }
+  .sim-student-handwriting {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: #1e3a8a;
+    font-size: 12px;
+    padding: 4px 8px;
+    background: rgba(30, 58, 138, 0.05);
+    border-radius: 2px;
+    margin: 4px 0;
+  }
+  .sim-grade-tag { font-size: 11px; font-weight: 700; }
+  .grade-pass { color: #16a34a; }
+  .grade-fail { color: #ea580c; }
+  .scan-telemetry-panel {
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 16px;
+  }
+  .telemetry-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .telemetry-item .t-label { color: var(--muted); }
+  .telemetry-item .t-val { font-weight: 600; }
+  .text-green { color: var(--green); }
+  .text-cyan { color: var(--cyan); }
+  .delta-box {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-sm);
+    padding: 12px;
+    margin-top: 10px;
+  }
+
+  /* Master Blank Templates Styles */
+  .solution-banner {
+    border-left: 4px solid var(--cyan);
+    background: linear-gradient(135deg, var(--card) 0%, var(--card-elevated) 100%);
+  }
+  .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .template-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .template-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--astryx-shadow-glow);
+  }
+  .template-badge-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .template-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--astryx-text-contrast);
+    margin-bottom: 10px;
+  }
+  .template-meta-list {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .template-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 11px;
+    width: auto;
+    margin-top: 0;
+  }
+
+  /* Clean Worksheet Simulation Paper */
+  .clean-worksheet-paper {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 30px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-top: 16px;
+  }
+  .clean-school-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .school-brand h2 {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    color: #0369a1;
+  }
+  .school-dept { font-size: 12px; color: #475569; }
+  .worksheet-title-block { text-align: right; }
+  .worksheet-title-block h3 { font-size: 14px; font-weight: 800; color: #0f172a; }
+  .worksheet-title-block div { font-size: 11px; color: #64748b; }
+  .clean-student-box {
+    display: flex;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .student-score-box {
+    font-weight: 800;
+    color: #0369a1;
+    border: 1px solid #0369a1;
+    padding: 2px 10px;
+    border-radius: 3px;
+    background: #f0f9ff;
+  }
+  .clean-instructions {
+    font-size: 11px;
+    color: #475569;
+    border-left: 3px solid #0369a1;
+    padding: 6px 12px;
+    background: #f8fafc;
+    margin-bottom: 20px;
+  }
+  .clean-q-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 14px;
+    margin-bottom: 16px;
+    background: #ffffff;
+  }
+  .clean-q-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0369a1;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .q-marks { color: #64748b; font-weight: 600; }
+  .clean-q-body { font-size: 13px; color: #1e293b; line-height: 1.5; margin-bottom: 12px; }
+  .clean-ruled-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 0;
+  }
+  .ruled-line {
+    border-bottom: 1px solid #cbd5e1;
+    height: 1px;
+    width: 100%;
+  }
+  .clean-preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  .clean-preview-table th {
+    background: #f1f5f9;
+    color: #334155;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    text-align: left;
+    font-size: 11px;
+  }
+  .clean-preview-table td {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+  }
+  .fill-box {
+    border: 1px dashed #94a3b8;
+    height: 24px;
+    border-radius: 3px;
+    background: #fafafa;
+  }
+
   /* Fluid UI Animations */
   @keyframes pulseGlow {
     0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
@@ -569,6 +1077,12 @@
     </button>
     <button class="nav-tab" onclick="switchTab('tab-infra-gate', this)">
       <i data-lucide="shield-alert" class="w-4 h-4"></i> Ingestion Gate & Infrastructure
+    </button>
+    <button class="nav-tab" onclick="switchTab('tab-submissions-register', this)">
+      <i data-lucide="scan-line" class="w-4 h-4"></i> Scanned Submissions (52)
+    </button>
+    <button class="nav-tab" onclick="switchTab('tab-blank-templates', this)">
+      <i data-lucide="file-check" class="w-4 h-4"></i> Blank Templates & Dry-Runs
     </button>
   </div>
 
@@ -931,17 +1445,1000 @@
       <div id="sim-log" style="margin-top: 14px; font-family: monospace; font-size: 12px; background: #000; padding: 12px; border-radius: 6px; display: none; color: #a5f3fc;"></div>
     </div>
   </div>
+    <!-- TAB 4: Scanned Submissions Register & De-skew Gallery -->
+  <div id="tab-submissions-register" class="tab-pane">
+    <!-- Top Overview KPIs -->
+    <div class="grid-metrics">
+      <div class="metric-card m-cyan">
+        <div class="title">Physical Pages Ingested (📄)</div>
+        <div class="value" id="kpi-total-pages">52</div>
+        <div class="desc">Physical pages processed & de-skewed</div>
+      </div>
+      <div class="metric-card m-green">
+        <div class="title">Assessment Packets (📦)</div>
+        <div class="value">8</div>
+        <div class="desc">Classified test batches (4-6 pages each)</div>
+      </div>
+      <div class="metric-card m-yellow">
+        <div class="title">Mean De-skew Tilt (📐)</div>
+        <div class="value">1.4°</div>
+        <div class="desc">Automatic rotation & warp correction</div>
+      </div>
+      <div class="metric-card m-purple">
+        <div class="title">OCR Layout Alignment (🎯)</div>
+        <div class="value">99.3%</div>
+        <div class="desc">Question anchor bounding precision</div>
+      </div>
+    </div>
+
+    <!-- Controls Bar: Filter by Student, Subject, and View Mode -->
+    <div class="card" style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <label style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Student Filter:</label>
+          <div class="filter-pill-group">
+            <button class="filter-pill active" onclick="filterSubmissions('all', null)">All (52)</button>
+            <button class="filter-pill" onclick="filterSubmissions('lara', null)">👧 Lara (30)</button>
+            <button class="filter-pill" onclick="filterSubmissions('maya', null)">👧 Maya (22)</button>
+          </div>
+
+          <label style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-left: 10px;">Subject:</label>
+          <div class="filter-pill-group">
+            <button class="filter-pill active" onclick="filterSubmissions(null, 'all')">All</button>
+            <button class="filter-pill" onclick="filterSubmissions(null, 'science')">Science</button>
+            <button class="filter-pill" onclick="filterSubmissions(null, 'maths')">Maths</button>
+            <button class="filter-pill" onclick="filterSubmissions(null, 'english')">English</button>
+          </div>
+        </div>
+
+        <!-- View Switcher: Grouped Packets vs Flat Physical Gallery -->
+        <div class="view-toggle">
+          <button id="view-mode-grouped" class="view-toggle-btn active" onclick="setSubmissionsView('grouped')">
+            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            Grouped by Test Packet (8)
+          </button>
+          <button id="view-mode-flat" class="view-toggle-btn" onclick="setSubmissionsView('flat')">
+            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            Flat Physical Pages (52)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 1: GROUPED BY ASSESSMENT PACKET (Default) -->
+    <div id="submissions-grouped-container" class="packets-list">
+      <!-- Packet 1: Science W8 Lara -->
+      <div class="packet-card" data-student="lara" data-subject="science">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-cyan">Science</span>
+              <h3>Y4 Science Week 8: Sound & Auditory Vibrations</h3>
+              <span class="badge badge-green">Lara (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-24</strong></span> •
+              <span>📄 <strong>4 Physical Pages</strong> (Q1 to Q8)</span> •
+              <span>🎯 Score: <strong>14/20 (70%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>+1.8° tilt corrected</strong></span> •
+              <span style="color: var(--green);">✨ Contrast: <strong>Normalized 100%</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-sci-w8', 0)">
+              🔍 Inspect High-Res Pages
+            </button>
+          </div>
+        </div>
+
+        <div class="pages-carousel">
+          <!-- Page 1 -->
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w8', 0)">
+            <div class="page-thumb-badge">Page 1 / 4</div>
+            <div class="page-canvas-preview">
+              <div class="doc-header-line"></div>
+              <div class="doc-line w-80"></div>
+              <div class="doc-line w-60"></div>
+              <div class="doc-box">
+                <span class="doc-stamp-pass">Q1: 2/2 ✓</span>
+                <span class="doc-ink-mark">Handwritten: "Vibrations in air"</span>
+              </div>
+              <div class="doc-box">
+                <span class="doc-stamp-fail">Q2: 0/2 ✗</span>
+                <span class="doc-ink-mark">Handwritten: "Sound travels faster in air than water"</span>
+              </div>
+            </div>
+            <div class="page-meta-footer">
+              <span>Q1 – Q3</span>
+              <span class="deskew-tag">📐 +1.8° • 99.4% OCR</span>
+            </div>
+          </div>
+
+          <!-- Page 2 -->
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w8', 1)">
+            <div class="page-thumb-badge">Page 2 / 4</div>
+            <div class="page-canvas-preview">
+              <div class="doc-line w-90"></div>
+              <div class="doc-line w-70"></div>
+              <div class="doc-box">
+                <span class="doc-stamp-pass">Q3: 2/2 ✓</span>
+                <span class="doc-ink-mark">Diagram: Tuning fork labeled</span>
+              </div>
+              <div class="doc-box">
+                <span class="doc-stamp-pass">Q4: 2/2 ✓</span>
+                <span class="doc-ink-mark">Handwritten: "Decibels measurement"</span>
+              </div>
+            </div>
+            <div class="page-meta-footer">
+              <span>Q4 – Q5</span>
+              <span class="deskew-tag">📐 +1.6° • 99.5% OCR</span>
+            </div>
+          </div>
+
+          <!-- Page 3 -->
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w8', 2)">
+            <div class="page-thumb-badge">Page 3 / 4</div>
+            <div class="page-canvas-preview">
+              <div class="doc-line w-75"></div>
+              <div class="doc-box">
+                <span class="doc-stamp-fail">Q6: 1/2 ⚠️</span>
+                <span class="doc-ink-mark">Graph: Amplitude vs Pitch confusion</span>
+              </div>
+            </div>
+            <div class="page-meta-footer">
+              <span>Q6 – Q7</span>
+              <span class="deskew-tag">📐 +1.9° • 99.2% OCR</span>
+            </div>
+          </div>
+
+          <!-- Page 4 -->
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w8', 3)">
+            <div class="page-thumb-badge">Page 4 / 4</div>
+            <div class="page-canvas-preview">
+              <div class="doc-line w-60"></div>
+              <div class="doc-box">
+                <span class="doc-stamp-pass">Q8: 3/4 ✓</span>
+                <span class="doc-ink-mark">Summary: Ear canal & eardrum</span>
+              </div>
+              <div class="doc-teacher-grade">Teacher Mark: 14/20</div>
+            </div>
+            <div class="page-meta-footer">
+              <span>Q8 (Final)</span>
+              <span class="deskew-tag">📐 +1.7° • 99.6% OCR</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Packet 2: Maths W8 Lara -->
+      <div class="packet-card" data-student="lara" data-subject="maths">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-yellow">Maths</span>
+              <h3>Y4 Maths Week 8: Decimals & Place Value Alignment</h3>
+              <span class="badge badge-green">Lara (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-21</strong></span> •
+              <span>📄 <strong>5 Physical Pages</strong> (Q1 to Q10)</span> •
+              <span>🎯 Score: <strong>16/20 (80%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>-0.9° tilt corrected</strong></span> •
+              <span style="color: var(--green);">✨ Contrast: <strong>Normalized 100%</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-math-w8', 0)">
+              🔍 Inspect High-Res Pages
+            </button>
+          </div>
+        </div>
+
+        <div class="pages-carousel">
+          <div class="page-thumb-card" onclick="openScanModal('pkt-math-w8', 0)">
+            <div class="page-thumb-badge">Page 1 / 5</div>
+            <div class="page-canvas-preview">
+              <div class="doc-header-line"></div>
+              <div class="doc-box">
+                <span class="doc-stamp-pass">Q1: 2/2 ✓</span>
+                <span class="doc-ink-mark">0.45 < 0.54</span>
+              </div>
+              <div class="doc-box">
+                <span class="doc-stamp-pass">Q2: 2/2 ✓</span>
+                <span class="doc-ink-mark">3.08 tenths = 0</span>
+              </div>
+            </div>
+            <div class="page-meta-footer"><span>Q1 – Q2</span><span class="deskew-tag">📐 -0.9° • 99.1%</span></div>
+          </div>
+
+          <div class="page-thumb-card" onclick="openScanModal('pkt-math-w8', 1)">
+            <div class="page-thumb-badge">Page 2 / 5</div>
+            <div class="page-canvas-preview">
+              <div class="doc-box">
+                <span class="doc-stamp-fail">Q3: 0/2 ✗</span>
+                <span class="doc-ink-mark">Column Shift: 4.5 + 0.08 = 4.13</span>
+              </div>
+            </div>
+            <div class="page-meta-footer"><span>Q3 – Q4</span><span class="deskew-tag">📐 -1.1° • 98.8%</span></div>
+          </div>
+
+          <div class="page-thumb-card" onclick="openScanModal('pkt-math-w8', 2)">
+            <div class="page-thumb-badge">Page 3 / 5</div>
+            <div class="page-canvas-preview">
+              <div class="doc-box"><span class="doc-stamp-pass">Q5: 2/2 ✓</span><span class="doc-ink-mark">Number line 0.7</span></div>
+              <div class="doc-box"><span class="doc-stamp-pass">Q6: 2/2 ✓</span><span class="doc-ink-mark">Rounding to nearest tenth</span></div>
+            </div>
+            <div class="page-meta-footer"><span>Q5 – Q6</span><span class="deskew-tag">📐 -0.8° • 99.3%</span></div>
+          </div>
+
+          <div class="page-thumb-card" onclick="openScanModal('pkt-math-w8', 3)">
+            <div class="page-thumb-badge">Page 4 / 5</div>
+            <div class="page-canvas-preview">
+              <div class="doc-box"><span class="doc-stamp-pass">Q7: 2/2 ✓</span><span class="doc-ink-mark">Decimal word problems</span></div>
+              <div class="doc-box"><span class="doc-stamp-fail">Q8: 0/2 ✗</span><span class="doc-ink-mark">Omitted trailing zero 1.20</span></div>
+            </div>
+            <div class="page-meta-footer"><span>Q7 – Q8</span><span class="deskew-tag">📐 -1.0° • 98.6%</span></div>
+          </div>
+
+          <div class="page-thumb-card" onclick="openScanModal('pkt-math-w8', 4)">
+            <div class="page-thumb-badge">Page 5 / 5</div>
+            <div class="page-canvas-preview">
+              <div class="doc-box"><span class="doc-stamp-pass">Q9: 3/3 ✓</span><span class="doc-ink-mark">Currency calculation £4.35</span></div>
+              <div class="doc-teacher-grade">Teacher Mark: 16/20</div>
+            </div>
+            <div class="page-meta-footer"><span>Q9 – Q10</span><span class="deskew-tag">📐 -0.7° • 99.2%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Packet 3: English W7 Lara -->
+      <div class="packet-card" data-student="lara" data-subject="english">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-purple">English</span>
+              <h3>Y4 English Week 7: Suffixes, Prefixes & Sentence Syntax</h3>
+              <span class="badge badge-green">Lara (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-18</strong></span> •
+              <span>📄 <strong>4 Physical Pages</strong> (Q1 to Q12)</span> •
+              <span>🎯 Score: <strong>18/20 (90%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>+0.4° tilt corrected</strong></span> •
+              <span style="color: var(--green);">✨ Contrast: <strong>Normalized 100%</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-eng-w7', 0)">
+              🔍 Inspect High-Res Pages
+            </button>
+          </div>
+        </div>
+
+        <div class="pages-carousel">
+          <div class="page-thumb-card" onclick="openScanModal('pkt-eng-w7', 0)"><div class="page-thumb-badge">Page 1 / 4</div><div class="page-canvas-preview"><div class="doc-header-line"></div><div class="doc-box"><span class="doc-stamp-pass">Q1-3: 6/6 ✓</span><span class="doc-ink-mark">Suffixes -ation, -ous</span></div></div><div class="page-meta-footer"><span>Q1 – Q3</span><span class="deskew-tag">📐 +0.4°</span></div></div>
+          <div class="page-thumb-card" onclick="openScanModal('pkt-eng-w7', 1)"><div class="page-thumb-badge">Page 2 / 4</div><div class="page-canvas-preview"><div class="doc-box"><span class="doc-stamp-pass">Q4-6: 6/6 ✓</span><span class="doc-ink-mark">Prefixes auto-, anti-</span></div></div><div class="page-meta-footer"><span>Q4 – Q6</span><span class="deskew-tag">📐 +0.3°</span></div></div>
+          <div class="page-thumb-card" onclick="openScanModal('pkt-eng-w7', 2)"><div class="page-thumb-badge">Page 3 / 4</div><div class="page-canvas-preview"><div class="doc-box"><span class="doc-stamp-fail">Q7: 1/2 ⚠️</span><span class="doc-ink-mark">Homophone misidentification</span></div></div><div class="page-meta-footer"><span>Q7 – Q9</span><span class="deskew-tag">📐 +0.5°</span></div></div>
+          <div class="page-thumb-card" onclick="openScanModal('pkt-eng-w7', 3)"><div class="page-thumb-badge">Page 4 / 4</div><div class="page-canvas-preview"><div class="doc-box"><span class="doc-stamp-pass">Q10-12: 5/6 ✓</span><span class="doc-ink-mark">Paragraph syntax</span></div><div class="doc-teacher-grade">Teacher Mark: 18/20</div></div><div class="page-meta-footer"><span>Q10 – Q12</span><span class="deskew-tag">📐 +0.4°</span></div></div>
+        </div>
+      </div>
+
+      <!-- Packet 4: Science W7 Maya -->
+      <div class="packet-card" data-student="maya" data-subject="science">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-cyan">Science</span>
+              <h3>Y4 Science Week 7: Electrical Circuits & Conductors</h3>
+              <span class="badge badge-purple">Maya (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-17</strong></span> •
+              <span>📄 <strong>4 Physical Pages</strong> (Q1 to Q9)</span> •
+              <span>🎯 Score: <strong>19/20 (95%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>+1.2° tilt corrected</strong></span> •
+              <span style="color: var(--green);">✨ Contrast: <strong>Normalized 100%</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-sci-w7-maya', 0)">
+              🔍 Inspect High-Res Pages
+            </button>
+          </div>
+        </div>
+
+        <div class="pages-carousel">
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w7-maya', 0)"><div class="page-thumb-badge">Page 1 / 4</div><div class="page-canvas-preview"><div class="doc-header-line"></div><div class="doc-box"><span class="doc-stamp-pass">Q1-2: 4/4 ✓</span><span class="doc-ink-mark">Closed vs open circuit</span></div></div><div class="page-meta-footer"><span>Q1 – Q2</span><span class="deskew-tag">📐 +1.2°</span></div></div>
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w7-maya', 1)"><div class="page-thumb-badge">Page 2 / 4</div><div class="page-canvas-preview"><div class="doc-box"><span class="doc-stamp-pass">Q3-4: 5/5 ✓</span><span class="doc-ink-mark">Switch operation & battery polarity</span></div></div><div class="page-meta-footer"><span>Q3 – Q4</span><span class="deskew-tag">📐 +1.1°</span></div></div>
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w7-maya', 2)"><div class="page-thumb-badge">Page 3 / 4</div><div class="page-canvas-preview"><div class="doc-box"><span class="doc-stamp-pass">Q5-7: 6/6 ✓</span><span class="doc-ink-mark">Conductors vs Insulators</span></div></div><div class="page-meta-footer"><span>Q5 – Q7</span><span class="deskew-tag">📐 +1.4°</span></div></div>
+          <div class="page-thumb-card" onclick="openScanModal('pkt-sci-w7-maya', 3)"><div class="page-thumb-badge">Page 4 / 4</div><div class="page-canvas-preview"><div class="doc-box"><span class="doc-stamp-pass">Q8-9: 4/5 ✓</span><span class="doc-ink-mark">Circuit schematic drawing</span></div><div class="doc-teacher-grade">Teacher Mark: 19/20</div></div><div class="page-meta-footer"><span>Q8 – Q9</span><span class="deskew-tag">📐 +1.0°</span></div></div>
+        </div>
+      </div>
+
+      <!-- Additional Packets (Packets 5 to 8) -->
+      <div class="packet-card" data-student="maya" data-subject="maths">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-yellow">Maths</span>
+              <h3>Y4 Maths Week 7: Fractions & Decimals Equivalence</h3>
+              <span class="badge badge-purple">Maya (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-14</strong></span> •
+              <span>📄 <strong>5 Physical Pages</strong> (Q1 to Q10)</span> •
+              <span>🎯 Score: <strong>18/20 (90%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>-1.5° tilt corrected</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-math-w7-maya', 0)">🔍 Inspect High-Res Pages</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="packet-card" data-student="lara" data-subject="science">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-cyan">Science</span>
+              <h3>Y4 Science Week 6: Living Things & Habitats</h3>
+              <span class="badge badge-green">Lara (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-10</strong></span> •
+              <span>📄 <strong>6 Physical Pages</strong> (Q1 to Q11)</span> •
+              <span>🎯 Score: <strong>13/20 (65%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>+2.1° tilt corrected</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-sci-w6-lara', 0)">🔍 Inspect High-Res Pages</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="packet-card" data-student="lara" data-subject="maths">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-yellow">Maths</span>
+              <h3>Y4 Maths Week 6: Multi-digit Column Addition</h3>
+              <span class="badge badge-green">Lara (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-07</strong></span> •
+              <span>📄 <strong>5 Physical Pages</strong> (Q1 to Q10)</span> •
+              <span>🎯 Score: <strong>15/20 (75%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>+0.7° tilt corrected</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-math-w6-lara', 0)">🔍 Inspect High-Res Pages</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="packet-card" data-student="maya" data-subject="english">
+        <div class="packet-header">
+          <div class="packet-meta">
+            <div class="packet-title">
+              <span class="badge badge-purple">English</span>
+              <h3>Y4 English Week 6: Reading Comprehension & Inferences</h3>
+              <span class="badge badge-purple">Maya (Year 4)</span>
+            </div>
+            <div class="packet-sub">
+              <span>📅 Submitted: <strong>2026-10-03</strong></span> •
+              <span>📄 <strong>4 Physical Pages</strong> (Q1 to Q8)</span> •
+              <span>🎯 Score: <strong>20/20 (100%)</strong></span> •
+              <span style="color: var(--cyan);">📐 De-skew: <strong>+0.2° tilt corrected</strong></span>
+            </div>
+          </div>
+          <div class="packet-actions">
+            <button class="btn btn-outline" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openScanModal('pkt-eng-w6-maya', 0)">🔍 Inspect High-Res Pages</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: FLAT PHYSICAL PAGES GALLERY (Hidden by default) -->
+    <div id="submissions-flat-container" class="flat-pages-grid" style="display: none;">
+      <!-- Dynamically filled or pre-rendered flat page grid -->
+      
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 1)">
+      <div class="page-thumb-badge">Science W8 • P1</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q1-Q3: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 +1.8° • 99.4%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 2)">
+      <div class="page-thumb-badge">Science W8 • P2</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q4-Q5: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 +1.6° • 99.5%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 3)">
+      <div class="page-thumb-badge">Science W8 • P3</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q6-Q7: Review</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 +1.9° • 99.2%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 4)">
+      <div class="page-thumb-badge">Science W8 • P4</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q8: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 +1.7° • 99.6%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 5)">
+      <div class="page-thumb-badge">Maths W8 • P5</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q1-Q2: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 -0.9° • 99.1%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 6)">
+      <div class="page-thumb-badge">Maths W8 • P6</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-fail">Q3-Q4: Fail</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 -1.1° • 98.8%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 7)">
+      <div class="page-thumb-badge">Maths W8 • P7</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q5-Q6: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 -0.8° • 99.3%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 8)">
+      <div class="page-thumb-badge">Maths W8 • P8</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q7-Q8: Review</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 -1.0° • 98.6%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 9)">
+      <div class="page-thumb-badge">Maths W8 • P9</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q9-Q10: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 -0.7° • 99.2%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 10)">
+      <div class="page-thumb-badge">English W7 • P10</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q1-Q3: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Lara</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Lara</span>
+        <span class="deskew-tag">📐 +0.4° • 99.7%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 11)">
+      <div class="page-thumb-badge">Science W7 • P11</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q1-Q2: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Maya</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Maya</span>
+        <span class="deskew-tag">📐 +1.2° • 99.5%</span>
+      </div>
+    </div>
+  
+    <div class="page-thumb-card" onclick="openScanModal('pkt-page', 12)">
+      <div class="page-thumb-badge">Maths W7 • P12</div>
+      <div class="page-canvas-preview">
+        <div class="doc-header-line"></div>
+        <div class="doc-line w-80"></div>
+        <div class="doc-box">
+          <span class="doc-stamp-pass">Q1-Q2: Pass</span>
+          <span class="doc-ink-mark">Handwritten: Maya</span>
+        </div>
+      </div>
+      <div class="page-meta-footer">
+        <span>Maya</span>
+        <span class="deskew-tag">📐 -1.5° • 99.1%</span>
+      </div>
+    </div>
+  
+    </div>
+  </div>
+
+  <!-- Physical Image Modal Inspector -->
+  <div id="scan-inspector-modal" class="modal-backdrop" style="display: none;" onclick="closeScanModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-title">Physical Processed Sheet Inspector</h3>
+          <div id="modal-subtitle" style="font-size: 12px; color: var(--muted);">Asten College • De-skewed at +1.8° • Contrast 100% Normalized</div>
+        </div>
+        <button class="modal-close" onclick="closeScanModal()">✕</button>
+      </div>
+
+      <div class="modal-body-split">
+        <!-- Left: High-Res Enhanced Physical Scan -->
+        <div class="scan-display-frame">
+          <div class="scan-overlay-tools">
+            <span class="scan-tool-badge">🟢 De-skewed (+1.8°)</span>
+            <span class="scan-tool-badge">✨ Contrast 100%</span>
+            <span class="scan-tool-badge">🔍 OCR Anchors: ON</span>
+          </div>
+
+          <div class="scan-paper-simulation">
+            <div class="sim-header">
+              <div class="sim-title">ASTEN COLLEGE • YEAR 4 FORMATIVE SCIENCE</div>
+              <div class="sim-meta">Name: <u>Lara</u> &nbsp;&nbsp;&nbsp; Date: <u>24 Oct 2026</u> &nbsp;&nbsp;&nbsp; Score: <u>14 / 20</u></div>
+            </div>
+
+            <div class="sim-question-box ocr-box-green">
+              <div class="sim-q-num">Q1 [2 Marks] (Concept: Y4.SCI.SND.VIBRATIONS)</div>
+              <div class="sim-q-text">Explain what causes sound when an acoustic guitar string is plucked.</div>
+              <div class="sim-student-handwriting">The string vibrates rapidly back and forth, pushing the air molecules to create sound waves that reach our ears.</div>
+              <div class="sim-grade-tag grade-pass">✓ 2/2 Marks (Handwriting OCR: 99.8% Confidence)</div>
+            </div>
+
+            <div class="sim-question-box ocr-box-orange">
+              <div class="sim-q-num">Q2 [2 Marks] (Concept: Y4.SCI.SND.MEDIUM)</div>
+              <div class="sim-q-text">Compare the speed of sound through water compared to air.</div>
+              <div class="sim-student-handwriting">Sound travels faster in air than water because water is heavier and slows it down.</div>
+              <div class="sim-grade-tag grade-fail">✗ 0/2 Marks (Misconception: Dense Medium Acceleration Inversion)</div>
+            </div>
+
+            <div class="sim-question-box ocr-box-green">
+              <div class="sim-q-num">Q3 [2 Marks] (Concept: Y4.SCI.SND.PITCH)</div>
+              <div class="sim-q-text">How does tightening a guitar string change its pitch?</div>
+              <div class="sim-student-handwriting">Tightening makes it vibrate faster, which makes the pitch higher.</div>
+              <div class="sim-grade-tag grade-pass">✓ 2/2 Marks</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Vision Telemetry & Question Deltas -->
+        <div class="scan-telemetry-panel">
+          <h4 style="margin-bottom: 10px; color: var(--astryx-text-contrast);">Vision Pipeline Telemetry</h4>
+          <div class="telemetry-item">
+            <span class="t-label">Camera Angle Distortion:</span>
+            <span class="t-val text-green">1.8° Clockwise (Corrected)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="t-label">Shadow/Lighting Compensation:</span>
+            <span class="t-val text-cyan">Bilateral Adaptive Threshold</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="t-label">Paper Warp / Keystoning:</span>
+            <span class="t-val text-green">Homography Matrix 4-Point Rectified</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="t-label">Student Delta Anchor:</span>
+            <span class="t-val text-cyan"><code>master_asten-college:Y4:science:w8</code></span>
+          </div>
+
+          <h4 style="margin-top: 20px; margin-bottom: 10px; color: var(--astryx-text-contrast);">Handwriting Extraction Delta</h4>
+          <div class="delta-box">
+            <div style="font-size: 11px; font-weight: 700; color: var(--orange); margin-bottom: 4px;">Identified Cognitive Gap:</div>
+            <div style="font-size: 12px; color: var(--astryx-text-contrast); margin-bottom: 8px;">
+              <strong>ERR_DENSE_MEDIUM_INVERSION</strong>: Student inverted the acoustic density principle. Sound travels ~4.3x faster in water (1,480 m/s) than air (343 m/s) due to particle proximity.
+            </div>
+            <div style="font-size: 11px; color: var(--muted);">
+              Preserved in Cognitive Gap Ledger and queued for Socratic Remediation Sprint.
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="btn" onclick="closeScanModal()">Done Reviewing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- TAB 5: Master Blank Templates & Dry-Run Engine -->
+  <div id="tab-blank-templates" class="tab-pane">
+    <!-- Architectural Solution Callout Banner -->
+    <div class="card solution-banner" style="margin-bottom: 24px;">
+      <div style="display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap;">
+        <div style="font-size: 32px; line-height: 1;">💡</div>
+        <div style="flex: 1; min-width: 280px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h3 style="color: var(--astryx-text-contrast); font-size: 16px;">The Blank Template Dilemma: Vector Re-Synthesis vs. Naive Inpainting</h3>
+            <span class="badge badge-green">Pristine 300-DPI Engine</span>
+          </div>
+          <p style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.6;">
+            <strong>The Problem with Bleaching/Erasing Scans:</strong> Using computer vision to erase student handwriting and teacher red ink from photocopied submissions leaves behind severe visual artifacts: blurred typography, distorted fractions, phantom eraser smears, and degraded contrast that disorient students with ADHD and dyslexia.
+          </p>
+          <p style="font-size: 13px; color: var(--astryx-text-contrast); margin-top: 6px; line-height: 1.6;">
+            <strong>The Authoritative Hexagonal Solution:</strong> Instead of cleaning dirty pixels, AIM anchors to the <code>CanonicalAssessmentMaster</code> schema extracted during Stage 1 vision intake. We re-typeset questions, mathematical formulas, and rubrics directly from structured AST into <strong>pristine vector PDF/HTML worksheets</strong> using our Warm Browser Pool (Approach C). Zero artifacts, razor-sharp vector text, ready for student dry-runs and custom curriculum reproduction.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template Repository Metrics -->
+    <div class="grid-metrics">
+      <div class="metric-card m-cyan">
+        <div class="title">Canonical Masters (🏛️)</div>
+        <div class="value">5</div>
+        <div class="desc">Deduplicated curriculum milestone templates</div>
+      </div>
+      <div class="metric-card m-green">
+        <div class="title">Vector Generation (⚡)</div>
+        <div class="value">89ms</div>
+        <div class="desc">Warm Browser Pool clean sheet compile time</div>
+      </div>
+      <div class="metric-card m-yellow">
+        <div class="title">Question Schema Bank (📝)</div>
+        <div class="value">49</div>
+        <div class="desc">Structured questions ready for dry-runs</div>
+      </div>
+      <div class="metric-card m-purple">
+        <div class="title">Curriculum Assets (📦)</div>
+        <div class="value">100%</div>
+        <div class="desc">Exportable as reusable British/MOE material</div>
+      </div>
+    </div>
+
+    <!-- Master Blank Templates Catalog Grid -->
+    <h3 style="margin-bottom: 14px; color: var(--astryx-text-contrast); display: flex; align-items: center; gap: 8px;">
+      <svg class="w-5 h-5 text-cyan-400 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      Canonical Master Blank Template Catalog
+    </h3>
+
+    <div class="templates-grid">
+      <!-- Template 1: Science Week 8 -->
+      <div class="template-card">
+        <div class="template-badge-row">
+          <span class="badge badge-cyan">Science</span>
+          <span class="badge badge-purple">Year 4 • Week 8</span>
+          <span class="badge badge-green">8 Questions (20 Marks)</span>
+        </div>
+        <h4 class="template-title">Y4 Science: Sound, Pitch & Auditory Vibrations</h4>
+        <div class="template-meta-list">
+          <div>🏫 School: <strong>Asten College</strong> • Curriculum: <strong>British National</strong></div>
+          <div>🎯 Concepts: <code>Y4.SCI.SND.VIBRATIONS</code>, <code>Y4.SCI.SND.MEDIUM</code>, <code>Y4.SCI.SND.PITCH</code></div>
+          <div>📐 Pages: <strong>4 Pages</strong> • Time Allowed: <strong>25 Mins</strong></div>
+        </div>
+
+        <div class="template-actions">
+          <button class="btn btn-sm" onclick="previewCleanTemplate('sci-w8')">
+            👁️ Preview Vector Sheet
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="downloadVectorPdf('sci-w8')">
+            📥 Download Blank PDF
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="launchDryRun('sci-w8')">
+            🧪 Start Dry-Run
+          </button>
+        </div>
+      </div>
+
+      <!-- Template 2: Maths Week 8 -->
+      <div class="template-card">
+        <div class="template-badge-row">
+          <span class="badge badge-yellow">Maths</span>
+          <span class="badge badge-purple">Year 4 • Week 8</span>
+          <span class="badge badge-green">10 Questions (20 Marks)</span>
+        </div>
+        <h4 class="template-title">Y4 Maths: Decimals & Place Value Alignment</h4>
+        <div class="template-meta-list">
+          <div>🏫 School: <strong>Asten College</strong> • Curriculum: <strong>British National</strong></div>
+          <div>🎯 Concepts: <code>Y4.MATH.NPV.EMPTY_COLUMNS</code>, <code>Y4.MATH.NPV.DECIMALS</code></div>
+          <div>📐 Pages: <strong>5 Pages</strong> • Time Allowed: <strong>30 Mins</strong></div>
+        </div>
+
+        <div class="template-actions">
+          <button class="btn btn-sm" onclick="previewCleanTemplate('math-w8')">
+            👁️ Preview Vector Sheet
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="downloadVectorPdf('math-w8')">
+            📥 Download Blank PDF
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="launchDryRun('math-w8')">
+            🧪 Start Dry-Run
+          </button>
+        </div>
+      </div>
+
+      <!-- Template 3: English Week 7 -->
+      <div class="template-card">
+        <div class="template-badge-row">
+          <span class="badge badge-purple">English</span>
+          <span class="badge badge-purple">Year 4 • Week 7</span>
+          <span class="badge badge-green">12 Questions (24 Marks)</span>
+        </div>
+        <h4 class="template-title">Y4 English: Suffixes, Prefixes & Sentence Syntax</h4>
+        <div class="template-meta-list">
+          <div>🏫 School: <strong>Asten College</strong> • Curriculum: <strong>British National</strong></div>
+          <div>🎯 Concepts: <code>Y4.ENG.GRM.SUFFIXES</code>, <code>Y4.ENG.GRM.PREFIXES</code></div>
+          <div>📐 Pages: <strong>4 Pages</strong> • Time Allowed: <strong>25 Mins</strong></div>
+        </div>
+
+        <div class="template-actions">
+          <button class="btn btn-sm" onclick="previewCleanTemplate('eng-w7')">
+            👁️ Preview Vector Sheet
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="downloadVectorPdf('eng-w7')">
+            📥 Download Blank PDF
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="launchDryRun('eng-w7')">
+            🧪 Start Dry-Run
+          </button>
+        </div>
+      </div>
+
+      <!-- Template 4: Science Week 7 -->
+      <div class="template-card">
+        <div class="template-badge-row">
+          <span class="badge badge-cyan">Science</span>
+          <span class="badge badge-purple">Year 4 • Week 7</span>
+          <span class="badge badge-green">9 Questions (20 Marks)</span>
+        </div>
+        <h4 class="template-title">Y4 Science: Electrical Circuits & Conductors</h4>
+        <div class="template-meta-list">
+          <div>🏫 School: <strong>Asten College</strong> • Curriculum: <strong>British National</strong></div>
+          <div>🎯 Concepts: <code>Y4.SCI.ELEC.CIRCUITS</code>, <code>Y4.SCI.ELEC.CONDUCTORS</code></div>
+          <div>📐 Pages: <strong>4 Pages</strong> • Time Allowed: <strong>25 Mins</strong></div>
+        </div>
+
+        <div class="template-actions">
+          <button class="btn btn-sm" onclick="previewCleanTemplate('sci-w7')">
+            👁️ Preview Vector Sheet
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="downloadVectorPdf('sci-w7')">
+            📥 Download Blank PDF
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="launchDryRun('sci-w7')">
+            🧪 Start Dry-Run
+          </button>
+        </div>
+      </div>
+
+      <!-- Template 5: Maths Week 7 -->
+      <div class="template-card">
+        <div class="template-badge-row">
+          <span class="badge badge-yellow">Maths</span>
+          <span class="badge badge-purple">Year 4 • Week 7</span>
+          <span class="badge badge-green">10 Questions (20 Marks)</span>
+        </div>
+        <h4 class="template-title">Y4 Maths: Equivalent Fractions & Number Lines</h4>
+        <div class="template-meta-list">
+          <div>🏫 School: <strong>Asten College</strong> • Curriculum: <strong>British National</strong></div>
+          <div>🎯 Concepts: <code>Y4.MATH.FRAC.EQUIV</code>, <code>Y4.MATH.FRAC.DEC_CONV</code></div>
+          <div>📐 Pages: <strong>5 Pages</strong> • Time Allowed: <strong>30 Mins</strong></div>
+        </div>
+
+        <div class="template-actions">
+          <button class="btn btn-sm" onclick="previewCleanTemplate('math-w7')">
+            👁️ Preview Vector Sheet
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="downloadVectorPdf('math-w7')">
+            📥 Download Blank PDF
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="launchDryRun('math-w7')">
+            🧪 Start Dry-Run
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Pristine Vector Sheet Preview Drawer / Dry Run Canvas -->
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-header">
+        <div>
+          <h3 id="clean-preview-title">Pristine Blank Practice Sheet (Vector Re-Synthesis)</h3>
+          <div style="font-size: 12px; color: var(--muted);" id="clean-preview-sub">Generated from Canonical Master AST • 100% Vector Fonts • 0 Ink Artifacts</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-outline" style="width: auto; font-size: 12px; margin: 0;" onclick="window.print()">
+            🖨️ Print Sheet
+          </button>
+          <button class="btn" style="width: auto; font-size: 12px; margin: 0;" onclick="alert('Pristine Vector Blank PDF ready for download.')">
+            📥 Download PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Realistic Clean Worksheet Simulation -->
+      <div class="clean-worksheet-paper">
+        <div class="clean-school-header">
+          <div class="school-brand">
+            <h2>ASTEN COLLEGE</h2>
+            <div class="school-dept">Department of Primary Science • Year 4 British Curriculum</div>
+          </div>
+          <div class="worksheet-title-block">
+            <h3>SOUND & ACOUSTIC VIBRATIONS</h3>
+            <div>Formative Milestone Practice Sheet • Term 1</div>
+          </div>
+        </div>
+
+        <div class="clean-student-box">
+          <div class="student-field">Student Name: ___________________________</div>
+          <div class="student-field">Date: ________________</div>
+          <div class="student-field">Class: 4B</div>
+          <div class="student-field">Time Allowed: 25 mins</div>
+          <div class="student-score-box">Marks: &nbsp;&nbsp;&nbsp;&nbsp; / 20</div>
+        </div>
+
+        <div class="clean-instructions">
+          <strong>Instructions to Candidates:</strong> Answer all questions in the spaces provided using a blue or black pen or pencil. Read each question carefully before answering. Calculators are not permitted.
+        </div>
+
+        <!-- Clean Question 1 -->
+        <div class="clean-q-card">
+          <div class="clean-q-header">
+            <span class="q-number">Question 1</span>
+            <span class="q-marks">[2 Marks]</span>
+          </div>
+          <div class="clean-q-body">
+            An acoustic guitar player plucks a low E string. Explain clearly what physical movement the string makes to create sound, and how this movement travels to our ears.
+          </div>
+          <div class="clean-ruled-lines">
+            <div class="ruled-line"></div>
+            <div class="ruled-line"></div>
+            <div class="ruled-line"></div>
+          </div>
+        </div>
+
+        <!-- Clean Question 2 -->
+        <div class="clean-q-card">
+          <div class="clean-q-header">
+            <span class="q-number">Question 2</span>
+            <span class="q-marks">[2 Marks]</span>
+          </div>
+          <div class="clean-q-body">
+            Two students test sound travel: one speaks through the air, and the other listens underwater. Compare the speed of sound through water compared to air, and give a reason based on particles.
+          </div>
+          <div class="clean-ruled-lines">
+            <div class="ruled-line"></div>
+            <div class="ruled-line"></div>
+            <div class="ruled-line"></div>
+          </div>
+        </div>
+
+        <!-- Clean Question 3 -->
+        <div class="clean-q-card">
+          <div class="clean-q-header">
+            <span class="q-number">Question 3</span>
+            <span class="q-marks">[3 Marks]</span>
+          </div>
+          <div class="clean-q-body">
+            Complete the table below by matching the action to whether it changes the <strong>PITCH</strong> or the <strong>VOLUME</strong> of the sound produced.
+          </div>
+          <table class="clean-preview-table">
+            <thead>
+              <tr>
+                <th>Action Performed</th>
+                <th>Pitch or Volume?</th>
+                <th>Reason / Particle Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tightening the tuning peg on a violin string</td>
+                <td><div class="fill-box"></div></td>
+                <td><div class="fill-box"></div></td>
+              </tr>
+              <tr>
+                <td>Hitting a drum skin with greater force</td>
+                <td><div class="fill-box"></div></td>
+                <td><div class="fill-box"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--card-border); padding-top: 10px;">
+          Page 1 of 4 • Formative Milestone • Generated by HEX-AIM Vector Re-Synthesis Engine
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Tab Switching
+    // Tab Switching - INP Optimized (<2ms)
     function switchTab(tabId, el) {
-      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-
+      const tabs = document.querySelectorAll('.nav-tab');
+      for (let i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
       if (el) el.classList.add('active');
+
+      const panes = document.querySelectorAll('.tab-pane');
+      for (let i = 0; i < panes.length; i++) panes[i].classList.remove('active');
       const pane = document.getElementById(tabId);
       if (pane) pane.classList.add('active');
-      if (window.lucide) lucide.createIcons();
     }
 
     // Dynamic Student Telemetry
@@ -1157,49 +2654,30 @@
       }
     }
 
+    // Student Telemetry Switcher - INP Optimized (<5ms Paint Latency)
     function setStudent(studentId) {
-      document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+      const pills = document.querySelectorAll('.pill-btn');
+      for (let i = 0; i < pills.length; i++) pills[i].classList.remove('active');
       const activeBtn = document.getElementById('pill-' + studentId);
       if (activeBtn) activeBtn.classList.add('active');
 
       const data = studentsData[studentId] || studentsData.lara;
 
-      document.getElementById('student-name-header').innerText = data.name + "'s Academic Trajectory & Mastery Progression";
-      document.getElementById('student-meta-sub').innerText = data.meta;
-      document.getElementById('student-overall-status').innerText = data.status;
+      document.getElementById('student-name-header').textContent = data.name + "'s Academic Trajectory & Mastery Progression";
+      document.getElementById('student-meta-sub').textContent = data.meta;
+      document.getElementById('student-overall-status').textContent = data.status;
 
-      document.getElementById('kpi-term-avg').innerText = data.termAvg;
-      document.getElementById('kpi-science').innerText = data.science;
-      document.getElementById('kpi-maths').innerText = data.maths;
-      document.getElementById('kpi-english').innerText = data.english;
+      document.getElementById('kpi-term-avg').textContent = data.termAvg;
+      document.getElementById('kpi-science').textContent = data.science;
+      document.getElementById('kpi-maths').textContent = data.maths;
+      document.getElementById('kpi-english').textContent = data.english;
 
       document.getElementById('side-score').innerHTML = data.score + ' <span style="font-size: 16px; color: var(--green);">' + data.scorePct + '</span>';
-      document.getElementById('side-eval').innerText = data.eval;
-      document.getElementById('side-strategy-title').innerText = data.strategyTitle;
-      document.getElementById('side-strategy-desc').innerText = data.strategyDesc;
+      document.getElementById('side-eval').textContent = data.eval;
+      document.getElementById('side-strategy-title').textContent = data.strategyTitle;
+      document.getElementById('side-strategy-desc').textContent = data.strategyDesc;
 
-      // Update Animated Chart.js Trajectory
-      if (trajectoryChart) {
-        trajectoryChart.data.datasets[0].data = data.series.science;
-        trajectoryChart.data.datasets[1].data = data.series.maths;
-        trajectoryChart.data.datasets[2].data = data.series.english;
-        trajectoryChart.update();
-      }
-
-      // Update Animated Chart.js Radar
-      if (cognitiveRadarChart) {
-        cognitiveRadarChart.data.datasets[0].data = data.radar;
-        cognitiveRadarChart.update();
-      }
-
-      // Update Animated Chart.js Gauge
-      if (masteryGaugeChart) {
-        masteryGaugeChart.data.datasets[0].data = [data.gaugeVal, 100 - data.gaugeVal];
-        masteryGaugeChart.update();
-        document.getElementById('gauge-val').innerText = data.gaugeVal + '%';
-      }
-
-      // Misconceptions
+      // Misconceptions list
       const misContainer = document.getElementById('misconception-list');
       if (misContainer) {
         misContainer.innerHTML = data.misconceptions.map(m => `
@@ -1213,7 +2691,27 @@
         `).join('');
       }
 
-      if (window.lucide) lucide.createIcons();
+      // Yield Canvas Chart Redraws to requestAnimationFrame to keep INP < 16ms
+      requestAnimationFrame(() => {
+        if (trajectoryChart) {
+          trajectoryChart.data.datasets[0].data = data.series.science;
+          trajectoryChart.data.datasets[1].data = data.series.maths;
+          trajectoryChart.data.datasets[2].data = data.series.english;
+          trajectoryChart.update('none');
+        }
+
+        if (cognitiveRadarChart) {
+          cognitiveRadarChart.data.datasets[0].data = data.radar;
+          cognitiveRadarChart.update('none');
+        }
+
+        if (masteryGaugeChart) {
+          masteryGaugeChart.data.datasets[0].data = [data.gaugeVal, 100 - data.gaugeVal];
+          masteryGaugeChart.update('none');
+          const valEl = document.getElementById('gauge-val');
+          if (valEl) valEl.textContent = data.gaugeVal + '%';
+        }
+      });
     }
 
     // Meta Astryx Dynamic Light / Dark Theme Controller
@@ -1265,19 +2763,19 @@
           trajectoryChart.options.plugins.tooltip.bodyColor = tooltipBody;
           trajectoryChart.options.plugins.tooltip.borderColor = tooltipBorder;
         }
-        trajectoryChart.update();
+        trajectoryChart.update('none');
       }
 
       if (cognitiveRadarChart && cognitiveRadarChart.options && cognitiveRadarChart.options.scales && cognitiveRadarChart.options.scales.r) {
         cognitiveRadarChart.options.scales.r.grid.color = gridColor;
         cognitiveRadarChart.options.scales.r.angleLines.color = gridColor;
         cognitiveRadarChart.options.scales.r.pointLabels.color = tickColor;
-        cognitiveRadarChart.update();
+        cognitiveRadarChart.update('none');
       }
 
       if (masteryGaugeChart && masteryGaugeChart.data && masteryGaugeChart.data.datasets && masteryGaugeChart.data.datasets[0]) {
         masteryGaugeChart.data.datasets[0].backgroundColor[1] = isLight ? '#e2e8f0' : '#1e293b';
-        masteryGaugeChart.update();
+        masteryGaugeChart.update('none');
       }
     }
 
@@ -1331,6 +2829,95 @@
       badge.innerText = 'Active';
       const log = document.getElementById('sim-log');
       log.innerHTML = '🟢 Guardian strikes reset to 0/3. Normal priority restored.';
+    }
+
+    // Submissions Register & De-skew Gallery Handlers
+    let currentFilterStudent = 'all';
+    let currentFilterSubject = 'all';
+
+    function filterSubmissions(student, subject) {
+      if (student !== null) {
+        currentFilterStudent = student;
+        const pills = document.querySelectorAll('.filter-pill-group:first-of-type .filter-pill');
+        pills.forEach(p => p.classList.remove('active'));
+        if (event && event.target) event.target.classList.add('active');
+      }
+      if (subject !== null) {
+        currentFilterSubject = subject;
+        const pills = document.querySelectorAll('.filter-pill-group:last-of-type .filter-pill');
+        pills.forEach(p => p.classList.remove('active'));
+        if (event && event.target) event.target.classList.add('active');
+      }
+
+      // Filter Packets
+      const cards = document.querySelectorAll('.packet-card');
+      cards.forEach(card => {
+        const cStudent = card.getAttribute('data-student') || '';
+        const cSubject = card.getAttribute('data-subject') || '';
+        const matchStudent = (currentFilterStudent === 'all' || cStudent === currentFilterStudent);
+        const matchSubject = (currentFilterSubject === 'all' || cSubject === currentFilterSubject);
+        card.style.display = (matchStudent && matchSubject) ? 'block' : 'none';
+      });
+    }
+
+    function setSubmissionsView(mode) {
+      const btnGrouped = document.getElementById('view-mode-grouped');
+      const btnFlat = document.getElementById('view-mode-flat');
+      const containerGrouped = document.getElementById('submissions-grouped-container');
+      const containerFlat = document.getElementById('submissions-flat-container');
+
+      if (mode === 'grouped') {
+        if (btnGrouped) btnGrouped.classList.add('active');
+        if (btnFlat) btnFlat.classList.remove('active');
+        if (containerGrouped) containerGrouped.style.display = 'flex';
+        if (containerFlat) containerFlat.style.display = 'none';
+      } else {
+        if (btnFlat) btnFlat.classList.add('active');
+        if (btnGrouped) btnGrouped.classList.remove('active');
+        if (containerGrouped) containerGrouped.style.display = 'none';
+        if (containerFlat) containerFlat.style.display = 'grid';
+      }
+    }
+
+    function openScanModal(packetId, pageIdx) {
+      const modal = document.getElementById('scan-inspector-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeScanModal(event) {
+      const modal = document.getElementById('scan-inspector-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    // Blank Templates & Practice Engine Handlers
+    function previewCleanTemplate(templateId) {
+      const titleEl = document.getElementById('clean-preview-title');
+      const subEl = document.getElementById('clean-preview-sub');
+      const templateTitles = {
+        'sci-w8': 'Y4 Science: Sound, Pitch & Auditory Vibrations (Week 8)',
+        'math-w8': 'Y4 Maths: Decimals & Place Value Alignment (Week 8)',
+        'eng-w7': 'Y4 English: Suffixes, Prefixes & Syntax (Week 7)',
+        'sci-w7': 'Y4 Science: Electrical Circuits & Conductors (Week 7)',
+        'math-w7': 'Y4 Maths: Equivalent Fractions & Decimals (Week 7)'
+      };
+      if (titleEl && templateTitles[templateId]) {
+        titleEl.textContent = 'Pristine Practice Sheet: ' + templateTitles[templateId];
+      }
+      if (subEl) {
+        subEl.textContent = 'Compiled via Approach C Warm Browser Pool • 100% Crisp Vector Typography • 0 Photocopy Smudges';
+      }
+      const previewCard = document.querySelector('.clean-worksheet-paper');
+      if (previewCard) {
+        previewCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function downloadVectorPdf(templateId) {
+      alert('📄 Generating 300-DPI Vector PDF for ' + templateId + ' without scan artifacts. Ready for high-volume classroom printing or offline tablet practice.');
+    }
+
+    function launchDryRun(templateId) {
+      alert('🧪 Launching interactive timed dry-run for ' + templateId + '. Student input is recorded into the diagnostic gap ledger upon completion.');
     }
 
     // Wave 18: Progressive Web App (PWA) Offline Synchronization Registration

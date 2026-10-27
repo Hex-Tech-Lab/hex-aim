@@ -41,6 +41,14 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(html).toContain('Deduplication Gate');
     expect(html).toContain('cdg1 (Paris)');
     expect(html).toContain('aim-bot.getvintel.com');
+    // Tabs 4 & 5
+    expect(html).toContain('Scanned Submissions (52)');
+    expect(html).toContain('Blank Templates & Dry-Runs');
+    expect(html).toContain('tab-submissions-register');
+    expect(html).toContain('tab-blank-templates');
+    expect(html).toContain('The Blank Template Dilemma: Vector Re-Synthesis vs. Naive Inpainting');
+    expect(html).toContain('Grouped by Test Packet (8)');
+    expect(html).toContain('Flat Physical Pages (52)');
   });
 
   it('GET /sprint/preview renders 4-page adaptive print sprint', async () => {
