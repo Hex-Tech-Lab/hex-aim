@@ -1,0 +1,20 @@
+apps/bot/src/handlers/diagHandler.ts
+  h_cdd764b4030252 9,27-31,42
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 370,426-430
+apps/bot/wrangler.jsonc
+  h_cdd764b4030252 16
+packages/adapters/src/vision/OpenRouterVisionAdapter.ts
+  h_cdd764b4030252 21,93-94,112-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7cd865134c0ad0ed8aab962c9c74b5cc03bc4df0",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
