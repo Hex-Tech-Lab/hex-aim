@@ -215,6 +215,8 @@ export interface AssessmentSubmission {
   sourceImageUrls: string[];
 }
 
+export type Assessment = AssessmentSubmission;
+
 export interface CognitiveGap {
   id: string;
   studentId: string;
@@ -412,4 +414,64 @@ export interface ISettingsPort {
   get<T>(key: string, defaultValue: T): T;
   set<T>(key: string, value: T): void;
   getAll(): Record<string, unknown>;
+}
+
+// Wave 15: Voice-First Socratic Audio Coaching Types
+export interface AudioTranscriptionResult {
+  text: string;
+  language?: string;
+  durationSeconds?: number;
+  confidence?: number;
+}
+
+export interface IAudioTranscriptionPort {
+  transcribeAudio(audioBuffer: Uint8Array | ArrayBuffer, mimeType: string): Promise<AudioTranscriptionResult>;
+}
+
+export interface SocraticOralEvaluation {
+  transcript: string;
+  conceptMasteryPct: number;
+  detectedKeyVocab: string[];
+  missingKeyVocab: string[];
+  misconceptions: string[];
+  affirmationPraise: string;
+  socraticFollowUpQuestion: string;
+  suggestedBloomAdjustment: 'maintain' | 'advance' | 'scaffold';
+}
+
+// Wave 16: Adaptive Bloom Taxonomy Types
+export type BloomLevel = 'remember' | 'understand' | 'apply' | 'analyze' | 'evaluate' | 'create';
+
+export interface BloomDifficultyRecord {
+  studentId: string;
+  subjectId: string;
+  conceptCode: string;
+  currentBloomLevel: BloomLevel;
+  levelStreakCount: number;
+  needsScaffolding: boolean;
+  lastAttemptAt: string;
+}
+
+// Wave 17: Multi-Subject Cohort Analytics Heatmap Types
+export interface CohortMasteryCell {
+  studentId: string;
+  studentName: string;
+  conceptCode: string;
+  conceptTitle: string;
+  masteryPct: number;
+  status: 'mastered' | 'progressing' | 'critical_gap';
+}
+
+export interface CohortAnalyticsMatrix {
+  classId: string;
+  yearGroup: string;
+  subjectId: string;
+  totalStudents: number;
+  matrix: CohortMasteryCell[];
+  criticalInterventionClusters: Array<{
+    conceptCode: string;
+    conceptTitle: string;
+    studentCount: number;
+    studentNames: string[];
+  }>;
 }

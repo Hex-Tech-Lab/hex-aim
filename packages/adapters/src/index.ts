@@ -21,3 +21,8 @@ export * from './vision/GeminiVisionAdapter.js';
 export * from './vision/OpenRouterVisionAdapter.js';
 export * from './vision/MockVisionAdapter.js';
 export * from './vision/VisionFactory.js';
+
+// Audio (Wave 15)
+export * from './audio/MockAudioAdapter.js';
+export * from './audio/WhisperAudioAdapter.js';
+export * from './audio/AudioFactory.js';

@@ -12,3 +12,7 @@ export * from './identity/StudentIdentityVault.js';
 export * from './identity/DynamicPresentationHydrator.js';
 export * from './intake/PilotBatchIngestor.js';
 export * from './family/FamilyAccessManager.js';
+export * from './socratic/SocraticOralEvaluator.js';
+export * from './taxonomy/BloomTaxonomyEngine.js';
+export * from './curriculum/MultiSubjectCurriculumService.js';
+export * from './curriculum/CohortAnalyticsEngine.js';

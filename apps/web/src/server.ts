@@ -1,4 +1,6 @@
 import * as http from 'http';
+import * as fs from 'fs';
+import * as path from 'path';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
 import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault } from '@hex-aim/core';
@@ -15,6 +17,37 @@ export function createServer(): http.Server {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ status: 'ok', service: 'hex-aim-web', timestamp: new Date().toISOString() }));
       return;
+    }
+
+    // Wave 18: PWA Static Files
+    if (url.pathname === '/manifest.json') {
+      const candidates = [
+        path.join(process.cwd(), 'apps/web/public/manifest.json'),
+        path.join(process.cwd(), 'public/manifest.json'),
+        path.resolve(__dirname, '../public/manifest.json'),
+      ];
+      for (const p of candidates) {
+        if (fs.existsSync(p)) {
+          res.writeHead(200, { 'Content-Type': 'application/manifest+json' });
+          res.end(fs.readFileSync(p));
+          return;
+        }
+      }
+    }
+
+    if (url.pathname === '/sw.js') {
+      const candidates = [
+        path.join(process.cwd(), 'apps/web/public/sw.js'),
+        path.join(process.cwd(), 'public/sw.js'),
+        path.resolve(__dirname, '../public/sw.js'),
+      ];
+      for (const p of candidates) {
+        if (fs.existsSync(p)) {
+          res.writeHead(200, { 'Content-Type': 'application/javascript' });
+          res.end(fs.readFileSync(p));
+          return;
+        }
+      }
     }
 
     // Interactive Console HTML
