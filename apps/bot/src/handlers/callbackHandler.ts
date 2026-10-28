@@ -1,6 +1,7 @@
 import type { IStoragePort, IMessagingPort } from '@hex-aim/types';
 import { purgeAndResetSession, resetSessionOnly, getChatLanguage, setChatLanguage, type SessionContext } from './sessionHandler.js';
 import { processAssessmentJob } from '../jobs/processAssessment.js';
+import { PERSISTENT_REPLY_KEYBOARD_EN, PERSISTENT_REPLY_KEYBOARD_AR } from '../keyboards.js';
 
 export interface CallbackHandlerContext extends SessionContext {
   storage: IStoragePort;
@@ -49,10 +50,11 @@ export async function handleCallbackQuery(
     await setChatLanguage(storage, cbChatId, targetLang);
 
     const toastMsg = targetLang === 'ar'
-      ? `🌐 تم تحويل لغة البوت إلى <b>العربية 🇪🇬</b> بنجاح!\n(Bot language switched to Arabic)`
-      : `🌐 Bot language switched to <b>English 🇬🇧</b> successfully!\n(تم تحويل لغة البوت إلى الإنجليزية)`;
+      ? `🌐 تم تحويل لغة البوت إلى <b>العربية 🇪🇬</b> بنجاح!`
+      : `🌐 Bot language switched to <b>English 🇬🇧</b> successfully!`;
 
-    await sendAndTrack(cbChatId, toastMsg);
+    const targetReplyKeyboard = targetLang === 'ar' ? PERSISTENT_REPLY_KEYBOARD_AR : PERSISTENT_REPLY_KEYBOARD_EN;
+    await messaging.sendMessage(cbChatId, toastMsg, undefined, targetReplyKeyboard);
 
     if (messaging.sendInteractiveMenu) {
       await messaging.sendInteractiveMenu(cbChatId, undefined, targetLang);

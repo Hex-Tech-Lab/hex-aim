@@ -74,55 +74,104 @@ export function renderGapLedgerTab(): string {
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 1.25rem;">👭</span>
           <div>
-            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary, #f1f5f9);">Wave 25: Sibling Cross-Teaching Collaboration Mode (Lara ⇄ Maya)</h3>
-            <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-muted, #94a3b8);">Reciprocal peer-to-peer Socratic discovery cards pairing complementary cognitive profiles.</p>
+            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary, #f1f5f9);">
+              <span class="lang-en-only">Wave 25: Sibling Cross-Teaching Collaboration Mode (Lara ⇄ Maya)</span>
+              <span class="lang-ar-only">المرحلة ٢٥: نمط التعلم التبادلي بين الشقيقتين (لارا ⇄ مايا)</span>
+            </h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-muted, #94a3b8);">
+              <span class="lang-en-only">Reciprocal peer-to-peer Socratic discovery cards pairing complementary cognitive profiles.</span>
+              <span class="lang-ar-only">بطاقات الاستكشاف السقراطي التبادلي المنسقة بين نقاط القوة المعرفية المتكاملة لكلتا الأختين.</span>
+            </p>
           </div>
         </div>
-        <span class="badge badge-cyan" style="font-size: 11px;">Active Reciprocal Pairing</span>
+        <span class="badge badge-cyan" style="font-size: 11px;">
+          <span class="lang-en-only">Active Reciprocal Pairing</span>
+          <span class="lang-ar-only">إقران تبادلي نشط</span>
+        </span>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px;">
         <!-- Card 1: Lara teaches Maya Science -->
         <div style="background: rgba(6, 182, 212, 0.06); border: 1px solid rgba(6, 182, 212, 0.25); border-radius: 8px; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <strong style="color: #06b6d4; font-size: 0.88rem;">🔬 Lara (Tutor) ➔ Maya (Learner)</strong>
-            <span class="badge badge-cyan" style="font-size: 10px;">8m Micro-Sprint</span>
+            <strong style="color: #06b6d4; font-size: 0.88rem;">
+              <span class="lang-en-only">🔬 Lara (Tutor) ➔ Maya (Learner)</span>
+              <span class="lang-ar-only">🔬 لارا (المعلمة) ➔ مايا (المتعلمة)</span>
+            </strong>
+            <span class="badge badge-cyan" style="font-size: 10px;">
+              <span class="lang-en-only">8m Micro-Sprint</span>
+              <span class="lang-ar-only">تمرين مكثف ٨ دقائق</span>
+            </span>
           </div>
-          <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary, #f1f5f9); margin-bottom: 6px;">
+          <div class="lang-en-only" style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary, #f1f5f9); margin-bottom: 6px;">
             Sound Wave Transmission & Vacuum Jar Experiment
           </div>
+          <div class="lang-ar-only" style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary, #f1f5f9); margin-bottom: 6px;">
+            انتقال الموجات الصوتية وتجربة الناقوس المفرغ من الهواء
+          </div>
           <div style="font-size: 0.78rem; color: var(--text-muted, #94a3b8); margin-bottom: 8px; line-height: 1.4;">
-            <strong>Hook Prompt:</strong> "Can an alarm clock be heard ringing in outer space where there is no air at all? Why or why not?"<br>
-            <span style="color: #06b6d4; font-size: 0.74rem;">🇸🇦 "هل يمكن سماع رنين المنبه في الفضاء الخارجي حيث لا يوجد هواء على الإطلاق؟ ولماذا؟"</span>
+            <div class="lang-en-only">
+              <strong>Hook Prompt:</strong> "Can an alarm clock be heard ringing in outer space where there is no air at all? Why or why not?"
+            </div>
+            <div class="lang-ar-only">
+              <strong style="color: #06b6d4;">سؤال الاستكشاف:</strong> "هل يمكن سماع رنين المنبه في الفضاء الخارجي حيث لا يوجد هواء على الإطلاق؟ ولماذا؟"
+            </div>
           </div>
           <div style="font-size: 0.76rem; background: rgba(0,0,0,0.2); border-radius: 4px; padding: 6px 8px; color: #cbd5e1; margin-bottom: 10px;">
-            🧩 <strong>Guided Analogy:</strong> Falling dominoes wave. Particles must collide to carry vibration.
+            <span class="lang-en-only">🧩 <strong>Guided Analogy:</strong> Falling dominoes wave. Particles must collide to carry vibration.</span>
+            <span class="lang-ar-only">🧩 <strong>التمثيل التوضيحي:</strong> موجة الدومينو المتساقطة. تتصادم الجزيئات لنقل الاهتزازات.</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 0.74rem; color: #10b981;">✓ Mastery Gain: +15 pts</span>
-            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px; margin: 0; width: auto;" onclick="alert('Session initialized: Lara guiding Maya on Sound Waves (8 mins)')">▶ Launch Dialogue</button>
+            <span style="font-size: 0.74rem; color: #10b981;">
+              <span class="lang-en-only">✓ Mastery Gain: +15 pts</span>
+              <span class="lang-ar-only">✓ مكسب الإتقان: +١٥ نقطة</span>
+            </span>
+            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px; margin: 0; width: auto;" onclick="alert('Session initialized: Lara guiding Maya on Sound Waves (8 mins)')">
+              <span class="lang-en-only">▶ Launch Dialogue</span>
+              <span class="lang-ar-only">▶ بدء الحوار</span>
+            </button>
           </div>
         </div>
 
         <!-- Card 2: Maya teaches Lara Maths -->
         <div style="background: rgba(168, 85, 247, 0.06); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 8px; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <strong style="color: #a855f7; font-size: 0.88rem;">📐 Maya (Tutor) ➔ Lara (Learner)</strong>
-            <span class="badge badge-purple" style="font-size: 10px;">8m ADHD Sprint</span>
+            <strong style="color: #a855f7; font-size: 0.88rem;">
+              <span class="lang-en-only">📐 Maya (Tutor) ➔ Lara (Learner)</span>
+              <span class="lang-ar-only">📐 مايا (المعلمة) ➔ لارا (المتعلمة)</span>
+            </strong>
+            <span class="badge badge-purple" style="font-size: 10px;">
+              <span class="lang-en-only">8m ADHD Sprint</span>
+              <span class="lang-ar-only">تمرين تركيز ٨ دقائق</span>
+            </span>
           </div>
-          <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary, #f1f5f9); margin-bottom: 6px;">
+          <div class="lang-en-only" style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary, #f1f5f9); margin-bottom: 6px;">
             Column Subtraction & Empty Tens Zero Decomposition
           </div>
+          <div class="lang-ar-only" style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary, #f1f5f9); margin-bottom: 6px;">
+            الطرح بالأعمدة وتفكيك الصفر في خانة العشرات الخالية
+          </div>
           <div style="font-size: 0.78rem; color: var(--text-muted, #94a3b8); margin-bottom: 8px; line-height: 1.4;">
-            <strong>Hook Prompt:</strong> "If we calculate 503 - 247, and ones needs more units, but tens has 0, where do we go first?"<br>
-            <span style="color: #a855f7; font-size: 0.74rem;">🇸🇦 "إذا أردنا حساب ٥٠٣ - ٢٤٧، وخانة الآحاد تحتاج للمزيد، ولكن خانة العشرات صفر، إلى أين نذهب أولاً؟"</span>
+            <div class="lang-en-only">
+              <strong>Hook Prompt:</strong> "If we calculate 503 - 247, and ones needs more units, but tens has 0, where do we go first?"
+            </div>
+            <div class="lang-ar-only">
+              <strong style="color: #a855f7;">سؤال الاستكشاف:</strong> "إذا أردنا حساب ٥٠٣ - ٢٤٧، وخانة الآحاد تحتاج للمزيد، ولكن خانة العشرات صفر، إلى أين نذهب أولاً؟"
+            </div>
           </div>
           <div style="font-size: 0.76rem; background: rgba(0,0,0,0.2); border-radius: 4px; padding: 6px 8px; color: #cbd5e1; margin-bottom: 10px;">
-            💷 <strong>Guided Analogy:</strong> Money exchange: trade £100 note for ten £10s, then trade one £10 for coins.
+            <span class="lang-en-only">💷 <strong>Guided Analogy:</strong> Money exchange: trade £100 note for ten £10s, then trade one £10 for coins.</span>
+            <span class="lang-ar-only">💷 <strong>التمثيل التوضيحي:</strong> تبديل العملات: استبدال ورقة ١٠٠ جنيه بـ ١٠ ورقات من فئة ١٠ جنيهات، ثم استبدال إحداها بقطع معدنية.</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 0.74rem; color: #10b981;">✓ Mastery Gain: +18 pts</span>
-            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px; margin: 0; width: auto;" onclick="alert('Session initialized: Maya guiding Lara on Column Decomposition (8 mins)')">▶ Launch Dialogue</button>
+            <span style="font-size: 0.74rem; color: #10b981;">
+              <span class="lang-en-only">✓ Mastery Gain: +18 pts</span>
+              <span class="lang-ar-only">✓ مكسب الإتقان: +١٨ نقطة</span>
+            </span>
+            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px; margin: 0; width: auto;" onclick="alert('Session initialized: Maya guiding Lara on Column Decomposition (8 mins)')">
+              <span class="lang-en-only">▶ Launch Dialogue</span>
+              <span class="lang-ar-only">▶ بدء الحوار</span>
+            </button>
           </div>
         </div>
       </div>

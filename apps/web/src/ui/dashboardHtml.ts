@@ -67,70 +67,81 @@ ${renderDashboardStyles()}
         <i data-lucide="server" class="inline w-3.5 h-3.5 mr-1"></i> cdg1 (Paris) • fra1
       </div>
       <div class="badge-tag">
-        <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i> Asten College • Y4
+        <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i>
+        <span class="lang-en-only">Asten College • Y4</span>
+        <span class="lang-ar-only">مدرسة أستن كوليدج • الصف الرابع</span>
       </div>
 
       <!-- Wave 27/26 Portals Navigator Dropdown -->
       <div class="portal-dropdown" id="portal-dropdown">
         <button class="portal-dropdown-btn" onclick="togglePortalMenu(event)" title="Switch Active Portal">
           <i data-lucide="compass" class="w-3.5 h-3.5 text-cyan-400"></i>
-          <span>Portals</span>
+          <span id="portal-dropdown-label"><span class="lang-en-only">Portals</span><span class="lang-ar-only">البوابات</span></span>
           <i data-lucide="chevron-down" class="w-3 h-3"></i>
         </button>
         <div class="portal-dropdown-menu" id="portal-dropdown-menu">
-          <div class="portal-dropdown-header">AIM Portals & Simulators</div>
+          <div class="portal-dropdown-header">
+            <span class="lang-en-only">AIM Portals & Simulators</span>
+            <span class="lang-ar-only">منصات ومحاكيات AIM</span>
+          </div>
           <a href="/" class="portal-dropdown-item">
             <span>🏠</span>
             <div>
-              <div>Mastery Console</div>
-              <div style="font-size: 10px; color: var(--muted);">Parent Cognitive Dashboard</div>
+              <div><span class="lang-en-only">Mastery Console</span><span class="lang-ar-only">لوحة تحكم الإتقان</span></div>
+              <div style="font-size: 10px; color: var(--muted);"><span class="lang-en-only">Parent Cognitive Dashboard</span><span class="lang-ar-only">لوحة تحكم الوالدين المعرفية</span></div>
             </div>
           </a>
           <a href="/school/asten-college?year=Y4" target="_blank" class="portal-dropdown-item">
             <span>🏫</span>
             <div>
-              <div>Teacher Institutional Portal</div>
-              <div style="font-size: 10px; color: var(--muted);">Macro Diagnostic Heatmaps</div>
+              <div><span class="lang-en-only">Teacher Institutional Portal</span><span class="lang-ar-only">بوابة المعلمين المؤسسية</span></div>
+              <div style="font-size: 10px; color: var(--muted);"><span class="lang-en-only">Macro Diagnostic Heatmaps</span><span class="lang-ar-only">خرائط التشخيص الحرارية العامة</span></div>
             </div>
           </a>
           <div class="portal-dropdown-divider"></div>
-          <div class="portal-dropdown-header">Mock Exam Simulators</div>
+          <div class="portal-dropdown-header">
+            <span class="lang-en-only">Mock Exam Simulators</span>
+            <span class="lang-ar-only">محاكيات الامتحانات التجريبية</span>
+          </div>
           <a href="/exam/exam_y4_sci_term1?student=lara" target="_blank" class="portal-dropdown-item">
             <span>🔬</span>
             <div>
-              <div>Science Exam Simulator</div>
-              <div style="font-size: 10px; color: var(--muted);">Year 4 • 15m ADHD Paced</div>
+              <div><span class="lang-en-only">Science Exam Simulator</span><span class="lang-ar-only">امتحان العلوم التجريبي</span></div>
+              <div style="font-size: 10px; color: var(--muted);"><span class="lang-en-only">Year 4 • 15m ADHD Paced</span><span class="lang-ar-only">الصف الرابع • فترات راحة ADHD</span></div>
             </div>
           </a>
           <a href="/exam/exam_y4_math_term1?student=lara" target="_blank" class="portal-dropdown-item">
             <span>📐</span>
             <div>
-              <div>Maths Exam Simulator</div>
-              <div style="font-size: 10px; color: var(--muted);">Year 4 • 15m ADHD Paced</div>
+              <div><span class="lang-en-only">Maths Exam Simulator</span><span class="lang-ar-only">امتحان الرياضيات التجريبي</span></div>
+              <div style="font-size: 10px; color: var(--muted);"><span class="lang-en-only">Year 4 • 15m ADHD Paced</span><span class="lang-ar-only">الصف الرابع • فترات راحة ADHD</span></div>
             </div>
           </a>
           <div class="portal-dropdown-divider"></div>
-          <div class="portal-dropdown-header">Printable Compilers</div>
+          <div class="portal-dropdown-header">
+            <span class="lang-en-only">Printable Compilers</span>
+            <span class="lang-ar-only">أدوات الطباعة والتحضير</span>
+          </div>
           <a href="/sprint/preview" target="_blank" class="portal-dropdown-item">
             <span>📄</span>
             <div>
-              <div>4-Page Adaptive Sprint</div>
-              <div style="font-size: 10px; color: var(--muted);">Diagnostic Print Worksheet</div>
+              <div><span class="lang-en-only">4-Page Adaptive Sprint</span><span class="lang-ar-only">تمرين الـ ٤ صفحات المتكيف</span></div>
+              <div style="font-size: 10px; color: var(--muted);"><span class="lang-en-only">Diagnostic Print Worksheet</span><span class="lang-ar-only">أوراق عمل تشخيصية للطباعة</span></div>
             </div>
           </a>
           <a href="/guide/preview" target="_blank" class="portal-dropdown-item">
             <span>🧭</span>
             <div>
-              <div>Parent Socratic Guide</div>
-              <div style="font-size: 10px; color: var(--muted);">2-Page Dialogue Companion</div>
+              <div><span class="lang-en-only">Parent Socratic Guide</span><span class="lang-ar-only">دليل التوجيه السقراطي للوالدين</span></div>
+              <div style="font-size: 10px; color: var(--muted);"><span class="lang-en-only">2-Page Dialogue Companion</span><span class="lang-ar-only">كتيب الحوار السقراطي (صفحتان)</span></div>
             </div>
           </a>
           <div class="portal-dropdown-divider"></div>
           <a href="https://t.me/aim_pal_bot" target="_blank" class="portal-dropdown-item">
             <span>🤖</span>
             <div>
-              <div>Telegram Bot (@aim_pal_bot)</div>
-              <div style="font-size: 10px; color: var(--muted);">Mobile Intake & Progress</div>
+              <div><span class="lang-en-only">Telegram Bot (@aim_pal_bot)</span><span class="lang-ar-only">بوت تيليجرام (@aim_pal_bot)</span></div>
+              <div style="font-size: 10px; color: var(--muted);"><span class="lang-en-only">Mobile Intake & Progress</span><span class="lang-ar-only">استيعاب الأوراق ومتابعة التقدم</span></div>
             </div>
           </a>
         </div>

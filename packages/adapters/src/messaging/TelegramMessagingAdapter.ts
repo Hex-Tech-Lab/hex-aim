@@ -109,7 +109,7 @@ export class TelegramMessagingAdapter implements IMessagingPort {
           { text: '📱 لوحة تحكم AIM المباشرة', web_app: { url: 'https://aim.getvintel.com' } }
         ],
         [
-          { text: '🌐 اللغة: العربية 🇪🇬 (Switch to English 🇬🇧)', callback_data: 'set_lang:en' }
+          { text: '🌐 التبديل إلى الإنجليزية 🇬🇧', callback_data: 'set_lang:en' }
         ],
         [
           { text: '📚 تغيير أسبوع المراجعة', callback_data: 'menu_change_week' },
@@ -136,7 +136,7 @@ export class TelegramMessagingAdapter implements IMessagingPort {
           { text: '📱 Open AIM Mastery Console', web_app: { url: 'https://aim.getvintel.com' } }
         ],
         [
-          { text: '🌐 Language: English 🇬🇧 (تبديل إلى العربية 🇪🇬)', callback_data: 'set_lang:ar' }
+          { text: '🌐 Switch to Arabic 🇪🇬', callback_data: 'set_lang:ar' }
         ],
         [
           { text: '📚 Change Target Week', callback_data: 'menu_change_week' },

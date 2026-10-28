@@ -292,6 +292,30 @@ export function renderDashboardStyles(): string {
     flex-direction: row-reverse;
   }
 
+  /* Strict Language Isolation Utilities */
+  .lang-ar-only {
+    display: none !important;
+  }
+  .lang-en-only {
+    display: block;
+  }
+  span.lang-en-only, strong.lang-en-only {
+    display: inline;
+  }
+
+  body.lang-ar .lang-ar-only, html[dir="rtl"] .lang-ar-only {
+    display: block !important;
+  }
+  body.lang-ar span.lang-ar-only, html[dir="rtl"] span.lang-ar-only,
+  body.lang-ar strong.lang-ar-only, html[dir="rtl"] strong.lang-ar-only {
+    display: inline !important;
+  }
+  body.lang-ar .lang-en-only, html[dir="rtl"] .lang-en-only,
+  body.lang-ar span.lang-en-only, html[dir="rtl"] span.lang-en-only,
+  body.lang-ar strong.lang-en-only, html[dir="rtl"] strong.lang-en-only {
+    display: none !important;
+  }
+
   /* Nav Tabs */
   .nav-tabs {
     display: flex;
