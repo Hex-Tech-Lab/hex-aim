@@ -475,3 +475,43 @@ export interface CohortAnalyticsMatrix {
     studentNames: string[];
   }>;
 }
+
+// Wave 19: Dynamic Curriculum Year-Group & Concept Dependency Graph Types
+export interface CurriculumConceptNode {
+  code: string;
+  subject: 'science' | 'maths' | 'english' | 'humanities' | 'arabic';
+  yearGroup: 'Y3' | 'Y4' | 'Y5' | 'Y6';
+  title: string;
+  strand: string;
+  prerequisites: string[];
+  coRequisites?: string[];
+  recommendedTemplateIds: string[];
+  bloomTarget: BloomLevel;
+}
+
+export interface ConceptDependencyChain {
+  targetCode: string;
+  targetTitle: string;
+  prerequisitePath: Array<{
+    code: string;
+    title: string;
+    yearGroup: string;
+    isMastered: boolean;
+  }>;
+  rootBlockerCode?: string;
+}
+
+export interface StudentCurriculumRecommendation {
+  studentId: string;
+  studentName: string;
+  yearGroup: string;
+  primaryRootBlocker: {
+    code: string;
+    title: string;
+    yearGroup: string;
+    prerequisiteFor: string;
+  };
+  recommendedTemplateId: string;
+  recommendedTemplateTitle: string;
+  dependencyChain: ConceptDependencyChain;
+}

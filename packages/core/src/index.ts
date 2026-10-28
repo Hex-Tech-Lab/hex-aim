@@ -16,3 +16,4 @@ export * from './socratic/SocraticOralEvaluator.js';
 export * from './taxonomy/BloomTaxonomyEngine.js';
 export * from './curriculum/MultiSubjectCurriculumService.js';
 export * from './curriculum/CohortAnalyticsEngine.js';
+export * from './curriculum/CurriculumDependencyGraph.js';

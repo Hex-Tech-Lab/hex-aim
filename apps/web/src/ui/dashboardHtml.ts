@@ -429,6 +429,11 @@ ${renderDashboardStyles()}
         if (typeof filterSubmissions === 'function') {
           filterSubmissions(studentId, null);
         }
+
+        // Wave 19: Cascade active student recommendations to Tab 5 (Master Blank Templates)
+        if (typeof updateTemplateRecommendations === 'function') {
+          updateTemplateRecommendations(studentId);
+        }
       });
     }
 
@@ -637,6 +642,71 @@ ${renderDashboardStyles()}
       if (previewCard) {
         previewCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+    }
+
+    // Wave 19: Dynamic Curriculum Year-Group & Concept Graph Cascader
+    let currentTemplateFilter = 'all';
+
+    function updateTemplateRecommendations(studentId) {
+      const studentName = studentId === 'lara' ? 'Lara' : 'Maya';
+      const pillRec = document.getElementById('pill-tpl-recommended');
+      if (pillRec) {
+        pillRec.textContent = '🎯 Priority for ' + studentName;
+      }
+
+      const cards = document.querySelectorAll('.template-card[data-tpl-id]');
+      cards.forEach(card => {
+        const isRecLara = card.getAttribute('data-rec-lara') === 'true';
+        const isRecMaya = card.getAttribute('data-rec-maya') === 'true';
+        const isTarget = (studentId === 'lara' && isRecLara) || (studentId === 'maya' && isRecMaya);
+
+        const banner = card.querySelector('.priority-banner');
+        const chain = card.querySelector('.prereq-flow-strip');
+
+        if (isTarget) {
+          card.classList.add('is-priority');
+          if (banner) banner.style.display = 'flex';
+          if (chain) chain.style.display = 'block';
+        } else {
+          card.classList.remove('is-priority');
+          if (banner) banner.style.display = 'none';
+          if (chain) chain.style.display = 'none';
+        }
+      });
+
+      if (currentTemplateFilter === 'recommended') {
+        filterBlankTemplates('recommended');
+      }
+    }
+
+    function filterBlankTemplates(filter) {
+      currentTemplateFilter = filter;
+      const pills = document.querySelectorAll('.template-filters-bar .filter-pill');
+      pills.forEach(p => p.classList.remove('active'));
+
+      const activePill = document.getElementById('pill-tpl-' + filter);
+      if (activePill) activePill.classList.add('active');
+
+      const isLaraActive = document.getElementById('pill-lara')?.classList.contains('active') ?? true;
+      const activeStudent = isLaraActive ? 'lara' : 'maya';
+
+      requestAnimationFrame(() => {
+        const cards = document.querySelectorAll('.template-card[data-tpl-id]');
+        cards.forEach(card => {
+          const subject = card.getAttribute('data-subject');
+          const isRecLara = card.getAttribute('data-rec-lara') === 'true';
+          const isRecMaya = card.getAttribute('data-rec-maya') === 'true';
+          const isRec = (activeStudent === 'lara' && isRecLara) || (activeStudent === 'maya' && isRecMaya);
+
+          if (filter === 'all') {
+            card.style.display = 'block';
+          } else if (filter === 'recommended') {
+            card.style.display = isRec ? 'block' : 'none';
+          } else {
+            card.style.display = (subject === filter) ? 'block' : 'none';
+          }
+        });
+      });
     }
 
     // Non-blocking Toast Notification System (0ms Main Thread Block)
