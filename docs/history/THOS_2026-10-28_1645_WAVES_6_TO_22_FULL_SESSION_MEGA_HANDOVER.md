@@ -3,11 +3,11 @@
 **Document ID**: `THOS-HEX-AIM-2026-10-28-WAVES-06-TO-22`  
 **Session Date**: 2026-10-25 to 2026-10-28 (Multi-Day Continuous Mega-Session)  
 **Agents Involved**: Antigravity CLI 1.4.7 (Google Gemini 3.8 Flash High)  
-**Target Codebase**: `hex-aim` (Adaptive Individualized Mastery, master branch at commit `cbfe7d2`)  
+**Target Codebase**: `hex-aim` (Adaptive Individualized Mastery, master branch at commit `7846cbc`)  
 **Prior Handover Reference**: [`docs/THOS_HANDOVER_HEX_AIM.md`](file:///home/kellyb_dev/projects/hex-aim/docs/THOS_HANDOVER_HEX_AIM.md) (Covered initial foundation & Waves 1–5)  
 **Source Session Log**: `C:\Users\Kelly\Downloads\AGY 5 AIM.txt` (`/mnt/c/Users/Kelly/Downloads/AGY 5 AIM.txt`, 463,679 bytes, 6,055 lines)  
-**Operating DNA**: [`docs/templates/UNIVERSAL_DNA.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/UNIVERSAL_DNA.md) & [`docs/templates/THOS_SPEC.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_SPEC.md)  
-**Status**: 🟢 **Green — Waves 6 through 22 fully implemented, verified, and deployed; 90/90 monorepo tests passing clean; Web Console live on `https://aim.getvintel.com`; Telegram Bot live on `@aim_pal_bot`; 5-min Redis polling cron active (`task-4847`)**  
+**Operating DNA**: [`docs/templates/UNIVERSAL_DNA.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/UNIVERSAL_DNA.md) & [`docs/templates/THOS_MASTER_TEMPLATE.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_MASTER_TEMPLATE.md)  
+**Status**: 🟢 **Green — Waves 6 through 22 fully implemented, verified, and deployed; 92/92 monorepo tests passing clean; Web Console live on `https://aim.getvintel.com`; Telegram Bot live on `@aim_pal_bot`; 5-min Redis polling cron active (`task-4847`)**  
 
 ---
 
@@ -317,7 +317,7 @@ The Web Console (`apps/web`) is styled using the proprietary **Meta Astryx** cyb
 
 - **Foundational THOS (Waves 1–5)**: [`docs/THOS_HANDOVER_HEX_AIM.md`](file:///home/kellyb_dev/projects/hex-aim/docs/THOS_HANDOVER_HEX_AIM.md)
 - **Mega-Session Master THOS (Waves 6–22, This Document)**: [`docs/history/THOS_2026-10-28_1645_WAVES_6_TO_22_FULL_SESSION_MEGA_HANDOVER.md`](file:///home/kellyb_dev/projects/hex-aim/docs/history/THOS_2026-10-28_1645_WAVES_6_TO_22_FULL_SESSION_MEGA_HANDOVER.md)
-- **Canonical THOS Spec**: [`docs/templates/THOS_SPEC.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_SPEC.md)
+- **Canonical THOS Spec**: [`docs/templates/THOS_MASTER_TEMPLATE.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_MASTER_TEMPLATE.md)
 - **Companion THOS Template**: [`docs/templates/THOS_TEMPLATE.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_TEMPLATE.md)
 - **Universal Operating DNA**: [`docs/templates/UNIVERSAL_DNA.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/UNIVERSAL_DNA.md)
 - **Agent Ledger**: [`docs/agent_ledger.jsonl`](file:///home/kellyb_dev/projects/hex-aim/docs/agent_ledger.jsonl) & [`docs/AGENT_LEDGER.md`](file:///home/kellyb_dev/projects/hex-aim/docs/AGENT_LEDGER.md)
