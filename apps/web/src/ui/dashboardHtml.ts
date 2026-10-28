@@ -64,15 +64,20 @@ ${renderDashboardStyles()}
     </div>
     <div class="header-badges">
       <div class="badge-tag badge-region">
-        <i data-lucide="server" class="inline w-3.5 h-3.5 mr-1"></i> cdg1 (Paris) • fra1 (Frankfurt)
+        <i data-lucide="server" class="inline w-3.5 h-3.5 mr-1"></i> cdg1 (Paris) • fra1
       </div>
       <div class="badge-tag">
-        <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i> Asten College • Y4 British Primary
+        <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i> Asten College • Y4
       </div>
-      <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="Switch Light / Dark Theme">
-        <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
-        <span id="theme-label">Light Mode</span>
-      </button>
+      <div class="toolbar-actions-group">
+        <button id="lang-toggle-btn" class="lang-toggle-btn" onclick="toggleLanguage()" title="Switch Language / تبديل اللغة">
+          <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+          <span id="lang-label">AR</span>
+        </button>
+        <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light / Dark Mode">
+          <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -115,20 +120,20 @@ ${renderDashboardStyles()}
 
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchTab('tab-student-view', this)">
-      <i data-lucide="line-chart" class="w-4 h-4"></i> Student Progress & Mastery
+    <button id="tab-btn-mastery" class="nav-tab active" onclick="switchTab('tab-student-view', this)">
+      <i data-lucide="line-chart" class="w-4 h-4"></i> <span class="tab-label">Student Progress & Mastery</span>
     </button>
-    <button class="nav-tab" onclick="switchTab('tab-gap-ledger', this)">
-      <i data-lucide="brain-circuit" class="w-4 h-4"></i> Cognitive Gap Ledger
+    <button id="tab-btn-ledger" class="nav-tab" onclick="switchTab('tab-gap-ledger', this)">
+      <i data-lucide="brain-circuit" class="w-4 h-4"></i> <span class="tab-label">Cognitive Gap Ledger</span>
     </button>
-    <button class="nav-tab" onclick="switchTab('tab-infra-gate', this)">
-      <i data-lucide="shield-alert" class="w-4 h-4"></i> Ingestion Gate & Infrastructure
+    <button id="tab-btn-infra" class="nav-tab" onclick="switchTab('tab-infra-gate', this)">
+      <i data-lucide="shield-alert" class="w-4 h-4"></i> <span class="tab-label">Ingestion Gate & Infrastructure</span>
     </button>
-    <button class="nav-tab" onclick="switchTab('tab-submissions-register', this)">
-      <i data-lucide="scan-line" class="w-4 h-4"></i> Scanned Submissions (52)
+    <button id="tab-btn-submissions" class="nav-tab" onclick="switchTab('tab-submissions-register', this)">
+      <i data-lucide="scan-line" class="w-4 h-4"></i> <span class="tab-label">Scanned Submissions (52)</span>
     </button>
-    <button class="nav-tab" onclick="switchTab('tab-blank-templates', this)">
-      <i data-lucide="file-check" class="w-4 h-4"></i> Blank Templates & Dry-Runs
+    <button id="tab-btn-templates" class="nav-tab" onclick="switchTab('tab-blank-templates', this)">
+      <i data-lucide="file-check" class="w-4 h-4"></i> <span class="tab-label">Blank Templates & Dry-Runs</span>
     </button>
   </div>
 
@@ -437,7 +442,7 @@ ${renderDashboardStyles()}
       });
     }
 
-    // Meta Astryx Dynamic Light / Dark Theme Controller
+    // Meta Astryx Dynamic Light / Dark Theme Controller (Icon-Only Compact)
     function applyTheme(theme) {
       const isLight = theme === 'light';
       if (isLight) {
@@ -448,10 +453,10 @@ ${renderDashboardStyles()}
       localStorage.setItem('aim_theme', theme);
 
       const icon = document.getElementById('theme-icon');
-      const label = document.getElementById('theme-label');
-      if (icon && label) {
+      const btn = document.getElementById('theme-toggle-btn');
+      if (icon) {
         icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
-        label.innerText = isLight ? 'Dark Mode' : 'Light Mode';
+        if (btn) btn.setAttribute('title', isLight ? 'Switch to Dark Mode (🌙)' : 'Switch to Light Mode (☀️)');
         if (window.lucide) lucide.createIcons();
       }
 
@@ -461,6 +466,54 @@ ${renderDashboardStyles()}
     function toggleTheme() {
       const isCurrentlyLight = document.body.classList.contains('theme-light');
       applyTheme(isCurrentlyLight ? 'dark' : 'light');
+    }
+
+    // Bilingual English / Arabic Language Controller
+    function applyLanguage(lang) {
+      const isAr = lang === 'ar';
+      localStorage.setItem('aim_lang', lang);
+      document.documentElement.lang = isAr ? 'ar' : 'en';
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      if (isAr) {
+        document.body.classList.add('lang-ar');
+      } else {
+        document.body.classList.remove('lang-ar');
+      }
+
+      const langLabel = document.getElementById('lang-label');
+      const langBtn = document.getElementById('lang-toggle-btn');
+      if (langLabel) langLabel.innerText = isAr ? 'EN' : 'AR';
+      if (langBtn) langBtn.setAttribute('title', isAr ? 'Switch to English (🇬🇧)' : 'التبديل إلى العربية (🇪🇬)');
+
+      // Subtitle localization
+      const sub = document.querySelector('header .sub');
+      if (sub) {
+        sub.innerText = isAr
+          ? 'التعلم الفردي المتكيف • بوابة استيعاب ومعالجة الفجوات المعرفية'
+          : 'Adaptive Individualized Mastery • Cognitive Gap Remediation & Intake Gate';
+      }
+
+      // Tab labels localization
+      const tab1 = document.querySelector('#tab-btn-mastery .tab-label');
+      if (tab1) tab1.innerText = isAr ? '١. الإتقان الأكاديمي' : 'Student Progress & Mastery';
+      const tab2 = document.querySelector('#tab-btn-ledger .tab-label');
+      if (tab2) tab2.innerText = isAr ? '٢. سجل الفجوات' : 'Cognitive Gap Ledger';
+      const tab3 = document.querySelector('#tab-btn-infra .tab-label');
+      if (tab3) tab3.innerText = isAr ? '٣. بوابة الاستيعاب والربط' : 'Ingestion Gate & Infrastructure';
+      const tab4 = document.querySelector('#tab-btn-submissions .tab-label');
+      if (tab4) tab4.innerText = isAr ? '٤. سجل الأوراق والترميم' : 'Scanned Submissions (52)';
+      const tab5 = document.querySelector('#tab-btn-templates .tab-label');
+      if (tab5) tab5.innerText = isAr ? '٥. النماذج الخام' : 'Blank Templates & Dry-Runs';
+
+      const scopeTitle = document.querySelector('.scope-label span:last-child');
+      if (scopeTitle) scopeTitle.innerText = isAr ? 'ملف الطالب النشط:' : 'Active Student Profile:';
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function toggleLanguage() {
+      const current = localStorage.getItem('aim_lang') || 'en';
+      applyLanguage(current === 'ar' ? 'en' : 'ar');
     }
 
     function updateChartThemes(isLight) {
@@ -508,6 +561,8 @@ ${renderDashboardStyles()}
       setStudent('lara');
       const savedTheme = localStorage.getItem('aim_theme') || 'dark';
       applyTheme(savedTheme);
+      const savedLang = localStorage.getItem('aim_lang') || 'en';
+      applyLanguage(savedLang);
       if (window.lucide) lucide.createIcons();
     });
 

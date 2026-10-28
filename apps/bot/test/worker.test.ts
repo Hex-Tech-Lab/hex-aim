@@ -301,4 +301,54 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     expect(confirmMsg?.text).toContain("Saved to Maya's Portfolio!");
     expect(messaging.deliveredPacks).toHaveLength(0);
   });
+
+  it('Language Switcher: switches language to Arabic and English via commands and callbacks', async () => {
+    const messaging = MessagingFactory.getMessaging('mock') as MockMessagingAdapter;
+
+    // 1. Send /ar command to switch to Arabic
+    const reqAr = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: {
+          chat: { id: 778899 },
+          text: '/ar',
+        },
+      }),
+    });
+
+    const resAr = await worker.fetch(reqAr, {}, {} as any);
+    expect(resAr.status).toBe(200);
+    const bodyAr = await resAr.json() as any;
+    expect(bodyAr.action).toBe('language_switched');
+    expect(bodyAr.lang).toBe('ar');
+
+    const lastMsgAr = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(lastMsgAr?.text).toContain('العربية 🇪🇬');
+
+    // 2. Callback query to switch to English
+    const reqEnCb = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query: {
+          id: 'cb_lang_en',
+          data: 'set_lang:en',
+          message: {
+            chat: { id: 778899 },
+            message_id: 888,
+          },
+        },
+      }),
+    });
+
+    const resEnCb = await worker.fetch(reqEnCb, {}, {} as any);
+    expect(resEnCb.status).toBe(200);
+    const bodyEn = await resEnCb.json() as any;
+    expect(bodyEn.action).toBe('language_switched');
+    expect(bodyEn.lang).toBe('en');
+
+    const lastMsgEn = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(lastMsgEn?.text).toContain('English 🇬🇧');
+  });
 });

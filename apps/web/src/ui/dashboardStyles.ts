@@ -133,25 +133,81 @@ export function renderDashboardStyles(): string {
     color: var(--green);
   }
 
-  /* Theme Switcher Button */
+  /* Toolbar Actions Group */
+  .toolbar-actions-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--card-elevated);
+    border: 1px solid var(--astryx-border-subtle);
+    border-radius: var(--astryx-radius-md);
+    padding: 3px 4px;
+  }
+
+  /* Compact Theme Switcher Button (Icon Only: ☀️ Sun / 🌙 Moon) */
   .theme-toggle-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: var(--astryx-radius-md);
-    background: var(--card-elevated);
-    border: 1px solid var(--card-border);
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: var(--astryx-radius-sm);
+    background: transparent;
+    border: 1px solid transparent;
     color: var(--text);
-    font-size: 12px;
-    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
   }
   .theme-toggle-btn:hover {
+    background: rgba(0, 229, 255, 0.12);
     border-color: var(--cyan);
     color: var(--cyan);
     box-shadow: var(--astryx-shadow-glow);
+  }
+
+  /* Language Switcher Button (🌐 EN / AR) */
+  .lang-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    height: 32px;
+    border-radius: var(--astryx-radius-sm);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 800;
+    font-family: var(--astryx-font-mono);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .lang-toggle-btn:hover {
+    background: rgba(0, 229, 255, 0.12);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: var(--astryx-shadow-glow);
+  }
+
+  /* RTL / Arabic Mode Overrides */
+  html[dir="rtl"], body.lang-ar {
+    direction: rtl;
+    text-align: right;
+  }
+  html[dir="rtl"] .logo-group {
+    text-align: right;
+  }
+  html[dir="rtl"] .header-badges {
+    margin-right: auto;
+    margin-left: 0;
+  }
+  html[dir="rtl"] .nav-tabs {
+    flex-direction: row-reverse;
+  }
+  html[dir="rtl"] .student-scope-bar {
+    flex-direction: row-reverse;
   }
 
   /* Nav Tabs */

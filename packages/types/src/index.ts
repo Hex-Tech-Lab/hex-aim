@@ -396,7 +396,7 @@ export interface IMessagingPort {
       fileItems?: string[];
     }>;
   }): Promise<void>;
-  sendInteractiveMenu?(chatId: string, customTitle?: string): Promise<void>;
+  sendInteractiveMenu?(chatId: string, customTitle?: string, lang?: 'en' | 'ar'): Promise<any>;
   deliverRemediationPacks(chatId: string, packs: {
     studentPackHtml?: string;
     studentPackPdf?: string | Uint8Array | ArrayBuffer;

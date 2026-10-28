@@ -2,21 +2,37 @@ import { MessagingFactory, QueueFactory, StorageFactory, TelegramMessagingAdapte
 import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
 import { processAssessmentJob, processBatchAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
 import { handleCallbackQuery } from './handlers/callbackHandler.js';
-import { purgeAndResetSession, resetSessionOnly } from './handlers/sessionHandler.js';
+import { purgeAndResetSession, resetSessionOnly, getChatLanguage, setChatLanguage } from './handlers/sessionHandler.js';
 import { handleDiagRoutes } from './handlers/diagHandler.js';
 import { handleVoiceMessage } from './handlers/voiceHandler.js';
 
-export const PERSISTENT_REPLY_KEYBOARD = {
+export const PERSISTENT_REPLY_KEYBOARD_EN = {
   keyboard: [
     [
       { text: '🎛️ Menu' },
       { text: '📊 Progress' },
+      { text: '🌐 En/Ar' },
       { text: '📱 Cons.', web_app: { url: 'https://aim.getvintel.com' } }
     ]
   ],
   resize_keyboard: true,
   is_persistent: true,
 };
+
+export const PERSISTENT_REPLY_KEYBOARD_AR = {
+  keyboard: [
+    [
+      { text: '🎛️ القائمة' },
+      { text: '📊 التقدم' },
+      { text: '🌐 En/Ar' },
+      { text: '📱 اللوحة', web_app: { url: 'https://aim.getvintel.com' } }
+    ]
+  ],
+  resize_keyboard: true,
+  is_persistent: true,
+};
+
+export const PERSISTENT_REPLY_KEYBOARD = PERSISTENT_REPLY_KEYBOARD_EN;
 
 export interface Env {
   STORAGE_PROVIDER?: string;
@@ -117,7 +133,11 @@ export default {
 
         // Helper to send message, track messageId for deletion, and record in chat history
         const sendAndTrack = async (cId: string, txt: string, replyTo?: number, markup?: any) => {
-          const finalMarkup = markup !== undefined ? markup : PERSISTENT_REPLY_KEYBOARD;
+          let finalMarkup = markup;
+          if (finalMarkup === undefined) {
+            const lang = await getChatLanguage(storage, cId);
+            finalMarkup = lang === 'ar' ? PERSISTENT_REPLY_KEYBOARD_AR : PERSISTENT_REPLY_KEYBOARD_EN;
+          }
           const res = await messaging.sendMessage(cId, txt, replyTo, finalMarkup);
           const sentMsgId = res?.result?.message_id;
           if (sentMsgId && storage.trackBotMessage) {
@@ -218,11 +238,54 @@ export default {
           });
         }
 
-        // 3. Menu and Control Commands
-        const isMenuCommand = text.startsWith('/menu') || /^(\/?menu|🎛️|\s*🎛️\s*menu\s*)$/i.test(text.trim()) || text.includes('Menu');
-        if (isMenuCommand) {
+        // 2.8 Language Switching Command (/lang, /language, /ar, /en, "🌐 En/Ar", "🌐 اللغة")
+        const isLangCommand = text.startsWith('/lang') || text.startsWith('/language') || text.startsWith('/ar') || text.startsWith('/en') || /^(🌐|\s*🌐\s*(?:en\s*\/\s*ar|en\/ar|ar|en|اللغة)\s*)$/i.test(text.trim()) || text.includes('En/Ar') || text.includes('اللغة');
+        if (isLangCommand) {
+          const currentLang = await getChatLanguage(storage, chatId);
+          let newLang: 'en' | 'ar';
+          if (text.startsWith('/ar')) {
+            newLang = 'ar';
+          } else if (text.startsWith('/en')) {
+            newLang = 'en';
+          } else {
+            newLang = currentLang === 'ar' ? 'en' : 'ar';
+          }
+          await setChatLanguage(storage, chatId, newLang);
+
+          const isAr = newLang === 'ar';
+          const confirmText = isAr
+            ? `🌐 تم تفعيل اللغة <b>العربية 🇪🇬</b> بنجاح!\n(Language switched to Arabic)`
+            : `🌐 Language switched to <b>English 🇬🇧</b> successfully!\n(تم تفعيل اللغة الإنجليزية)`;
+
+          const langChoiceKeyboard = {
+            inline_keyboard: [
+              [
+                { text: isAr ? '🇬🇧 Switch to English' : '🇬🇧 English (Active ✓)', callback_data: 'set_lang:en' },
+                { text: isAr ? '🇪🇬 العربية (مفعلة ✓)' : '🇪🇬 تبديل إلى العربية', callback_data: 'set_lang:ar' },
+              ],
+              [
+                { text: isAr ? '🎛️ القائمة الرئيسية' : '🎛️ Main Menu', callback_data: 'open_main_menu' }
+              ]
+            ]
+          };
+
+          await sendAndTrack(chatId, confirmText, messageId, langChoiceKeyboard);
+
           if (messaging.sendInteractiveMenu) {
-            const menuRes = await messaging.sendInteractiveMenu(chatId);
+            await messaging.sendInteractiveMenu(chatId, undefined, newLang);
+          }
+
+          return new Response(JSON.stringify({ ok: true, action: 'language_switched', lang: newLang }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        // 3. Menu and Control Commands
+        const isMenuCommand = text.startsWith('/menu') || /^(\/?menu|🎛️|\s*🎛️\s*(?:menu|القائمة)\s*)$/i.test(text.trim()) || text.includes('Menu') || text.includes('القائمة');
+        if (isMenuCommand) {
+          const lang = await getChatLanguage(storage, chatId);
+          if (messaging.sendInteractiveMenu) {
+            const menuRes = await messaging.sendInteractiveMenu(chatId, undefined, lang);
             if (menuRes?.result?.message_id && storage.trackBotMessage) {
               await storage.trackBotMessage(chatId, menuRes.result.message_id);
             }
@@ -233,10 +296,27 @@ export default {
         }
 
         // 4. On-Demand Student Mastery & Progress Report
-        const isProgressCommand = text.startsWith('/progress') || text.startsWith('/report') || /^(\/?progress|📊|\s*📊\s*progress\s*)$/i.test(text.trim()) || text.includes('Progress');
+        const isProgressCommand = text.startsWith('/progress') || text.startsWith('/report') || /^(\/?progress|📊|\s*📊\s*(?:progress|التقدم)\s*)$/i.test(text.trim()) || text.includes('Progress') || text.includes('التقدم');
         if (isProgressCommand) {
+          const lang = await getChatLanguage(storage, chatId);
+          const isAr = lang === 'ar';
           const progressKeyboard = {
-            inline_keyboard: [
+            inline_keyboard: isAr ? [
+              [
+                { text: '👥 مقارنة جميع الأطفال جنباً إلى جنب', callback_data: 'view_progress:all' }
+              ],
+              [
+                { text: '👧 بطاقة لارا الأكاديمية', callback_data: 'view_progress:lara' },
+                { text: '👧 بطاقة مايا الأكاديمية', callback_data: 'view_progress:maya' },
+              ],
+              [
+                { text: '📱 لوحة تحكم AIM المباشرة', web_app: { url: 'https://aim.getvintel.com' } },
+                { text: '🌐 English 🇬🇧', callback_data: 'set_lang:en' }
+              ],
+              [
+                { text: '↩️ العودة للقائمة', callback_data: 'open_main_menu' }
+              ]
+            ] : [
               [
                 { text: '👥 All Kids Side-by-Side Snapshot', callback_data: 'view_progress:all' }
               ],
@@ -246,17 +326,17 @@ export default {
               ],
               [
                 { text: '📱 Open Full Web Analytics', web_app: { url: 'https://aim.getvintel.com' } },
+                { text: '🌐 العربية 🇪🇬', callback_data: 'set_lang:ar' }
+              ],
+              [
                 { text: '↩️ Back to Menu', callback_data: 'open_main_menu' }
               ]
             ]
           };
-          await sendAndTrack(
-            chatId,
-            `📊 <b>On-Demand Student Mastery & Progress:</b>\n\n` +
-            `Choose a view below to compare all children side-by-side or inspect individual diagnostic trajectories:`,
-            messageId,
-            progressKeyboard
-          );
+          const promptText = isAr
+            ? `📊 <b>مستويات الإتقان الأكاديمي والتقدم المعرفي:</b>\n\nاختر من الخيارات أدناه للمقارنة بين الأطفال أو فحص مسار كل طفل على حدة:`
+            : `📊 <b>On-Demand Student Mastery & Progress:</b>\n\nChoose a view below to compare all children side-by-side or inspect individual diagnostic trajectories:`;
+          await sendAndTrack(chatId, promptText, messageId, progressKeyboard);
           return new Response(JSON.stringify({ ok: true, action: 'progress_prompt_sent' }), {
             headers: { 'Content-Type': 'application/json' },
           });
