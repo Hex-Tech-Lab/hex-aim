@@ -515,3 +515,44 @@ export interface StudentCurriculumRecommendation {
   recommendedTemplateTitle: string;
   dependencyChain: ConceptDependencyChain;
 }
+
+// Wave 22: Predictive Cognitive Mastery Decay & Spaced Repetition Types
+export interface StudentCognitiveProfile {
+  studentId: string;
+  studentName: string;
+  workingMemoryIndex: number; // 0.7 (ADHD / fragile working memory) to 1.3 (high working memory)
+  adhdVisualAnchorMultiplier: number; // e.g. 1.4x retention boost when elevator model / visual scaffolding is active
+  baseStabilityHalfLifeDays: number; // standard baseline days to 50% decay (e.g. 7 days)
+  hasAdhdFocusAccommodations: boolean;
+}
+
+export type MasteryDecayStatus = 'healthy' | 'vulnerable' | 'critical_decay';
+
+export interface ConceptDecayRecord {
+  studentId: string;
+  conceptCode: string;
+  conceptTitle: string;
+  subjectId: string;
+  peakMastery: number; // 0 - 100
+  predictedRetention: number; // 0 - 100
+  lastPracticedDate: string;
+  elapsedDays: number;
+  effectiveHalfLifeDays: number;
+  reviewStreakCount: number;
+  decayStatus: MasteryDecayStatus;
+  daysUntilCritical: number; // days until retention drops below 60%
+  recommendedReviewDate: string;
+  suggestedTemplateId: string;
+}
+
+export interface SpacedRepetitionQueueItem {
+  conceptCode: string;
+  conceptTitle: string;
+  subjectId: string;
+  currentRetention: number;
+  urgency: 'high' | 'medium' | 'low';
+  urgencyReason: string;
+  recommendedDurationMins: number;
+  suggestedTemplateId: string;
+}
+
