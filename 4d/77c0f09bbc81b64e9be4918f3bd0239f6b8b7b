@@ -1,0 +1,16 @@
+docs/THOS_HANDOVER_HEX_AIM.md
+  h_cdd764b4030252 3-4,7
+docs/history/THOS_2026-10-28_1645_WAVES_6_TO_22_FULL_SESSION_MEGA_HANDOVER.md
+  h_cdd764b4030252 6,9-10,320
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4d77c0f09bbc81b64e9be4918f3bd0239f6b8b7b",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
