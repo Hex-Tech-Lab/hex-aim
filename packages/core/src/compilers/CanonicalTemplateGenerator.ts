@@ -498,14 +498,23 @@ export class CanonicalTemplateGenerator {
 
     let y = 800;
 
+    // Sanitize helper for standard WinAnsi PDF font
+    const sanitizeText = (txt: string) =>
+      txt
+        .replace(/•/g, '|')
+        .replace(/✓/g, '[v]')
+        .replace(/°C/g, ' deg C')
+        .replace(/[^\x00-\x7E]/g, ' ')
+        .trim();
+
     // Header Title
-    const cleanSchool = t.school.replace(/•/g, '|').toUpperCase();
+    const cleanSchool = sanitizeText(t.school).toUpperCase();
     page.drawText(cleanSchool, { x: 40, y, size: 13, font: fontBold, color: rgb(0.06, 0.09, 0.16) });
     y -= 18;
-    const cleanTitle = `${t.yearGroup} | ${t.subject}: ${t.title}`.replace(/•/g, '|').replace(/°C/g, ' deg C');
+    const cleanTitle = sanitizeText(`${t.yearGroup} | ${t.subject}: ${t.title}`);
     page.drawText(cleanTitle, { x: 40, y, size: 11, font: fontBold, color: rgb(0.03, 0.57, 0.70) });
     y -= 14;
-    page.drawText(`${t.curriculum} | Week ${t.week} Formative Milestone`.replace(/•/g, '|'), { x: 40, y, size: 9, font: fontRegular, color: rgb(0.39, 0.45, 0.55) });
+    page.drawText(sanitizeText(`${t.curriculum} | Week ${t.week} Formative Milestone`), { x: 40, y, size: 9, font: fontRegular, color: rgb(0.39, 0.45, 0.55) });
 
     // Stamp
     page.drawText(`AIM-MST-${t.id.toUpperCase()} | Max: ${t.totalMarks} Marks`, { x: 380, y: y + 28, size: 8, font: fontMono, color: rgb(0.39, 0.45, 0.55) });
@@ -524,7 +533,7 @@ export class CanonicalTemplateGenerator {
     // Sections & Questions
     for (const sec of t.sections) {
       page.drawRectangle({ x: 40, y: y - 4, width: 515, height: 16, color: rgb(0.88, 0.95, 0.99) });
-      const cleanSecTitle = sec.title.replace(/•/g, '|').toUpperCase();
+      const cleanSecTitle = sanitizeText(sec.title).toUpperCase();
       page.drawText(cleanSecTitle, { x: 46, y, size: 8.5, font: fontBold, color: rgb(0.01, 0.41, 0.63) });
       y -= 24;
 
@@ -533,7 +542,7 @@ export class CanonicalTemplateGenerator {
         page.drawText(`Question ${q.number} [${q.marks} Marks]`, { x: 40, y, size: 9, font: fontBold, color: rgb(0.12, 0.16, 0.23) });
         y -= 14;
 
-        const cleanPrompt = q.prompt.replace(/\n/g, ' ').replace(/•/g, '|').replace(/°C/g, ' deg C');
+        const cleanPrompt = sanitizeText(q.prompt.replace(/\n/g, ' '));
         const promptLines = cleanPrompt.match(/.{1,75}(\s|$)/g) || [cleanPrompt];
         for (const line of promptLines) {
           page.drawText(line.trim(), { x: 40, y, size: 8.5, font: fontRegular, color: rgb(0.06, 0.09, 0.16) });
@@ -542,7 +551,7 @@ export class CanonicalTemplateGenerator {
 
         if (q.subQuestions) {
           for (const sq of q.subQuestions) {
-            const cleanSq = sq.replace(/•/g, '|').replace(/°C/g, ' deg C');
+            const cleanSq = sanitizeText(sq);
             page.drawText(cleanSq, { x: 50, y, size: 8, font: fontRegular, color: rgb(0.12, 0.16, 0.23) });
             y -= 14;
           }
