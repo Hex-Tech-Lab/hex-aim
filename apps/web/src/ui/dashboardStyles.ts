@@ -1164,5 +1164,99 @@ export function renderDashboardStyles(): string {
     50% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.7); }
   }
   .pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
+
+  /* Wave 19: Dynamic Curriculum Year-Group & Concept Graph UI */
+  .template-filters-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .filter-pill {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 9999px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-pill:hover {
+    color: var(--astryx-text-contrast);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .filter-pill.active {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .template-card.is-priority {
+    border-color: var(--cyan);
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+    position: relative;
+  }
+  .priority-banner {
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--astryx-text-contrast);
+  }
+  .prereq-flow-strip {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin: 10px 0;
+    font-size: 11px;
+    line-height: 1.4;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+  }
+  .prereq-flow-strip .flow-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .prereq-flow-strip .flow-steps {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .flow-step-tag {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 10.5px;
+  }
+  .flow-step-tag.mastered {
+    color: var(--green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  .flow-step-tag.blocker {
+    color: var(--orange);
+    border: 1px solid rgba(249, 115, 22, 0.5);
+    background: rgba(249, 115, 22, 0.1);
+    font-weight: 700;
+  }
+  .flow-arrow {
+    color: var(--muted);
+    font-size: 10px;
+  }
 </style>`;
 }

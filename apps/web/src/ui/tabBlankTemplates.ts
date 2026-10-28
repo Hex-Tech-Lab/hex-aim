@@ -44,15 +44,34 @@ export function renderBlankTemplatesTab(): string {
       </div>
     </div>
 
-    <!-- Master Blank Templates Catalog Grid -->
-    <h3 style="margin-bottom: 14px; color: var(--astryx-text-contrast); display: flex; align-items: center; gap: 8px;">
-      <svg class="w-5 h-5 text-cyan-400 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-      Canonical Master Blank Template Catalog
-    </h3>
+    <!-- Master Blank Templates Catalog Header & Filter Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+      <h3 style="color: var(--astryx-text-contrast); display: flex; align-items: center; gap: 8px; margin: 0;">
+        <svg class="w-5 h-5 text-cyan-400 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Canonical Master Blank Template Catalog
+      </h3>
+      <div style="font-size: 12px; color: var(--muted);">Wave 19: Dynamic Curriculum Dependency Tracing (DAG)</div>
+    </div>
+
+    <!-- Wave 19 Dynamic Filter Pills -->
+    <div class="template-filters-bar">
+      <button class="filter-pill active" id="pill-tpl-all" onclick="filterBlankTemplates('all')">All Worksheets (5)</button>
+      <button class="filter-pill" id="pill-tpl-recommended" onclick="filterBlankTemplates('recommended')">🎯 Priority for Lara</button>
+      <button class="filter-pill" id="pill-tpl-science" onclick="filterBlankTemplates('science')">Science (2)</button>
+      <button class="filter-pill" id="pill-tpl-maths" onclick="filterBlankTemplates('maths')">Maths (2)</button>
+      <button class="filter-pill" id="pill-tpl-english" onclick="filterBlankTemplates('english')">English (1)</button>
+    </div>
 
     <div class="templates-grid">
-      <!-- Template 1: Science Week 8 -->
-      <div class="template-card">
+      <!-- Template 1: Science Week 8 (Priority for Lara) -->
+      <div class="template-card is-priority" data-tpl-id="sci-w8" data-subject="science" data-rec-lara="true" data-rec-maya="false">
+        <div class="priority-banner" id="banner-sci-w8">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span>🎯</span> Recommended Root Blocker Remediation for <strong>Lara</strong>
+          </span>
+          <span class="badge badge-cyan">Y4 Science • 89ms</span>
+        </div>
+
         <div class="template-badge-row">
           <span class="badge badge-cyan">Science</span>
           <span class="badge badge-purple">Year 4 • Week 8</span>
@@ -63,6 +82,21 @@ export function renderBlankTemplatesTab(): string {
           <div>🏫 School: <strong>Asten College</strong> • Curriculum: <strong>British National</strong></div>
           <div>🎯 Concepts: <code>Y4.SCI.SND.VIBRATIONS</code>, <code>Y4.SCI.SND.MEDIUM</code>, <code>Y4.SCI.SND.PITCH</code></div>
           <div>📐 Pages: <strong>4 Pages</strong> • Time Allowed: <strong>25 Mins</strong></div>
+        </div>
+
+        <!-- Wave 19 Prerequisite Concept Flow Strip -->
+        <div class="prereq-flow-strip" id="flow-sci-w8">
+          <div class="flow-title">
+            <svg class="w-3.5 h-3.5 inline text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1"></path><path d="M18 8h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4"></path><circle cx="8" cy="12" r="2"></circle></svg>
+            Prerequisite Lineage (DAG)
+          </div>
+          <div class="flow-steps">
+            <span class="flow-step-tag mastered" title="Mastered in Y3">✓ Y3: Senses & Ears</span>
+            <span class="flow-arrow">➔</span>
+            <span class="flow-step-tag mastered" title="Mastered in Y4">✓ Y4: Physical Vibrations</span>
+            <span class="flow-arrow">➔</span>
+            <span class="flow-step-tag blocker" title="Current Root Blocker">⚠️ Y4: Medium Transmission (Active Blocker)</span>
+          </div>
         </div>
 
         <div class="template-actions">
@@ -78,8 +112,15 @@ export function renderBlankTemplatesTab(): string {
         </div>
       </div>
 
-      <!-- Template 2: Maths Week 8 -->
-      <div class="template-card">
+      <!-- Template 2: Maths Week 8 (Priority for Maya) -->
+      <div class="template-card" data-tpl-id="math-w8" data-subject="maths" data-rec-lara="false" data-rec-maya="true">
+        <div class="priority-banner" id="banner-math-w8" style="display: none;">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span>🎯</span> Recommended Root Blocker Remediation for <strong>Maya</strong>
+          </span>
+          <span class="badge badge-purple">Y4 Maths • 89ms</span>
+        </div>
+
         <div class="template-badge-row">
           <span class="badge badge-yellow">Maths</span>
           <span class="badge badge-purple">Year 4 • Week 8</span>
@@ -90,6 +131,21 @@ export function renderBlankTemplatesTab(): string {
           <div>🏫 School: <strong>Asten College</strong> • Curriculum: <strong>British National</strong></div>
           <div>🎯 Concepts: <code>Y4.MATH.NPV.EMPTY_COLUMNS</code>, <code>Y4.MATH.NPV.DECIMALS</code></div>
           <div>📐 Pages: <strong>5 Pages</strong> • Time Allowed: <strong>30 Mins</strong></div>
+        </div>
+
+        <!-- Wave 19 Prerequisite Concept Flow Strip -->
+        <div class="prereq-flow-strip" id="flow-math-w8" style="display: none;">
+          <div class="flow-title">
+            <svg class="w-3.5 h-3.5 inline text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1"></path><path d="M18 8h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4"></path><circle cx="8" cy="12" r="2"></circle></svg>
+            Prerequisite Lineage (DAG)
+          </div>
+          <div class="flow-steps">
+            <span class="flow-step-tag mastered" title="Mastered in Y3">✓ Y3: 3-Digit Partitioning</span>
+            <span class="flow-arrow">➔</span>
+            <span class="flow-step-tag mastered" title="Mastered in Y4">✓ Y4: Tenths & Decimals</span>
+            <span class="flow-arrow">➔</span>
+            <span class="flow-step-tag blocker" title="Current Root Blocker">⚠️ Y4: Zero Column Alignment (Active Blocker)</span>
+          </div>
         </div>
 
         <div class="template-actions">
@@ -106,7 +162,7 @@ export function renderBlankTemplatesTab(): string {
       </div>
 
       <!-- Template 3: English Week 7 -->
-      <div class="template-card">
+      <div class="template-card" data-tpl-id="eng-w7" data-subject="english" data-rec-lara="false" data-rec-maya="false">
         <div class="template-badge-row">
           <span class="badge badge-purple">English</span>
           <span class="badge badge-purple">Year 4 • Week 7</span>
@@ -133,7 +189,7 @@ export function renderBlankTemplatesTab(): string {
       </div>
 
       <!-- Template 4: Science Week 7 -->
-      <div class="template-card">
+      <div class="template-card" data-tpl-id="sci-w7" data-subject="science" data-rec-lara="false" data-rec-maya="false">
         <div class="template-badge-row">
           <span class="badge badge-cyan">Science</span>
           <span class="badge badge-purple">Year 4 • Week 7</span>
@@ -160,7 +216,7 @@ export function renderBlankTemplatesTab(): string {
       </div>
 
       <!-- Template 5: Maths Week 7 -->
-      <div class="template-card">
+      <div class="template-card" data-tpl-id="math-w7" data-subject="maths" data-rec-lara="false" data-rec-maya="false">
         <div class="template-badge-row">
           <span class="badge badge-yellow">Maths</span>
           <span class="badge badge-purple">Year 4 • Week 7</span>
@@ -198,105 +254,99 @@ export function renderBlankTemplatesTab(): string {
           <button class="btn btn-outline" style="width: auto; font-size: 12px; margin: 0;" onclick="window.print()">
             🖨️ Print Sheet
           </button>
-          <button class="btn" style="width: auto; font-size: 12px; margin: 0;" onclick="alert('Pristine Vector Blank PDF ready for download.')">
-            📥 Download PDF
-          </button>
         </div>
       </div>
 
-      <!-- Realistic Clean Worksheet Simulation -->
+      <!-- Rendered Vector Worksheet Paper Simulation -->
       <div class="clean-worksheet-paper">
-        <div class="clean-school-header">
-          <div class="school-brand">
-            <h2>ASTEN COLLEGE</h2>
-            <div class="school-dept">Department of Primary Science • Year 4 British Curriculum</div>
+        <div class="clean-worksheet-header">
+          <div class="clean-school-brand">ASTEN COLLEGE • CAIRO</div>
+          <div class="clean-exam-title">KEY STAGE 2 • YEAR 4 FORMATIVE ASSESSMENT • WEEK 8</div>
+          <div class="clean-meta-row">
+            <div>Student Name: ___________________________</div>
+            <div>Class: Year 4 (Einstein)</div>
+            <div>Date: ____________</div>
           </div>
-          <div class="worksheet-title-block">
-            <h3>SOUND & ACOUSTIC VIBRATIONS</h3>
-            <div>Formative Milestone Practice Sheet • Term 1</div>
-          </div>
         </div>
 
-        <div class="clean-student-box">
-          <div class="student-field">Student Name: ___________________________</div>
-          <div class="student-field">Date: ________________</div>
-          <div class="student-field">Class: 4B</div>
-          <div class="student-field">Time Allowed: 25 mins</div>
-          <div class="student-score-box">Marks: &nbsp;&nbsp;&nbsp;&nbsp; / 20</div>
-        </div>
+        <!-- Section 1 -->
+        <div class="clean-section-header">Section A: Physical Vibrations & Acoustic Properties (10 Marks)</div>
 
-        <div class="clean-instructions">
-          <strong>Instructions to Candidates:</strong> Answer all questions in the spaces provided using a blue or black pen or pencil. Read each question carefully before answering. Calculators are not permitted.
-        </div>
-
-        <!-- Clean Question 1 -->
-        <div class="clean-q-card">
-          <div class="clean-q-header">
-            <span class="q-number">Question 1</span>
+        <div class="clean-question-card">
+          <div class="clean-q-head">
+            <span class="q-num">Question 1</span>
             <span class="q-marks">[2 Marks]</span>
           </div>
           <div class="clean-q-body">
-            An acoustic guitar player plucks a low E string. Explain clearly what physical movement the string makes to create sound, and how this movement travels to our ears.
+            Sound is created when an object vibrates. Complete the sentences below using words from the box.
+            <div style="display: flex; gap: 12px; justify-content: center; margin: 8px 0; font-family: monospace; font-size: 11px; background: #f8fafc; padding: 6px; border: 1px solid #e2e8f0; border-radius: 4px;">
+              <span>[ particles ]</span>
+              <span>[ vacuum ]</span>
+              <span>[ energy ]</span>
+              <span>[ vibrations ]</span>
+            </div>
+            a) All sounds are produced by rapid back-and-forth ______________________. <br/>
+            b) Sound travels through materials by transferring mechanical ______________________.
           </div>
           <div class="clean-ruled-lines">
             <div class="ruled-line"></div>
             <div class="ruled-line"></div>
-            <div class="ruled-line"></div>
           </div>
         </div>
 
-        <!-- Clean Question 2 -->
-        <div class="clean-q-card">
-          <div class="clean-q-header">
-            <span class="q-number">Question 2</span>
-            <span class="q-marks">[2 Marks]</span>
-          </div>
-          <div class="clean-q-body">
-            Two students test sound travel: one speaks through the air, and the other listens underwater. Compare the speed of sound through water compared to air, and give a reason based on particles.
-          </div>
-          <div class="clean-ruled-lines">
-            <div class="ruled-line"></div>
-            <div class="ruled-line"></div>
-            <div class="ruled-line"></div>
-          </div>
-        </div>
-
-        <!-- Clean Question 3 -->
-        <div class="clean-q-card">
-          <div class="clean-q-header">
-            <span class="q-number">Question 3</span>
+        <div class="clean-question-card">
+          <div class="clean-q-head">
+            <span class="q-num">Question 2</span>
             <span class="q-marks">[3 Marks]</span>
           </div>
           <div class="clean-q-body">
-            Complete the table below by matching the action to whether it changes the <strong>PITCH</strong> or the <strong>VOLUME</strong> of the sound produced.
+            Lara uses a drum and sprinkles rice grains on the surface. When she strikes the drum firmly with a drumstick:
+            <br/>a) What happens to the rice grains? Explain why using the word <em>vibration</em>.
           </div>
-          <table class="clean-preview-table">
-            <thead>
-              <tr>
-                <th>Action Performed</th>
-                <th>Pitch or Volume?</th>
-                <th>Reason / Particle Behavior</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Tightening the tuning peg on a violin string</td>
-                <td><div class="fill-box"></div></td>
-                <td><div class="fill-box"></div></td>
-              </tr>
-              <tr>
-                <td>Hitting a drum skin with greater force</td>
-                <td><div class="fill-box"></div></td>
-                <td><div class="fill-box"></div></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="clean-ruled-lines">
+            <div class="ruled-line"></div>
+            <div class="ruled-line"></div>
+            <div class="ruled-line"></div>
+          </div>
         </div>
 
-        <div style="text-align: center; margin-top: 20px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--card-border); padding-top: 10px;">
-          Page 1 of 4 • Formative Milestone • Generated by HEX-AIM Vector Re-Synthesis Engine
+        <div class="clean-question-card">
+          <div class="clean-q-head">
+            <span class="q-num">Question 3</span>
+            <span class="q-marks">[3 Marks]</span>
+          </div>
+          <div class="clean-q-body">
+            Tick (✓) one box in each row to show whether sound can travel through the given medium.
+            <table class="clean-preview-table">
+              <thead>
+                <tr>
+                  <th>Medium</th>
+                  <th>Can Sound Travel? (Yes)</th>
+                  <th>Cannot Travel? (No)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Air (Gas)</td>
+                  <td><div class="fill-box"></div></td>
+                  <td><div class="fill-box"></div></td>
+                </tr>
+                <tr>
+                  <td>Water (Liquid)</td>
+                  <td><div class="fill-box"></div></td>
+                  <td><div class="fill-box"></div></td>
+                </tr>
+                <tr>
+                  <td>Outer Space (Vacuum)</td>
+                  <td><div class="fill-box"></div></td>
+                  <td><div class="fill-box"></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>`;
+  </div>
+`;
 }
