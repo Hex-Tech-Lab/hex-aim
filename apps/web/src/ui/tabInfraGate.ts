@@ -97,6 +97,40 @@ export function renderInfraGateTab(): string {
       </div>
     </div>
 
+    <!-- Wave 27: Teacher Institutional Analytics Portal & Macro Diagnostic Heatmaps -->
+    <div class="card" style="border-left: 4px solid var(--accent-purple, #a855f7); margin-top: 24px;">
+      <div class="card-header">
+        <div>
+          <h2>📊 Wave 27: Teacher Institutional Analytics Portal</h2>
+          <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-muted, #94a3b8);">Macro cohort diagnostic heatmaps, cross-class mastery matrices, sensory scaffold tracking, and MIS CSV exports for school educators.</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="/school/asten-college?year=Y4" target="_blank" class="btn" style="width: auto; margin-top: 0; background: var(--purple, #a855f7);">🏫 Open Teacher Portal</a>
+          <a href="/api/school/asten-college/export.csv?year=Y4" class="btn btn-outline" style="width: auto; margin-top: 0;">⬇ Export CSV</a>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 12px;">
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Active Institutional Scope</span>
+          <span class="val"><strong>Asten College</strong> (Year 4 Cohort Diagnostic Matrix)</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Topological Mastery Rollup</span>
+          <span class="val">🟢 Class Average: <strong>89%</strong> (Science 84% • Maths 88% • English 89%)</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Sensory & ADHD Accommodations</span>
+          <span class="val"><span class="badge badge-yellow">2 Students Tracked</span> (8m micro-sprints & visual anchors)</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Primary Systemic Bottleneck</span>
+          <span class="val"><span class="badge badge-red">Y4.SCI.SND.MEDIUM</span> (Sound Transmission in Matter - 68%)</span>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Interactive Intake & Strike Simulator -->
     <div class="card">
       <div class="card-header">
