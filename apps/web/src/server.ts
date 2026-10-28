@@ -4,7 +4,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -477,6 +477,46 @@ export function createServer(): http.Server {
         'Access-Control-Allow-Origin': '*',
       });
       res.end(JSON.stringify({ ok: true, inpainting }));
+      return;
+    }
+
+    // Wave 25: Sibling Cross-Teaching Collaboration Mode API
+    if (url.pathname === '/api/collaboration/siblings') {
+      const studentA = url.searchParams.get('studentA') || 'lara';
+      const studentB = url.searchParams.get('studentB') || 'maya';
+      const peerEngine = PeerTeachingEngine.getInstance();
+      const pairing = peerEngine.generatePairing(studentA, studentB);
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, pairing }));
+      return;
+    }
+
+    if (url.pathname === '/api/collaboration/evaluate' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const peerEngine = PeerTeachingEngine.getInstance();
+          const evaluation = peerEngine.evaluatePeerInteraction(
+            payload.cardId || 'peer_card_lara_science_Y4_SCI_SND_MEDIUM',
+            payload.tutorExplanation || '',
+            payload.learnerResponse || ''
+          );
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ ok: true, evaluation }));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
       return;
     }
 

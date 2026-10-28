@@ -21,3 +21,4 @@ export * from './curriculum/CurriculumDependencyGraph.js';
 export * from './decay/CognitiveDecayEngine.js';
 export * from './school/SchoolMisSyncEngine.js';
 export * from './vision/SocraticInpaintingEngine.js';
+export * from './socratic/PeerTeachingEngine.js';
