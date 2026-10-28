@@ -699,6 +699,55 @@ export interface SiblingCollaborationPairing {
   activeCardsCount: number;
 }
 
+// ==========================================
+// WAVE 26: ADAPTIVE EXAM SIMULATION ENGINE
+// ==========================================
+
+export interface ExamSimulationQuestion {
+  id: string;
+  questionNumber: number;
+  promptText: string;
+  promptTextAr?: string;
+  subject: 'science' | 'maths' | 'english';
+  conceptCode: string;
+  type: 'multiple_choice' | 'short_answer' | 'numeric';
+  options?: Array<{ key: string; text: string; textAr?: string }>;
+  correctAnswer: string;
+  explanation: string;
+  explanationAr: string;
+  points: number;
+}
+
+export interface ExamSimulationConfig {
+  examId: string;
+  title: string;
+  titleAr: string;
+  subject: 'science' | 'maths' | 'english';
+  yearGroup: string;
+  totalTimeMins: number;
+  adhdPauseIntervalMins: number;
+  adhdPauseDurationSeconds: number;
+  questions: ExamSimulationQuestion[];
+}
+
+export interface ExamSubmissionResult {
+  examId: string;
+  studentId: string;
+  score: number;
+  totalPoints: number;
+  percentage: number;
+  timeSpentSeconds: number;
+  adhdPausesTaken: number;
+  passed: boolean;
+  answers: Record<string, string>;
+  conceptMasteryDeltas: Record<string, number>;
+  feedback: {
+    en: string;
+    ar: string;
+  };
+}
+
+
 
 
 

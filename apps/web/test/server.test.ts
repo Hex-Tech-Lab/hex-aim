@@ -189,7 +189,45 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(data.evaluation.confidenceGain).toBe(15);
     expect(data.evaluation.feedback.ar).toContain('موجة ميكانيكية');
   });
+
+  it('GET /exam/:id renders full-screen distraction-free testing environment', async () => {
+    const res = await fetch(`${baseUrl}/exam/exam_y4_sci_term1?student=lara`);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain('AIM Exam Simulator');
+    expect(html).toContain('Pause & Breathe');
+    expect(html).toContain('Through which of the following states of matter');
+  });
+
+  it('GET /api/exam/:id returns structured exam schema', async () => {
+    const res = await fetch(`${baseUrl}/api/exam/exam_y4_sci_term1`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.exam.questions.length).toBe(4);
+    expect(data.exam.totalTimeMins).toBe(15);
+  });
+
+  it('POST /api/exam/:id/submit grades answers and returns percentage and feedback', async () => {
+    const res = await fetch(`${baseUrl}/api/exam/exam_y4_sci_term1/submit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentId: 'lara',
+        answers: { q_sci_01: 'A', q_sci_02: 'B', q_sci_03: 'A', q_sci_04: 'A' },
+        timeSpentSeconds: 380,
+        adhdPausesTaken: 1
+      })
+    });
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.result.score).toBe(100);
+    expect(data.result.passed).toBe(true);
+    expect(data.result.feedback.ar).toContain('أداء رائع');
+  });
 });
+
 
 
 

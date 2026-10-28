@@ -3,8 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
+import { renderExamSimulationHtml } from './ui/examSimulationHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -171,6 +172,24 @@ export function createServer(): http.Server {
       res.end(guide.htmlContent);
       return;
     }
+
+    // Wave 26: Full-Screen Adaptive Exam Simulation Interface
+    if (url.pathname.startsWith('/exam/')) {
+      const examId = url.pathname.replace('/exam/', '').trim() || 'exam_y4_sci_term1';
+      const studentId = url.searchParams.get('student') || 'lara';
+      const examEngine = ExamSimulationEngine.getInstance();
+      const exam = examEngine.getExam(examId) || examEngine.getExam('exam_y4_sci_term1')!;
+
+      const html = renderExamSimulationHtml(exam, studentId);
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': Buffer.byteLength(html, 'utf8'),
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(html);
+      return;
+    }
+
 
     // Wave 20 (Approach C): Live Vector PDF Micro-Service for Blank Templates
     if (url.pathname.startsWith('/api/template/') && url.pathname.endsWith('/pdf')) {
@@ -519,6 +538,55 @@ export function createServer(): http.Server {
       });
       return;
     }
+
+    // Wave 26: Exam Simulation APIs
+    if (url.pathname.startsWith('/api/exam/')) {
+      const parts = url.pathname.replace('/api/exam/', '').split('/');
+      const examId = parts[0] || 'exam_y4_sci_term1';
+      const isSubmit = parts[1] === 'submit';
+      const examEngine = ExamSimulationEngine.getInstance();
+
+      if (isSubmit && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          try {
+            const payload = body ? JSON.parse(body) : {};
+            const result = examEngine.gradeExam(
+              examId,
+              payload.studentId || 'lara',
+              payload.answers || {},
+              Number(payload.timeSpentSeconds) || 300,
+              Number(payload.adhdPausesTaken) || 0
+            );
+            res.writeHead(200, {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            });
+            res.end(JSON.stringify({ ok: true, result }));
+          } catch (e: any) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+          }
+        });
+        return;
+      }
+
+      const exam = examEngine.getExam(examId);
+      if (!exam) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Exam not found' }));
+        return;
+      }
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, exam }));
+      return;
+    }
+
 
     // API: list students
     if (url.pathname === '/api/students') {
