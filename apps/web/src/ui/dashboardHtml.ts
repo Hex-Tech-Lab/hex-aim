@@ -625,6 +625,8 @@ ${renderDashboardStyles()}
     function previewCleanTemplate(templateId) {
       const titleEl = document.getElementById('clean-preview-title');
       const subEl = document.getElementById('clean-preview-sub');
+      const btnPdf = document.getElementById('btn-clean-download-pdf');
+      const btnHtml = document.getElementById('btn-clean-preview-html');
       const templateTitles = {
         'sci-w8': 'Y4 Science: Sound, Pitch & Auditory Vibrations (Week 8)',
         'math-w8': 'Y4 Maths: Decimals & Place Value Alignment (Week 8)',
@@ -637,6 +639,12 @@ ${renderDashboardStyles()}
       }
       if (subEl) {
         subEl.textContent = 'Compiled via Approach C Warm Browser Pool • 100% Crisp Vector Typography • 0 Photocopy Smudges';
+      }
+      if (btnPdf) {
+        btnPdf.href = '/api/template/' + templateId + '/pdf';
+      }
+      if (btnHtml) {
+        btnHtml.href = '/api/template/' + templateId + '/html';
       }
       const previewCard = document.querySelector('.clean-worksheet-paper');
       if (previewCard) {
@@ -725,7 +733,8 @@ ${renderDashboardStyles()}
     }
 
     function downloadVectorPdf(templateId) {
-      showToast('📄 <strong>Vector PDF Generation</strong>: Compiling 300-DPI clean worksheet for ' + templateId + ' without scan artifacts.', 'success');
+      showToast('📄 <strong>Vector PDF Generation</strong>: Compiling 300-DPI clean worksheet for ' + templateId + ' via Warm Browser Pool...', 'cyan');
+      window.open('/api/template/' + templateId + '/pdf', '_blank');
     }
 
     function launchDryRun(templateId) {

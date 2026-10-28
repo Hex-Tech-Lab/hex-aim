@@ -5,6 +5,7 @@ export * from './compilers/PdfPackCompiler.js';
 export { SprintPdfCompiler } from './compilers/SprintPdfCompiler.js';
 export { GuidePdfCompiler } from './compilers/GuidePdfCompiler.js';
 export { WarmBrowserPoolCompiler } from './compilers/WarmBrowserPoolCompiler.js';
+export { CanonicalTemplateGenerator, type CanonicalTemplateSchema } from './compilers/CanonicalTemplateGenerator.js';
 export * from './dedup/CanonicalDeduplicator.js';
 export * from './dedup/IntakeDeduplicator.js';
 export * from './curriculum/CurriculumTaxonomyService.js';

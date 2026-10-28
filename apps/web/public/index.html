@@ -2667,6 +2667,12 @@
           <div style="font-size: 12px; color: var(--muted);" id="clean-preview-sub">Generated from Canonical Master AST • 100% Vector Fonts • 0 Ink Artifacts</div>
         </div>
         <div style="display: flex; gap: 8px;">
+          <a class="btn btn-sm" id="btn-clean-preview-html" href="/api/template/sci-w8/html" target="_blank" style="width: auto; font-size: 12px; margin: 0; text-decoration: none;">
+            🌐 Full A4 View
+          </a>
+          <a class="btn btn-outline" id="btn-clean-download-pdf" href="/api/template/sci-w8/pdf" target="_blank" style="width: auto; font-size: 12px; margin: 0; text-decoration: none;">
+            📥 Download Vector PDF
+          </a>
           <button class="btn btn-outline" style="width: auto; font-size: 12px; margin: 0;" onclick="window.print()">
             🖨️ Print Sheet
           </button>
@@ -3253,6 +3259,8 @@
     function previewCleanTemplate(templateId) {
       const titleEl = document.getElementById('clean-preview-title');
       const subEl = document.getElementById('clean-preview-sub');
+      const btnPdf = document.getElementById('btn-clean-download-pdf');
+      const btnHtml = document.getElementById('btn-clean-preview-html');
       const templateTitles = {
         'sci-w8': 'Y4 Science: Sound, Pitch & Auditory Vibrations (Week 8)',
         'math-w8': 'Y4 Maths: Decimals & Place Value Alignment (Week 8)',
@@ -3265,6 +3273,12 @@
       }
       if (subEl) {
         subEl.textContent = 'Compiled via Approach C Warm Browser Pool • 100% Crisp Vector Typography • 0 Photocopy Smudges';
+      }
+      if (btnPdf) {
+        btnPdf.href = '/api/template/' + templateId + '/pdf';
+      }
+      if (btnHtml) {
+        btnHtml.href = '/api/template/' + templateId + '/html';
       }
       const previewCard = document.querySelector('.clean-worksheet-paper');
       if (previewCard) {
@@ -3353,7 +3367,8 @@
     }
 
     function downloadVectorPdf(templateId) {
-      showToast('📄 <strong>Vector PDF Generation</strong>: Compiling 300-DPI clean worksheet for ' + templateId + ' without scan artifacts.', 'success');
+      showToast('📄 <strong>Vector PDF Generation</strong>: Compiling 300-DPI clean worksheet for ' + templateId + ' via Warm Browser Pool...', 'cyan');
+      window.open('/api/template/' + templateId + '/pdf', '_blank');
     }
 
     function launchDryRun(templateId) {
