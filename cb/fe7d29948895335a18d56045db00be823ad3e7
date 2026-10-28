@@ -1,0 +1,22 @@
+packages/core/src/decay/CognitiveDecayEngine.ts
+  h_cdd764b4030252 1-274
+packages/core/src/index.ts
+  h_cdd764b4030252 21
+packages/core/test/canonicalTemplate.test.ts
+  h_cdd764b4030252 23
+packages/core/test/cognitiveDecay.test.ts
+  h_cdd764b4030252 1-75
+packages/types/src/index.ts
+  h_cdd764b4030252 518-558
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cbfe7d29948895335a18d56045db00be823ad3e7",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
