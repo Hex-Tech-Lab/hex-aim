@@ -251,6 +251,12 @@ export function renderBlankTemplatesTab(): string {
           <div style="font-size: 12px; color: var(--muted);" id="clean-preview-sub">Generated from Canonical Master AST • 100% Vector Fonts • 0 Ink Artifacts</div>
         </div>
         <div style="display: flex; gap: 8px;">
+          <a class="btn btn-sm" id="btn-clean-preview-html" href="/api/template/sci-w8/html" target="_blank" style="width: auto; font-size: 12px; margin: 0; text-decoration: none;">
+            🌐 Full A4 View
+          </a>
+          <a class="btn btn-outline" id="btn-clean-download-pdf" href="/api/template/sci-w8/pdf" target="_blank" style="width: auto; font-size: 12px; margin: 0; text-decoration: none;">
+            📥 Download Vector PDF
+          </a>
           <button class="btn btn-outline" style="width: auto; font-size: 12px; margin: 0;" onclick="window.print()">
             🖨️ Print Sheet
           </button>

@@ -4,7 +4,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -169,6 +169,104 @@ export function createServer(): http.Server {
 
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(guide.htmlContent);
+      return;
+    }
+
+    // Wave 20 (Approach C): Live Vector PDF Micro-Service for Blank Templates
+    if (url.pathname.startsWith('/api/template/') && url.pathname.endsWith('/pdf')) {
+      const templateId = url.pathname.replace('/api/template/', '').replace('/pdf', '').trim();
+      const t0 = Date.now();
+      try {
+        const pdfBytes = await CanonicalTemplateGenerator.compileToPdf(templateId);
+        const duration = Date.now() - t0;
+        res.writeHead(200, {
+          'Content-Type': 'application/pdf',
+          'Content-Length': pdfBytes.length,
+          'Content-Disposition': `inline; filename="aim_worksheet_${templateId}.pdf"`,
+          'X-AIM-Compiler-Latency-Ms': duration.toString(),
+          'Access-Control-Allow-Origin': '*',
+        });
+        res.end(Buffer.from(pdfBytes));
+      } catch (err: any) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err?.message || String(err) }));
+      }
+      return;
+    }
+
+    // Wave 20: Standalone HTML Vector Preview for Blank Templates
+    if (url.pathname.startsWith('/api/template/') && url.pathname.endsWith('/html')) {
+      const templateId = url.pathname.replace('/api/template/', '').replace('/html', '').trim();
+      const html = CanonicalTemplateGenerator.generateHtml(templateId);
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': Buffer.byteLength(html, 'utf8'),
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(html);
+      return;
+    }
+
+    // Wave 20: Live Vector PDF Compilation for Adaptive Remediation Sprints
+    if (url.pathname.startsWith('/api/sprint/') && url.pathname.endsWith('/pdf')) {
+      const sprintId = url.pathname.replace('/api/sprint/', '').replace('/pdf', '').trim();
+      const student: Student = {
+        id: 'lara',
+        name: 'Lara',
+        schoolId: 'asten-college',
+        yearGroup: 'Y4',
+        curriculumTrack: 'british',
+        neuroProfile: {
+          hasAdhdTraits: true,
+          hasDyslexiaTraits: true,
+          workingMemoryCapacity: 'vulnerable_under_time_pressure',
+          optimalSprintDurationMins: 8,
+        },
+        siblingStudentIds: ['maya'],
+      };
+
+      const gaps: CognitiveGap[] = [
+        {
+          id: 'gap_1',
+          studentId: 'lara',
+          conceptCode: 'Y4.MATH.NPV.EMPTY_COLUMNS',
+          errorClass: 'ERR_PHANTOM_ZERO',
+          description: 'Omitting zeros in unmentioned place-value rooms (writes 24,16 for 24,106)',
+          firstObservedDate: '2026-10-08',
+          lastObservedDate: '2026-10-24',
+          recurrenceCount: 3,
+          status: 'active_priority',
+        },
+      ];
+
+      const sprint = AdaptiveSprintCompiler.compile(student, gaps, {
+        sprintNumber: 3,
+        subjectTitle: 'Mathematics',
+      });
+
+      const t0 = Date.now();
+      try {
+        const pool = WarmBrowserPoolCompiler.getInstance();
+        const pdfBytes = await pool.compileHtmlToPdf(sprint.htmlContent);
+        const duration = Date.now() - t0;
+        res.writeHead(200, {
+          'Content-Type': 'application/pdf',
+          'Content-Length': pdfBytes.length,
+          'Content-Disposition': `inline; filename="aim_sprint_${sprintId || 'practice'}.pdf"`,
+          'X-AIM-Compiler-Latency-Ms': duration.toString(),
+          'Access-Control-Allow-Origin': '*',
+        });
+        res.end(Buffer.from(pdfBytes));
+      } catch (err) {
+        const pdfBytes = await CanonicalTemplateGenerator.generatePdfLibFallback('math-w8');
+        res.writeHead(200, {
+          'Content-Type': 'application/pdf',
+          'Content-Length': pdfBytes.length,
+          'Content-Disposition': `inline; filename="aim_sprint_${sprintId || 'practice'}.pdf"`,
+          'Access-Control-Allow-Origin': '*',
+        });
+        res.end(Buffer.from(pdfBytes));
+      }
       return;
     }
 
