@@ -91,4 +91,24 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(dataMaya.displayName).toBe('Maya');
     expect(dataMaya.subjectMasteries.science).toBe(96);
   });
+
+  it('GET /api/decay/:studentId returns cognitive decay ledger and profile', async () => {
+    const res = await fetch(`${baseUrl}/api/decay/lara`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.studentId).toBe('lara');
+    expect(data.profile.hasAdhdFocusAccommodations).toBe(true);
+    expect(Array.isArray(data.records)).toBe(true);
+    expect(data.records.length).toBeGreaterThan(0);
+  });
+
+  it('GET /api/decay/:studentId/queue returns prioritized micro-sprint queue', async () => {
+    const res = await fetch(`${baseUrl}/api/decay/lara/queue`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.studentId).toBe('lara');
+    expect(Array.isArray(data.queue)).toBe(true);
+    expect(data.queue[0].recommendedDurationMins).toBe(8); // Lara 8m ADHD micro-sprint
+  });
 });
+
