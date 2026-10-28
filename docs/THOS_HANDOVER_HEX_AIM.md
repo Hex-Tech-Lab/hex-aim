@@ -1,10 +1,11 @@
 # TOTAL HANDOVER OF STATE (THOS) — PROJECT HEX-AIM
 
-> **Document:** Total Handover of State (THOS) & System Architecture Specification  
+> **Current Canonical THOS (Waves 19–22 & Stabilization):** [`docs/history/THOS_2026-10-28_1635_WAVES_19_TO_22_AND_TELEGRAM_STABILIZATION.md`](file:///home/kellyb_dev/projects/hex-aim/docs/history/THOS_2026-10-28_1635_WAVES_19_TO_22_AND_TELEGRAM_STABILIZATION.md)  
+> **Canonical Specification Template:** [`docs/templates/THOS_SPEC.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_SPEC.md)  
 > **Project:** `hex-aim` (Adaptive Individualized Mastery)  
 > **Target Path:** `/home/kellyb_dev/projects/hex-aim`  
-> **Created:** 2026-10-24T20:30:00Z  
-> **Source Session:** Antigravity (AGY / Gemini 3.8 Flash) via `hex-expan`
+> **Last Updated:** 2026-10-28T16:35:00+03:00  
+> **Source Session:** Antigravity (AGY / Gemini 3.8 Flash High)
 
 ---
 

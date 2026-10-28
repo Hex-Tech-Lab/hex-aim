@@ -36,6 +36,13 @@
 | **W7** | **T7.4** | Production Web Console Deploy: `aim.getvintel.com` (HTTP 200, SSL Active) | COMPLETE | 14:36 | 14:37 | 1m | V25, V29, V30 ✅ |
 | **W7** | **T7.5** | Edge Intake Worker Deploy: `aim-bot-worker.hex-tech-lab.workers.dev` | COMPLETE | 14:38 | 14:39 | 1m | V01, V02, V12 ✅ |
 | **W7** | **T7.6** | QA-Intel, Architectural Boundary, and Full Test Suite (23/23 Passing) | COMPLETE | 14:33 | 14:34 | 1m | V30, V31, V32 ✅ |
+| **W8-18** | **T8-18** | Multi-Guardian RBAC, Adaptive Bloom, Cohort Heatmap, PWA Sync, Astryx Theme Switcher, Tab 4 & Tab 5 Master Blank Templates | COMPLETE | 2026-10-27 | 2026-10-27 | Full Wave | V01–V32 ✅ |
+| **W19** | **T19.1** | Dynamic Curriculum Year-Group & Concept Dependency Graph (DAG) with Topological Sorter & Root Blocker Engine | COMPLETE | 12:11 | 12:19 | 8m | V05, V16, V28 ✅ |
+| **W20** | **T20.1** | Live Vector PDF Micro-Service (Approach C) with warm Chromium pool (93ms compile) and resilient pdf-lib vector fallback | COMPLETE | 12:45 | 13:00 | 15m | V01, V09, V30 ✅ |
+| **BOT** | **T20.A/B** | All-Kids comparative view button (`view_progress:all`) & AGY session confirmation receipt loop (Receipt #270) | COMPLETE | 12:25 | 12:36 | 11m | V02, V10, V20 ✅ |
+| **BOT** | **T20.C** | Monospace 2-column comparative table (`Dimension \| Lara \| Maya`) with compact abbreviations and inline traffic lights (Receipt #277) | COMPLETE | 13:00 | 13:05 | 5m | V02, V10, V20 ✅ |
+| **W21** | **T21.1** | Interactive Socratic Audio Coaching Player & Voice Diagnostic Evaluation (zero JSX, zero SSE, vanilla JS waveform canvas) | COMPLETE | 13:05 | 13:17 | 12m | V25, V28, V29 ✅ |
+| **W22** | **T22.1** | Predictive Cognitive Mastery Decay Engine (Ebbinghaus Spaced Repetition modeling for ADHD/working memory profiles, 53/53 core tests) | COMPLETE | 13:20 | 13:32 | 12m | V05, V16, V30 ✅ |
 
 ---
 
