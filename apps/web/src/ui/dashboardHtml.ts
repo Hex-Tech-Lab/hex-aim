@@ -69,6 +69,73 @@ ${renderDashboardStyles()}
       <div class="badge-tag">
         <i data-lucide="graduation-cap" class="inline w-3.5 h-3.5 mr-1"></i> Asten College • Y4
       </div>
+
+      <!-- Wave 27/26 Portals Navigator Dropdown -->
+      <div class="portal-dropdown" id="portal-dropdown">
+        <button class="portal-dropdown-btn" onclick="togglePortalMenu(event)" title="Switch Active Portal">
+          <i data-lucide="compass" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>Portals</span>
+          <i data-lucide="chevron-down" class="w-3 h-3"></i>
+        </button>
+        <div class="portal-dropdown-menu" id="portal-dropdown-menu">
+          <div class="portal-dropdown-header">AIM Portals & Simulators</div>
+          <a href="/" class="portal-dropdown-item">
+            <span>🏠</span>
+            <div>
+              <div>Mastery Console</div>
+              <div style="font-size: 10px; color: var(--muted);">Parent Cognitive Dashboard</div>
+            </div>
+          </a>
+          <a href="/school/asten-college?year=Y4" target="_blank" class="portal-dropdown-item">
+            <span>🏫</span>
+            <div>
+              <div>Teacher Institutional Portal</div>
+              <div style="font-size: 10px; color: var(--muted);">Macro Diagnostic Heatmaps</div>
+            </div>
+          </a>
+          <div class="portal-dropdown-divider"></div>
+          <div class="portal-dropdown-header">Mock Exam Simulators</div>
+          <a href="/exam/exam_y4_sci_term1?student=lara" target="_blank" class="portal-dropdown-item">
+            <span>🔬</span>
+            <div>
+              <div>Science Exam Simulator</div>
+              <div style="font-size: 10px; color: var(--muted);">Year 4 • 15m ADHD Paced</div>
+            </div>
+          </a>
+          <a href="/exam/exam_y4_math_term1?student=lara" target="_blank" class="portal-dropdown-item">
+            <span>📐</span>
+            <div>
+              <div>Maths Exam Simulator</div>
+              <div style="font-size: 10px; color: var(--muted);">Year 4 • 15m ADHD Paced</div>
+            </div>
+          </a>
+          <div class="portal-dropdown-divider"></div>
+          <div class="portal-dropdown-header">Printable Compilers</div>
+          <a href="/sprint/preview" target="_blank" class="portal-dropdown-item">
+            <span>📄</span>
+            <div>
+              <div>4-Page Adaptive Sprint</div>
+              <div style="font-size: 10px; color: var(--muted);">Diagnostic Print Worksheet</div>
+            </div>
+          </a>
+          <a href="/guide/preview" target="_blank" class="portal-dropdown-item">
+            <span>🧭</span>
+            <div>
+              <div>Parent Socratic Guide</div>
+              <div style="font-size: 10px; color: var(--muted);">2-Page Dialogue Companion</div>
+            </div>
+          </a>
+          <div class="portal-dropdown-divider"></div>
+          <a href="https://t.me/aim_pal_bot" target="_blank" class="portal-dropdown-item">
+            <span>🤖</span>
+            <div>
+              <div>Telegram Bot (@aim_pal_bot)</div>
+              <div style="font-size: 10px; color: var(--muted);">Mobile Intake & Progress</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
       <div class="toolbar-actions-group">
         <button id="lang-toggle-btn" class="lang-toggle-btn" onclick="toggleLanguage()" title="Switch Language / تبديل اللغة">
           <i data-lucide="globe" class="w-3.5 h-3.5"></i>
@@ -79,6 +146,7 @@ ${renderDashboardStyles()}
         </button>
       </div>
     </div>
+
   </header>
 
   <!-- Global Student Scope Partition (Lifted Above Tabs) -->
@@ -515,6 +583,20 @@ ${renderDashboardStyles()}
       const current = localStorage.getItem('aim_lang') || 'en';
       applyLanguage(current === 'ar' ? 'en' : 'ar');
     }
+
+    function togglePortalMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('portal-dropdown-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('portal-dropdown');
+      if (dropdown && !dropdown.contains(e.target)) {
+        const menu = document.getElementById('portal-dropdown-menu');
+        if (menu) menu.classList.remove('show');
+      }
+    });
 
     function updateChartThemes(isLight) {
       const gridColor = isLight ? '#e2e8f0' : '#1f2937';
