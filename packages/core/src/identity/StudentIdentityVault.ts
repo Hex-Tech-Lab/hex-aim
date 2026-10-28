@@ -24,6 +24,36 @@ const CANONICAL_PILOT_VAULT: Record<string, IdentityVaultRecord> = {
     preferredParentTitle: 'Dad',
     status: 'active',
   },
+  'stu_01j9ax8003youssef': {
+    studentUid: 'stu_01j9ax8003youssef',
+    firstName: 'Youssef',
+    lastName: 'Kamal',
+    displayName: 'Youssef',
+    preferredTitle: 'Architect',
+    guardianIds: ['guardian_5055012901'],
+    preferredParentTitle: 'Mom',
+    status: 'active',
+  },
+  'stu_01j9ax8004omar': {
+    studentUid: 'stu_01j9ax8004omar',
+    firstName: 'Omar',
+    lastName: 'Mahmoud',
+    displayName: 'Omar',
+    preferredTitle: 'Navigator',
+    guardianIds: ['guardian_5055012902'],
+    preferredParentTitle: 'Dad',
+    status: 'active',
+  },
+  'stu_01j9ax8005nour': {
+    studentUid: 'stu_01j9ax8005nour',
+    firstName: 'Nour',
+    lastName: 'Hassan',
+    displayName: 'Nour',
+    preferredTitle: 'Philosopher',
+    guardianIds: ['guardian_5055012903'],
+    preferredParentTitle: 'Mom',
+    status: 'active',
+  },
 };
 
 /**

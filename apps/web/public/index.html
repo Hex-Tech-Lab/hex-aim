@@ -158,6 +158,8 @@
   }
 
   .portal-dropdown-btn {
+    height: 32px;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -166,7 +168,7 @@
     color: var(--astryx-text-contrast);
     font-size: 11px;
     font-weight: 700;
-    padding: 5px 10px;
+    padding: 0 12px;
     border-radius: var(--astryx-radius-md);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -246,9 +248,13 @@
   }
 
   .badge-tag {
+    height: 32px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
     background: var(--card-elevated);
     border: 1px solid var(--astryx-border-subtle);
-    padding: 6px 14px;
+    padding: 0 12px;
     border-radius: var(--astryx-radius-md);
     font-size: 12px;
     font-weight: 600;
@@ -263,13 +269,15 @@
 
   /* Toolbar Actions Group */
   .toolbar-actions-group {
+    height: 32px;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     gap: 4px;
     background: var(--card-elevated);
     border: 1px solid var(--astryx-border-subtle);
     border-radius: var(--astryx-radius-md);
-    padding: 3px 4px;
+    padding: 2px 4px;
   }
 
   /* Compact Theme Switcher Button (Icon Only: ☀️ Sun / 🌙 Moon) */
@@ -277,8 +285,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     padding: 0;
     border-radius: var(--astryx-radius-sm);
     background: transparent;
@@ -298,9 +306,10 @@
   .lang-toggle-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
-    padding: 4px 10px;
-    height: 32px;
+    padding: 0 8px;
+    height: 26px;
     border-radius: var(--astryx-radius-sm);
     background: transparent;
     border: 1px solid transparent;
@@ -332,10 +341,16 @@
     margin-left: 0;
   }
   html[dir="rtl"] .nav-tabs {
-    flex-direction: row-reverse;
+    flex-direction: row;
+    justify-content: flex-start;
   }
   html[dir="rtl"] .student-scope-bar {
-    flex-direction: row-reverse;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  html[dir="rtl"] .student-pills {
+    flex-direction: row;
+    justify-content: flex-start;
   }
 
   /* Strict Language Isolation Utilities */
@@ -360,6 +375,60 @@
   body.lang-ar span.lang-en-only, html[dir="rtl"] span.lang-en-only,
   body.lang-ar strong.lang-en-only, html[dir="rtl"] strong.lang-en-only {
     display: none !important;
+  }
+
+  /* Sub-Nav Breadcrumb directly below Universal Locked Top Bar */
+  .sub-nav-breadcrumb {
+    background: var(--card-bg, #111827);
+    border-bottom: 1px solid var(--astryx-border-subtle, #1f2937);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    position: sticky;
+    top: 61px;
+    z-index: 90;
+    backdrop-filter: blur(12px);
+  }
+  .breadcrumb-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .breadcrumb-return-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted, #94a3b8);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 5px 12px;
+    background: var(--card-elevated, #1e293b);
+    border: 1px solid var(--astryx-border-subtle, #334155);
+    border-radius: var(--astryx-radius-sm, 6px);
+    transition: all 0.15s ease;
+  }
+  .breadcrumb-return-btn:hover {
+    color: var(--cyan, #06b6d4);
+    border-color: var(--cyan, #06b6d4);
+    background: rgba(6, 182, 212, 0.12);
+  }
+  .breadcrumb-sep {
+    color: var(--muted, #64748b);
+  }
+  .breadcrumb-current {
+    color: var(--astryx-text-contrast, #f1f5f9);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  html[dir="rtl"] .sub-nav-breadcrumb {
+    direction: rtl;
+    text-align: right;
+  }
+  html[dir="rtl"] .breadcrumb-container {
+    flex-direction: row;
   }
 
   /* Nav Tabs */
@@ -1587,8 +1656,8 @@
             <i data-lucide="user" class="w-4 h-4"></i>
           </span>
           <span class="student-info">
-            <span class="name">Lara</span>
-            <span class="meta">Year 4 • British Primary Track</span>
+            <span class="name"><span class="lang-en-only">Lara</span><span class="lang-ar-only">لارا</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • British Primary Track</span><span class="lang-ar-only">الصف الرابع • المنهاج البريطاني</span></span>
           </span>
           <span class="active-dot"></span>
         </span>
@@ -1601,8 +1670,50 @@
             <i data-lucide="user-check" class="w-4 h-4"></i>
           </span>
           <span class="student-info">
-            <span class="name">Maya</span>
-            <span class="meta">Year 4 • British Primary Track</span>
+            <span class="name"><span class="lang-en-only">Maya</span><span class="lang-ar-only">مايا</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • British Primary Track</span><span class="lang-ar-only">الصف الرابع • المنهاج البريطاني</span></span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-youssef" onclick="setStudent('youssef')" title="Switch to Youssef's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); color: #60a5fa;">
+            <i data-lucide="compass" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name"><span class="lang-en-only">Youssef</span><span class="lang-ar-only">يوسف</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • Spatial / Visual</span><span class="lang-ar-only">الصف الرابع • بصري وفراغي</span></span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-omar" onclick="setStudent('omar')" title="Switch to Omar's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name"><span class="lang-en-only">Omar</span><span class="lang-ar-only">عمر</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • Speed & Fluency</span><span class="lang-ar-only">الصف الرابع • سرعة وطلاقة</span></span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-nour" onclick="setStudent('nour')" title="Switch to Nour's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring" style="border-color: #ec4899; background: rgba(236, 72, 153, 0.15); color: #f472b6;">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name"><span class="lang-en-only">Nour</span><span class="lang-ar-only">نور</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • Analytical Logic</span><span class="lang-ar-only">الصف الرابع • منطق وتحليل</span></span>
           </span>
           <span class="active-dot"></span>
         </span>
@@ -1613,19 +1724,39 @@
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
     <button id="tab-btn-mastery" class="nav-tab active" onclick="switchTab('tab-student-view', this)">
-      <i data-lucide="line-chart" class="w-4 h-4"></i> <span class="tab-label">Student Progress & Mastery</span>
+      <i data-lucide="line-chart" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Student Progress & Mastery</span>
+        <span class="lang-ar-only">١. مسار الإتقان والتقدم</span>
+      </span>
     </button>
     <button id="tab-btn-ledger" class="nav-tab" onclick="switchTab('tab-gap-ledger', this)">
-      <i data-lucide="brain-circuit" class="w-4 h-4"></i> <span class="tab-label">Cognitive Gap Ledger</span>
+      <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Cognitive Gap Ledger</span>
+        <span class="lang-ar-only">٢. سجل الفجوات وخطة التدخل</span>
+      </span>
     </button>
     <button id="tab-btn-infra" class="nav-tab" onclick="switchTab('tab-infra-gate', this)">
-      <i data-lucide="shield-alert" class="w-4 h-4"></i> <span class="tab-label">Ingestion Gate & Infrastructure</span>
+      <i data-lucide="shield-alert" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Ingestion Gate & Infrastructure</span>
+        <span class="lang-ar-only">٣. بوابة الاستيعاب والربط التقني</span>
+      </span>
     </button>
     <button id="tab-btn-submissions" class="nav-tab" onclick="switchTab('tab-submissions-register', this)">
-      <i data-lucide="scan-line" class="w-4 h-4"></i> <span class="tab-label">Scanned Submissions (52)</span>
+      <i data-lucide="scan-line" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Scanned Submissions (52)</span>
+        <span class="lang-ar-only">٤. إجابات الطلاب والتقييم التشخيصي</span>
+      </span>
     </button>
     <button id="tab-btn-templates" class="nav-tab" onclick="switchTab('tab-blank-templates', this)">
-      <i data-lucide="file-check" class="w-4 h-4"></i> <span class="tab-label">Blank Templates & Dry-Runs</span>
+      <i data-lucide="file-check" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Blank Templates & Dry-Runs</span>
+        <span class="lang-ar-only">٥. قوالب التمارين والتدريبات</span>
+      </span>
     </button>
   </div>
 
@@ -1646,19 +1777,31 @@
           <!-- Mini KPIs -->
           <div class="mini-kpi-row">
             <div class="mini-kpi">
-              <div class="kpi-label">Term Average</div>
+              <div class="kpi-label">
+                <span class="lang-en-only">Term Average</span>
+                <span class="lang-ar-only">المعدل العام</span>
+              </div>
               <div class="kpi-val" id="kpi-term-avg" style="color: var(--cyan);">92%</div>
             </div>
             <div class="mini-kpi">
-              <div class="kpi-label">Science (Midterm)</div>
+              <div class="kpi-label">
+                <span class="lang-en-only">Science (Midterm)</span>
+                <span class="lang-ar-only">العلوم (المنتصف)</span>
+              </div>
               <div class="kpi-val" id="kpi-science" style="color: var(--green);">94%</div>
             </div>
             <div class="mini-kpi">
-              <div class="kpi-label">Maths (NPV)</div>
+              <div class="kpi-label">
+                <span class="lang-en-only">Maths (NPV)</span>
+                <span class="lang-ar-only">الرياضيات (القيمة المكانية)</span>
+              </div>
               <div class="kpi-val" id="kpi-maths" style="color: var(--yellow);">82%</div>
             </div>
             <div class="mini-kpi">
-              <div class="kpi-label">English (Spelling)</div>
+              <div class="kpi-label">
+                <span class="lang-en-only">English (Spelling)</span>
+                <span class="lang-ar-only">الإنجليزية (الإملاء)</span>
+              </div>
               <div class="kpi-val" id="kpi-english" style="color: var(--purple);">88%</div>
             </div>
           </div>
@@ -1668,13 +1811,14 @@
             <div class="chart-title">
               <span class="flex items-center gap-2">
                 <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
-                Weekly Assessment Performance (Weeks 1 - 8)
+                <span class="lang-en-only">Weekly Assessment Performance (Weeks 1 - 8)</span>
+                <span class="lang-ar-only">أداء التقييم الأسبوعي (الأسابيع ١ - ٨)</span>
               </span>
               <div class="chart-legend">
-                <div class="legend-item"><div class="dot" style="background: var(--green);"></div> Science</div>
-                <div class="legend-item"><div class="dot" style="background: var(--yellow);"></div> Maths</div>
-                <div class="legend-item"><div class="dot" style="background: var(--purple);"></div> English</div>
-                <div class="legend-item"><div class="dot" style="background: #64748b;"></div> 80% Benchmark</div>
+                <div class="legend-item"><div class="dot" style="background: var(--green);"></div> <span class="lang-en-only">Science</span><span class="lang-ar-only">العلوم</span></div>
+                <div class="legend-item"><div class="dot" style="background: var(--yellow);"></div> <span class="lang-en-only">Maths</span><span class="lang-ar-only">الرياضيات</span></div>
+                <div class="legend-item"><div class="dot" style="background: var(--purple);"></div> <span class="lang-en-only">English</span><span class="lang-ar-only">الإنجليزية</span></div>
+                <div class="legend-item"><div class="dot" style="background: #64748b;"></div> <span class="lang-en-only">80% Benchmark</span><span class="lang-ar-only">حد الإتقان ٨٠٪</span></div>
               </div>
             </div>
             <div style="position: relative; height: 210px; width: 100%;">
@@ -1687,7 +1831,7 @@
             <!-- Chart.js Cognitive Domain Radar -->
             <div style="background: var(--card-elevated); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
               <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                <span class="flex items-center gap-1.5"><i data-lucide="brain" class="w-3.5 h-3.5 text-cyan-400"></i> Cognitive Domain Radar</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="brain" class="w-3.5 h-3.5 text-cyan-400"></i> <span class="lang-en-only">Cognitive Domain Radar</span><span class="lang-ar-only">رادار النطاقات المعرفية</span></span>
                 <span style="font-size: 10px; color: var(--cyan); font-family: monospace;">ASTEN Y4 RADAR</span>
               </div>
               <div style="position: relative; height: 180px; width: 100%;">
@@ -1698,18 +1842,25 @@
             <!-- Chart.js Mastery Gauge / Doughnut -->
             <div style="background: var(--card-elevated); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position: relative;">
               <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Zero-Alarm Confidence</span>
-                <span class="badge badge-green" id="gauge-badge">High</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> <span class="lang-en-only">Zero-Alarm Confidence</span><span class="lang-ar-only">مؤشر الثقة دون قلق</span></span>
+                <span class="badge badge-green" id="gauge-badge">
+                  <span class="lang-en-only">High</span>
+                  <span class="lang-ar-only">مرتفع</span>
+                </span>
               </div>
               <div style="position: relative; height: 140px; width: 100%; display: flex; align-items: center; justify-content: center;">
                 <canvas id="masteryGaugeCanvas"></canvas>
                 <div id="gauge-center-text" style="position: absolute; top: 58%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
                   <div id="gauge-val" style="font-size: 22px; font-weight: 800; color: var(--astryx-text-contrast); font-family: monospace;">94%</div>
-                  <div style="font-size: 9px; color: var(--muted); text-transform: uppercase;">Retention</div>
+                  <div style="font-size: 9px; color: var(--muted); text-transform: uppercase;">
+                    <span class="lang-en-only">Retention</span>
+                    <span class="lang-ar-only">تثبيت المفاهيم</span>
+                  </div>
                 </div>
               </div>
               <div style="font-size: 10px; color: var(--muted); text-align: center; margin-top: 4px;" id="gauge-sub">
-                Working memory load protected under sprint timer
+                <span class="lang-en-only">Working memory load protected under sprint timer</span>
+                <span class="lang-ar-only">حماية الذاكرة العاملة تحت توقيت التمرين القصير</span>
               </div>
             </div>
           </div>
@@ -1717,7 +1868,9 @@
           <!-- Misconceptions Summary -->
           <div style="margin-top: 16px;">
             <div style="font-size: 12px; font-weight: 700; color: var(--astryx-text-contrast); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Active Priority Cognitive Errors (Targeted in Sprints)
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+              <span class="lang-en-only">Active Priority Cognitive Errors (Targeted in Sprints)</span>
+              <span class="lang-ar-only">الأخطاء المعرفية ذات الأولوية (المستهدفة في التمارين)</span>
             </div>
             <div id="misconception-list"></div>
           </div>
@@ -1729,12 +1882,20 @@
         <!-- Recent Worksheet Scorecard -->
         <div class="card">
           <div class="card-header">
-            <h2 class="flex items-center gap-1.5"><i data-lucide="file-check-2" class="w-4 h-4 text-emerald-400"></i> Latest Intake Scorecard</h2>
-            <span class="badge badge-green">Passed</span>
+            <h2 class="flex items-center gap-1.5">
+              <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-400"></i>
+              <span class="lang-en-only">Latest Intake Scorecard</span>
+              <span class="lang-ar-only">بطاقة درجات التقييم الأخير</span>
+            </h2>
+            <span class="badge badge-green">
+              <span class="lang-en-only">Passed</span>
+              <span class="lang-ar-only">تم الاجتياز</span>
+            </span>
           </div>
           <div class="scorecard-banner">
             <div class="top">
-              <span>SCIENCE MIDTERM (UNITS 1.1–1.5)</span>
+              <span class="lang-en-only">SCIENCE MIDTERM (UNITS 1.1–1.5)</span>
+              <span class="lang-ar-only">اختبار منتصف الفصل - علوم (الوحدات ١.١-١.٥)</span>
               <span>ASTEN Y4</span>
             </div>
             <div class="big-score" id="side-score">19 / 20 <span style="font-size: 16px; color: var(--green);">(95%)</span></div>
@@ -1746,7 +1907,9 @@
             <div class="title" id="side-strategy-title">Target: 8 Min Sprint • Visual Chunking</div>
             <div class="desc" id="side-strategy-desc">ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.</div>
             <button class="btn-sprint" onclick="alert('⚡ Compiling tailored 4-page sprint pack via Warm Browser Pool (Approach C)...')">
-              <i data-lucide="zap" class="inline w-4 h-4 mr-1"></i> 🚀 Generate Targeted Practice Pack
+              <i data-lucide="zap" class="inline w-4 h-4 mr-1"></i>
+              <span class="lang-en-only">🚀 Generate Targeted Practice Pack</span>
+              <span class="lang-ar-only">🚀 توليد حزمة تمارين مخصصة</span>
             </button>
           </div>
         </div>
@@ -1754,34 +1917,63 @@
         <!-- Socratic Guide Preview Card -->
         <div class="card">
           <div class="card-header">
-            <h2 class="flex items-center gap-1.5"><i data-lucide="compass" class="w-4 h-4 text-cyan-400"></i> Parent Coaching Script</h2>
-            <span class="badge badge-blue">Socratic</span>
+            <h2 class="flex items-center gap-1.5">
+              <i data-lucide="compass" class="w-4 h-4 text-cyan-400"></i>
+              <span class="lang-en-only">Parent Coaching Script</span>
+              <span class="lang-ar-only">سيناريو الحوار الإرشادي للوالدين</span>
+            </h2>
+            <span class="badge badge-blue">
+              <span class="lang-en-only">Socratic</span>
+              <span class="lang-ar-only">سقراطي</span>
+            </span>
           </div>
           <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">
-            "Imagine our number lives in an apartment with reserved rooms: Ones, Tens, Hundreds, Thousands. If a room has nothing in it, does it disappear, or do we put a 0 guard in the chair?"
+            <span class="lang-en-only">"Imagine our number lives in an apartment with reserved rooms: Ones, Tens, Hundreds, Thousands. If a room has nothing in it, does it disappear, or do we put a 0 guard in the chair?"</span>
+            <span class="lang-ar-only">"تخيلي أن الأرقام تعيش في شقة بغرف محجوزة: آحاد، عشرات، مئات، آلاف. لو الغرفة مفيهاش حد، هل بتختفي، ولا بنحط الصفر حارس على الكرسي؟"</span>
           </div>
           <a href="/guide/preview" target="_blank" style="display: block; text-align: center; background: #1e293b; border: 1px solid #334155; color: var(--cyan); padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none;">
-            🧭 Open Socratic Guide Companion (2-Page A4)
+            <span class="lang-en-only">🧭 Open Socratic Guide Companion (2-Page A4)</span>
+            <span class="lang-ar-only">🧭 فتح دليل التوجيه السقراطي (صفحتان A4)</span>
           </a>
         </div>
 
         <!-- Wave 26: Adaptive Exam Simulator Quick Launch -->
         <div class="card" style="border-left: 3px solid var(--accent-cyan, #06b6d4);">
           <div class="card-header">
-            <h2 class="flex items-center gap-1.5"><i data-lucide="timer" class="w-4 h-4 text-cyan-400"></i> Exam Simulator (Wave 26)</h2>
-            <span class="badge badge-cyan">ADHD Paced</span>
+            <h2 class="flex items-center gap-1.5">
+              <i data-lucide="timer" class="w-4 h-4 text-cyan-400"></i>
+              <span class="lang-en-only">Exam Simulator (Wave 26)</span>
+              <span class="lang-ar-only">محاكي الامتحانات التجريبية</span>
+            </h2>
+            <span class="badge badge-cyan">
+              <span class="lang-en-only">ADHD Paced</span>
+              <span class="lang-ar-only">فترات راحة ADHD</span>
+            </span>
           </div>
           <div style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">
-            High-fidelity Year 4 mock testing environment with sensory-friendly countdowns and 5m "Pause & Breathe" pacing breaks.
+            <span class="lang-en-only">High-fidelity Year 4 mock testing environment with sensory-friendly countdowns and 5m 'Pause & Breathe' pacing breaks.</span>
+            <span class="lang-ar-only">بيئة اختبارات تجريبية مطابقة للصف الرابع مع مؤقتات مريحة للحواس واستراحات تنفس كل ٥ دقائق.</span>
           </div>
           <div style="display: grid; gap: 8px;">
             <a href="/exam/exam_y4_sci_term1?student=lara" target="_blank" style="display: flex; justify-content: space-between; align-items: center; background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--text-primary, #f1f5f9); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none;">
-              <span>🔬 Science Mock: Sound & Matter</span>
-              <span style="color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 11px;">15m • Start →</span>
+              <span>
+                <span class="lang-en-only">🔬 Science Mock: Sound & Matter</span>
+                <span class="lang-ar-only">🔬 امتحان علوم تجريبي: الصوت والمادة</span>
+              </span>
+              <span style="color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+                <span class="lang-en-only">15m • Start →</span>
+                <span class="lang-ar-only">١٥ دقيقة • ابدأ ←</span>
+              </span>
             </a>
             <a href="/exam/exam_y4_math_term1?student=lara" target="_blank" style="display: flex; justify-content: space-between; align-items: center; background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); color: var(--text-primary, #f1f5f9); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none;">
-              <span>📐 Maths Mock: Columns & Fractions</span>
-              <span style="color: var(--purple, #a855f7); font-family: 'JetBrains Mono', monospace; font-size: 11px;">15m • Start →</span>
+              <span>
+                <span class="lang-en-only">📐 Maths Mock: Columns & Fractions</span>
+                <span class="lang-ar-only">📐 امتحان رياضيات تجريبي: الأعمدة والكسور</span>
+              </span>
+              <span style="color: var(--purple, #a855f7); font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+                <span class="lang-en-only">15m • Start →</span>
+                <span class="lang-ar-only">١٥ دقيقة • ابدأ ←</span>
+              </span>
             </a>
           </div>
         </div>
@@ -3423,17 +3615,23 @@
     const studentsData = {
       lara: {
         name: "Lara",
+        nameAr: "لارا",
         meta: "Asten College • Year 4 British Track • ADHD/Dyslexia traits active",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • سمات تشتت الانتباه وعسر القراءة نشطة",
         termAvg: "92%",
         science: "94%",
         maths: "82%",
         english: "88%",
         status: "Mastery Stable (92% Avg)",
+        statusAr: "الإتقان مستقر (متوسط ٩٢٪)",
         score: "19 / 20",
         scorePct: "(95%)",
         eval: "Science Midterm: Mastered skeletons, muscles, and medicines. Working memory slipped on negative scale.",
+        evalAr: "منتصف الفصل لمادة العلوم: إتقان تام للهيكل العظمي والعضلات والأدوية. زلة في الذاكرة العاملة بالأرقام السالبة.",
         strategyTitle: "Target: 8 Min Sprint • Visual Chunking",
+        strategyTitleAr: "الهدف: تمرين ٨ دقائق • تقسيم بصري مكثف",
         strategyDesc: "ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.",
+        strategyDescAr: "سمات تشتت الانتباه نشطة. تقسيم الخانات بصرياً يحمي الذاكرة العاملة للقيمة المكانية أثناء السرعة.",
         radar: [98, 91, 78, 72],
         gaugeVal: 94,
         series: {
@@ -3442,24 +3640,30 @@
           english: [60, 68, 75, 80, 82, 85, 86, 88]
         },
         misconceptions: [
-          { code: "Y4.MATH.NPV.EMPTY_COLUMNS", class: "ERR_PHANTOM_ZERO", desc: "Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)", priority: "orange" },
-          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -4°C as warmer than -1°C", priority: "yellow" },
-          { code: "Y4.MATH.NPV.WRITING_NUMBERS", class: "ERR_TRANSPOSITION", desc: "Transposing digits under time rush (writes 03 for thirty)", priority: "yellow" }
+          { code: "Y4.MATH.NPV.EMPTY_COLUMNS", class: "ERR_PHANTOM_ZERO", desc: "Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)", descAr: "إسقاط الصفر في خانات القيمة المكانية غير المنطوقة (كتابة ٢٤,١٦ بدلاً من ٢٤,١٠٦)", priority: "orange" },
+          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -4°C as warmer than -1°C", descAr: "ترتيب -٤ مئوية على أنها أدفأ من -١ مئوية", priority: "yellow" },
+          { code: "Y4.MATH.NPV.WRITING_NUMBERS", class: "ERR_TRANSPOSITION", desc: "Transposing digits under time rush (writes 03 for thirty)", descAr: "قلب مواقع الأرقام تحت ضغط الوقت (كتابة ٠٣ بدلاً من ثلاثين)", priority: "yellow" }
         ]
       },
       maya: {
         name: "Maya",
+        nameAr: "مايا",
         meta: "Asten College • Year 4 British Track • Verbal strengths & peer teacher",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • مهارات لفظية وتعليم تبادلي",
         termAvg: "94%",
         science: "96%",
         maths: "86%",
         english: "91%",
         status: "Mastery Advanced (94% Avg)",
+        statusAr: "إتقان متقدم (متوسط ٩٤٪)",
         score: "20 / 20",
         scorePct: "(100%)",
         eval: "Science Midterm: Perfect classification keys and vertebrate traits. Clear methodical execution.",
+        evalAr: "منتصف الفصل لمادة العلوم: إتقان تام لمفاتيح التصنيف وصفات الفقاريات. تنفيذ منهجي واضح ومتقن.",
         strategyTitle: "Target: 10 Min Sprint • Verbal Peer Teaching",
+        strategyTitleAr: "الهدف: تمرين ١٠ دقائق • تعليم تبادلي لفظي",
         strategyDesc: "High verbal retention and methodical steps. Explaining concepts aloud to Lara reinforces long-term schemas.",
+        strategyDescAr: "تثبيت لفظي مرتفع وخطوات منهجية. الشرح بصوت عالٍ للارا يعزز الذاكرة المعرفية طويلة المدى.",
         radar: [99, 95, 86, 84],
         gaugeVal: 96,
         series: {
@@ -3468,9 +3672,102 @@
           english: [65, 75, 82, 86, 88, 89, 90, 91]
         },
         misconceptions: [
-          { code: "Y4.MATH.NPV.5DIGIT_ORDERING", class: "ERR_SHARED_PREFIX_ORDERING", desc: "Sequencing 5-digit numbers that share leading prefix digits", priority: "orange" },
-          { code: "Y4.MATH.NPV.NUMBER_LINE_SCALES", class: "ERR_INTERVAL_DECODE", desc: "Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)", priority: "yellow" },
-          { code: "Y4.MATH.NPV.CROSSING_ZERO", class: "ERR_FENCEPOST_COUNT", desc: "Counting the starting tick mark across zero bridge", priority: "yellow" }
+          { code: "Y4.MATH.NPV.5DIGIT_ORDERING", class: "ERR_SHARED_PREFIX_ORDERING", desc: "Sequencing 5-digit numbers that share leading prefix digits", descAr: "ترتيب أعداد ٥ خانات المشتركة في البادئة الأولى", priority: "orange" },
+          { code: "Y4.MATH.NPV.NUMBER_LINE_SCALES", class: "ERR_INTERVAL_DECODE", desc: "Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)", descAr: "عد علامات خط الأعداد بالآحاد بدلاً من قراءة فترات القفز (+٢، +٥، +١٠)", priority: "yellow" },
+          { code: "Y4.MATH.NPV.CROSSING_ZERO", class: "ERR_FENCEPOST_COUNT", desc: "Counting the starting tick mark across zero bridge", descAr: "احتساب نقطة البداية عند عبور جسر الصفر", priority: "yellow" }
+        ]
+      },
+      youssef: {
+        name: "Youssef",
+        nameAr: "يوسف",
+        meta: "Asten College • Year 4 British Track • Spatial & Visual Strengths",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • نقاط قوة بصرية وفراغية",
+        termAvg: "89%",
+        science: "91%",
+        maths: "84%",
+        english: "92%",
+        status: "Mastery Progressing (89% Avg)",
+        statusAr: "تقدم مستمر (متوسط ٨٩٪)",
+        score: "18 / 20",
+        scorePct: "(90%)",
+        eval: "Maths & Geometry: Excellent spatial reasoning. Multi-digit column alignment requires visual grid frames.",
+        evalAr: "الرياضيات والهندسة: إدراك فراغي ممتاز. محاذاة أعمدة الأرقام المتعددة تتطلب شبكات بصرية محددة.",
+        strategyTitle: "Target: 8 Min Sprint • Visual Grid Scaffolding",
+        strategyTitleAr: "الهدف: تمرين ٨ دقائق • شبكات بصرية محددة الأعمدة",
+        strategyDesc: "Visual grids prevent column drift. Scaffolding place-value boxes reinforces standard arithmetic procedures.",
+        strategyDescAr: "الشبكات البصرية تمنع انزلاق الأعمدة. تدعيم مربعات القيمة المكانية يعزز دقة الحساب القياسي.",
+        radar: [88, 92, 85, 76],
+        gaugeVal: 89,
+        series: {
+          science: [50, 62, 70, 78, 82, 85, 88, 91],
+          maths:   [40, 52, 60, 68, 74, 78, 80, 84],
+          english: [58, 68, 76, 82, 85, 88, 90, 92]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.COL.REGROUP", class: "ERR_COLUMN_DRIFT", desc: "Misaligning borrowed tens into hundreds column under fast writing", descAr: "انزلاق العشرات المستلفة إلى خانة المئات أثناء الكتابة السريعة", priority: "orange" },
+          { code: "Y4.SCI.LGT.SHADOW", class: "ERR_SHADOW_ORIENTATION", desc: "Projecting shadow length without accounting for light source angle", descAr: "تحديد طول الظل دون حساب زاوية سقوط مصدر الضوء", priority: "yellow" }
+        ]
+      },
+      omar: {
+        name: "Omar",
+        nameAr: "عمر",
+        meta: "Asten College • Year 4 British Track • High Processing Speed & Fluency",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • سرعة معالجة عالية وطلاقة حسابية",
+        termAvg: "91%",
+        science: "93%",
+        maths: "88%",
+        english: "92%",
+        status: "Mastery Advanced (91% Avg)",
+        statusAr: "إتقان متقدم (متوسط ٩١٪)",
+        score: "19 / 20",
+        scorePct: "(95%)",
+        eval: "Maths Fluency: Rapid mental calculation speed. Rushing leads to inversions on negative temperature scales.",
+        evalAr: "الطلاقة الحسابية: سرعة فائقة في الحساب الذهني. التسرع يؤدي لقلب ترتيب درجات الحرارة السالبة.",
+        strategyTitle: "Target: 5 Min Sprint • Calibrated Pacing Timer",
+        strategyTitleAr: "الهدف: تمرين ٥ دقائق • مؤقت لضبط وتيرة الحل والتأني",
+        strategyDesc: "High retrieval velocity benefits from intentional 30s pause checkpoints before submitting final steps.",
+        strategyDescAr: "السرعة العالية تستفيد من وقفات تأملية مدتها ٣٠ ثانية قبل اعتماد الخطوات النهائية.",
+        radar: [92, 88, 94, 82],
+        gaugeVal: 91,
+        series: {
+          science: [55, 68, 75, 82, 86, 89, 91, 93],
+          maths:   [48, 60, 68, 75, 80, 84, 86, 88],
+          english: [62, 72, 80, 85, 88, 89, 90, 92]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -5°C as warmer than -2°C due to fast magnitude scanning", descAr: "ترتيب -٥ مئوية على أنها أدفأ من -٢ مئوية بسبب مسح الأرقام سريعاً", priority: "orange" },
+          { code: "Y4.ENG.SPL.PREFIX_DIS", class: "ERR_PREFIX_DOUBLE_LETTER", desc: "Omitting prefix letter duplication in dissolve and disappoint", descAr: "إسقاط تكرار حرف البادئة في الكلمات الإنجليزية المركبة", priority: "yellow" }
+        ]
+      },
+      nour: {
+        name: "Nour",
+        nameAr: "نور",
+        meta: "Asten College • Year 4 British Track • Verbal & Analytical Logic Strengths",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • مهارات تحليلية ومنطقية استثنائية",
+        termAvg: "95%",
+        science: "97%",
+        maths: "91%",
+        english: "97%",
+        status: "Mastery Exemplary (95% Avg)",
+        statusAr: "إتقان استثنائي (متوسط ٩٥٪)",
+        score: "20 / 20",
+        scorePct: "(100%)",
+        eval: "English & Science: Outstanding analytical comprehension. Building automaticity on fraction wall representations.",
+        evalAr: "اللغة والعلوم: فهم تحليلي فائق للنصوص المعقدة. تعمل على ترسيخ الطلاقة في حائط الكسور المتكافئة.",
+        strategyTitle: "Target: 10 Min Sprint • Deep Socratic Inquiry",
+        strategyTitleAr: "الهدف: تمرين ١٠ دقائق • استقصاء وحوار سقراطي عميق",
+        strategyDesc: "Thrives on why questions. Connecting fractions to physical measurement scales cements deep conceptual models.",
+        strategyDescAr: "تزدهر مع أسئلة 'لماذا وكيف'. ربط الكسور بمقاييس القياس الفيزيائية يرسخ النماذج المعرفية العميقة.",
+        radar: [98, 96, 92, 90],
+        gaugeVal: 95,
+        series: {
+          science: [65, 78, 85, 89, 92, 94, 96, 97],
+          maths:   [55, 68, 76, 82, 85, 88, 90, 91],
+          english: [70, 82, 88, 91, 93, 95, 96, 97]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.FRAC.EQUIV", class: "ERR_FRACTION_SIMPLIFY_SPEED", desc: "Simplifying 2/4 to 1/2 under mental time rush", descAr: "تبسيط ٢/٤ إلى ١/٢ تحت ضغط الوقت الذهني السريع", priority: "yellow" },
+          { code: "Y4.SCI.MAT.STATE", class: "ERR_VAPOR_VISIBILITY", desc: "Conflating visible steam droplet clouds with invisible water vapor gas", descAr: "الخلط بين قطرات البخار السحابية المرئية وغاز بخار الماء غير المرئي", priority: "yellow" }
         ]
       }
     };

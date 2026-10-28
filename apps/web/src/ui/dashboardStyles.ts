@@ -112,6 +112,8 @@ export function renderDashboardStyles(): string {
   }
 
   .portal-dropdown-btn {
+    height: 32px;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -120,7 +122,7 @@ export function renderDashboardStyles(): string {
     color: var(--astryx-text-contrast);
     font-size: 11px;
     font-weight: 700;
-    padding: 5px 10px;
+    padding: 0 12px;
     border-radius: var(--astryx-radius-md);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -200,9 +202,13 @@ export function renderDashboardStyles(): string {
   }
 
   .badge-tag {
+    height: 32px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
     background: var(--card-elevated);
     border: 1px solid var(--astryx-border-subtle);
-    padding: 6px 14px;
+    padding: 0 12px;
     border-radius: var(--astryx-radius-md);
     font-size: 12px;
     font-weight: 600;
@@ -217,13 +223,15 @@ export function renderDashboardStyles(): string {
 
   /* Toolbar Actions Group */
   .toolbar-actions-group {
+    height: 32px;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     gap: 4px;
     background: var(--card-elevated);
     border: 1px solid var(--astryx-border-subtle);
     border-radius: var(--astryx-radius-md);
-    padding: 3px 4px;
+    padding: 2px 4px;
   }
 
   /* Compact Theme Switcher Button (Icon Only: ☀️ Sun / 🌙 Moon) */
@@ -231,8 +239,8 @@ export function renderDashboardStyles(): string {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     padding: 0;
     border-radius: var(--astryx-radius-sm);
     background: transparent;
@@ -252,9 +260,10 @@ export function renderDashboardStyles(): string {
   .lang-toggle-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
-    padding: 4px 10px;
-    height: 32px;
+    padding: 0 8px;
+    height: 26px;
     border-radius: var(--astryx-radius-sm);
     background: transparent;
     border: 1px solid transparent;
@@ -286,10 +295,16 @@ export function renderDashboardStyles(): string {
     margin-left: 0;
   }
   html[dir="rtl"] .nav-tabs {
-    flex-direction: row-reverse;
+    flex-direction: row;
+    justify-content: flex-start;
   }
   html[dir="rtl"] .student-scope-bar {
-    flex-direction: row-reverse;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  html[dir="rtl"] .student-pills {
+    flex-direction: row;
+    justify-content: flex-start;
   }
 
   /* Strict Language Isolation Utilities */
@@ -314,6 +329,60 @@ export function renderDashboardStyles(): string {
   body.lang-ar span.lang-en-only, html[dir="rtl"] span.lang-en-only,
   body.lang-ar strong.lang-en-only, html[dir="rtl"] strong.lang-en-only {
     display: none !important;
+  }
+
+  /* Sub-Nav Breadcrumb directly below Universal Locked Top Bar */
+  .sub-nav-breadcrumb {
+    background: var(--card-bg, #111827);
+    border-bottom: 1px solid var(--astryx-border-subtle, #1f2937);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    position: sticky;
+    top: 61px;
+    z-index: 90;
+    backdrop-filter: blur(12px);
+  }
+  .breadcrumb-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .breadcrumb-return-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted, #94a3b8);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 5px 12px;
+    background: var(--card-elevated, #1e293b);
+    border: 1px solid var(--astryx-border-subtle, #334155);
+    border-radius: var(--astryx-radius-sm, 6px);
+    transition: all 0.15s ease;
+  }
+  .breadcrumb-return-btn:hover {
+    color: var(--cyan, #06b6d4);
+    border-color: var(--cyan, #06b6d4);
+    background: rgba(6, 182, 212, 0.12);
+  }
+  .breadcrumb-sep {
+    color: var(--muted, #64748b);
+  }
+  .breadcrumb-current {
+    color: var(--astryx-text-contrast, #f1f5f9);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  html[dir="rtl"] .sub-nav-breadcrumb {
+    direction: rtl;
+    text-align: right;
+  }
+  html[dir="rtl"] .breadcrumb-container {
+    flex-direction: row;
   }
 
   /* Nav Tabs */
