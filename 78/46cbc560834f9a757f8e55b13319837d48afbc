@@ -1,0 +1,20 @@
+apps/web/public/index.html
+  h_cdd764b4030252 1549-1592
+apps/web/src/server.ts
+  h_cdd764b4030252 7,351-377
+apps/web/src/ui/tabGapLedger.ts
+  h_cdd764b4030252 27-70
+apps/web/test/server.test.ts
+  h_cdd764b4030252 94-112,114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7846cbc560834f9a757f8e55b13319837d48afbc",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
