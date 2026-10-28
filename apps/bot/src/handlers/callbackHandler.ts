@@ -53,31 +53,32 @@ export async function handleCallbackQuery(
       const comparativeCard =
         `📊 <b>Comparative Academic Snapshot • All Children</b>\n` +
         `👨‍👧‍👧 <i>Family Overview: Lara & Maya (Year 4)</i>\n\n` +
-        `🎯 <b>OVERALL DIMENSIONS</b>\n` +
-        `• <b>Lara:</b> 94% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> | Velocity: +14% 🚀\n` +
-        `  ↳ <i>Active Blocker:</i> <code>Y4.SCI.SND.MEDIUM</code> (Sound Transmission)\n` +
-        `  ↳ <i>Focus Mode:</i> 8m visual sprint • elevator model active\n\n` +
-        `• <b>Maya:</b> 96% 🟢 <code>[▰▰▰▰▰▰▰▰▰▰]</code> | Velocity: +11% 🚀\n` +
-        `  ↳ <i>Active Blocker:</i> <code>Y4.MATH.NPV.5DIGIT</code> (Prefix Ordering)\n` +
-        `  ↳ <i>Focus Mode:</i> 10m verbal sprint • peer teaching role\n\n` +
-        `📚 <b>SUBJECT-BY-SUBJECT BREAKDOWN</b>\n` +
-        `🔬 <b>Science:</b>\n` +
-        `  • Lara: 94% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Mastered)\n` +
-        `  • Maya: 96% 🟢 <code>[▰▰▰▰▰▰▰▰▰▰]</code> (Mastered)\n\n` +
-        `📐 <b>Maths:</b>\n` +
-        `  • Lara: 82% 🟡 <code>[▰▰▰▰▰▰▰▱▱▱]</code> (Place Value)\n` +
-        `  • Maya: 86% 🟡 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Number Lines)\n\n` +
-        `📖 <b>English:</b>\n` +
-        `  • Lara: 88% 🟢 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Spelling/Grammar)\n` +
-        `  • Maya: 91% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Reading/Vocab)\n\n` +
-        `💡 <b>Family Learning Synergy:</b>\n` +
-        `• Maya's verbal articulation pairs effectively with Lara's visual synthesis during shared practice sprints.`;
+        `<pre>\n` +
+        `┌──────────────┬────────┬────────┐\n` +
+        `│ Dimension    │  Lara  │  Maya  │\n` +
+        `├──────────────┼────────┼────────┤\n` +
+        `│ Overall Mast.│ 94% 🟢 │ 96% 🟢 │\n` +
+        `│ Learn. Vel.  │ +14% 🚀│ +11% 🚀│\n` +
+        `│ Conf. Index  │  91%   │  95%   │\n` +
+        `│ Sprint Mode  │ 8m Vis │10m Vrb │\n` +
+        `├──────────────┴────────┴────────┤\n` +
+        `│ SUBJECT MASTERY BREAKDOWN      │\n` +
+        `├──────────────┬────────┬────────┤\n` +
+        `│ 🔬 Science   │ 94% 🟢 │ 96% 🟢 │\n` +
+        `│ 📐 Maths     │ 82% 🟡 │ 86% 🟡 │\n` +
+        `│ 📖 English   │ 88% 🟢 │ 91% 🟢 │\n` +
+        `└──────────────┴────────┴────────┘\n` +
+        `</pre>\n\n` +
+        `⚠️ <b>Active Cognitive Priority:</b>\n` +
+        `• <b>Lara:</b> <code>Y4.SCI.SND.MEDIUM</code> (Sound Transmission)\n` +
+        `• <b>Maya:</b> <code>Y4.MATH.NPV.5DIGIT</code> (5-Digit Prefix Ordering)\n\n` +
+        `💡 <i>Tap a child below to view individual diagnostic ledger:</i>`;
 
       const comparativeKeyboard = {
         inline_keyboard: [
           [
-            { text: '👧 Lara Individual Card', callback_data: 'view_progress:lara' },
-            { text: '👧 Maya Individual Card', callback_data: 'view_progress:maya' },
+            { text: '👧 Lara Diagnostic Card', callback_data: 'view_progress:lara' },
+            { text: '👧 Maya Diagnostic Card', callback_data: 'view_progress:maya' },
           ],
           [
             { text: '📱 Open AIM Console', web_app: { url: 'https://aim.getvintel.com' } },
@@ -100,34 +101,48 @@ export async function handleCallbackQuery(
     const progressCard = isMaya
       ? `📊 <b>Maya's Academic Mastery Snapshot (Year 4)</b>\n` +
         `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
-        `🎯 <b>Curriculum Mastery Trajectory:</b>\n` +
-        `• <b>Science (Midterm):</b> 96% 🟢 <code>[▰▰▰▰▰▰▰▰▰▰]</code> (Mastered)\n` +
-        `• <b>English (Reading/Vocab):</b> 91% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Solid)\n` +
-        `• <b>Maths (Place Value):</b> 86% 🟡 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Scale Focus)\n\n` +
-        `📈 <b>Weekly Learning Velocity (Weeks 1–8):</b>\n` +
-        `<code>W1: 60% ▰▰▰▰▰▱▱▱▱▱ (Intake)</code>\n` +
-        `<code>W4: 85% ▰▰▰▰▰▰▰▰▱▱ (Threshold)</code>\n` +
-        `<code>W8: 96% ▰▰▰▰▰▰▰▰▰▰ (Midterm Peak) 🚀</code>\n\n` +
+        `<pre>\n` +
+        `┌──────────────┬─────┬───┬──────────────┐\n` +
+        `│ Subject      │ %   │St.│ Trajectory   │\n` +
+        `├──────────────┼─────┼───┼──────────────┤\n` +
+        `│ 🔬 Science   │ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
+        `│ 📐 Maths     │ 86% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+        `│ 📖 English   │ 91% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+        `├──────────────┴─────┴───┴──────────────┤\n` +
+        `│ LEARNING VELOCITY (WEEKS 1–8)         │\n` +
+        `├──────────────┬─────┬───┬──────────────┤\n` +
+        `│ W1 Intake    │ 60% │ 🟡│ [▰▰▰▰▰▱▱▱▱▱] │\n` +
+        `│ W4 Threshold │ 85% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+        `│ W8 Midterm   │ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
+        `└──────────────┴─────┴───┴──────────────┘\n` +
+        `</pre>\n\n` +
         `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
-        `🟠 <code>Y4.MATH.NPV.5DIGIT_ORDERING</code> (<code>ERR_SHARED_PREFIX_ORDERING</code>) — Sequencing 5-digit numbers sharing prefix (1x)\n` +
-        `🟡 <code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code> (<code>ERR_INTERVAL_DECODE</code>) — Decoding interval jump sizes (1x)\n\n` +
+        `🟠 <code>Y4.MATH.NPV.5DIGIT_ORDERING</code> (<code>ERR_SHARED_PREFIX_ORDERING</code>) — 1x\n` +
+        `🟡 <code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code> (<code>ERR_INTERVAL_DECODE</code>) — 1x\n\n` +
         `💡 <b>Sprint Strategy:</b>\n` +
         `• Target: ${duration} (${traits})\n` +
         `• Peer Teaching: Explaining concepts to Lara solidifies retention.`
       : `📊 <b>Lara's Academic Mastery Snapshot (Year 4)</b>\n` +
         `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
-        `🎯 <b>Curriculum Mastery Trajectory:</b>\n` +
-        `• <b>Science (Midterm):</b> 94% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Mastered)\n` +
-        `• <b>English (Spelling/Grammar):</b> 88% 🟢 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Stable)\n` +
-        `• <b>Maths (Place Value):</b> 82% 🟡 <code>[▰▰▰▰▰▰▰▱▱▱]</code> (Elevator Active)\n\n` +
-        `📈 <b>Weekly Learning Velocity (Weeks 1–8):</b>\n` +
-        `<code>W1: 52% ▰▰▰▰▱▱▱▱▱▱ (Intake Baseline)</code>\n` +
-        `<code>W4: 80% ▰▰▰▰▰▰▰▰▱▱ (Mastery Threshold)</code>\n` +
-        `<code>W8: 94% ▰▰▰▰▰▰▰▰▰▱ (Midterm Stable) 🚀</code>\n\n` +
+        `<pre>\n` +
+        `┌──────────────┬─────┬───┬──────────────┐\n` +
+        `│ Subject      │ %   │St.│ Trajectory   │\n` +
+        `├──────────────┼─────┼───┼──────────────┤\n` +
+        `│ 🔬 Science   │ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+        `│ 📐 Maths     │ 82% │ 🟡│ [▰▰▰▰▰▰▰▱▱▱] │\n` +
+        `│ 📖 English   │ 88% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+        `├──────────────┴─────┴───┴──────────────┤\n` +
+        `│ LEARNING VELOCITY (WEEKS 1–8)         │\n` +
+        `├──────────────┬─────┬───┬──────────────┤\n` +
+        `│ W1 Baseline  │ 52% │ 🔴│ [▰▰▰▰▱▱▱▱▱▱] │\n` +
+        `│ W4 Threshold │ 80% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+        `│ W8 Midterm   │ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+        `└──────────────┴─────┴───┴──────────────┘\n` +
+        `</pre>\n\n` +
         `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
-        `🟠 <code>Y4.MATH.NPV.EMPTY_COLUMNS</code> (<code>ERR_PHANTOM_ZERO</code>) — Omits zero in unmentioned place-value rooms (3x)\n` +
-        `🟡 <code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code> (<code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code>) — Orders -4°C as warmer than -1°C (2x)\n` +
-        `🟡 <code>Y4.MATH.NPV.WRITING_NUMBERS</code> (<code>ERR_TRANSPOSITION</code>) — Transposing digits under rush (2x)\n\n` +
+        `🟠 <code>Y4.MATH.NPV.EMPTY_COLUMNS</code> (<code>ERR_PHANTOM_ZERO</code>) — 3x\n` +
+        `🟡 <code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code> (<code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code>) — 2x\n` +
+        `🟡 <code>Y4.MATH.NPV.WRITING_NUMBERS</code> (<code>ERR_TRANSPOSITION</code>) — 2x\n\n` +
         `💡 <b>Sprint Strategy:</b>\n` +
         `• Target: ${duration} (${traits})\n` +
         `• Scaffold: Elevator model & place-value rooms protect working memory.`;
