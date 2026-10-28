@@ -19,3 +19,4 @@ export * from './curriculum/MultiSubjectCurriculumService.js';
 export * from './curriculum/CohortAnalyticsEngine.js';
 export * from './curriculum/CurriculumDependencyGraph.js';
 export * from './decay/CognitiveDecayEngine.js';
+export * from './school/SchoolMisSyncEngine.js';

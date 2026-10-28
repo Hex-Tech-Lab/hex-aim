@@ -110,5 +110,45 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(Array.isArray(data.queue)).toBe(true);
     expect(data.queue[0].recommendedDurationMins).toBe(8); // Lara 8m ADHD micro-sprint
   });
+
+  it('GET /api/school/telemetry/:schoolId returns real-time MIS status', async () => {
+    const res = await fetch(`${baseUrl}/api/school/telemetry/asten-college`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.schoolId).toBe('asten-college');
+    expect(data.isOnline).toBe(true);
+    expect(data.provider).toBe('sims');
+    expect(Array.isArray(data.activeClassworkLinks)).toBe(true);
+  });
+
+  it('GET /api/school/submissions lists ingested classwork papers', async () => {
+    const res = await fetch(`${baseUrl}/api/school/submissions?studentId=lara`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.count).toBeGreaterThan(0);
+    expect(data.submissions[0].studentId).toBe('lara');
+    expect(data.submissions[0].teacherComments).toBeDefined();
+  });
+
+  it('POST /api/school/push-remediation pushes completed home results to gradebook', async () => {
+    const res = await fetch(`${baseUrl}/api/school/push-remediation`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        submissionId: 'sub_asten_y4_sci_w8_lara',
+        studentId: 'lara',
+        schoolId: 'asten-college',
+        remediationSprintId: 'sprint_lara_sci_w8',
+        resolvedConcepts: ['Y4.SCI.SND.MEDIUM'],
+        postRemediationScore: 94,
+        homeFeedbackNotes: 'Completed Socratic sprint with Dad'
+      })
+    });
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.synced).toBe(true);
+    expect(data.confirmationCode).toContain('MIS-SYNC-ASTEN-COLLEGE');
+  });
 });
+
 

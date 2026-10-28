@@ -67,6 +67,36 @@ export function renderInfraGateTab(): string {
       </div>
     </div>
 
+    <!-- Wave 23: 2-Way School MIS Integration & Live Gradebook Sync -->
+    <div class="card" style="border-left: 4px solid var(--accent-cyan, #06b6d4); margin-top: 24px;">
+      <div class="card-header">
+        <div>
+          <h2>🏫 Wave 23: 2-Way School MIS Integration & Real-Time Sync</h2>
+          <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-muted, #94a3b8);">Bi-directional live connector with Asten College SIMS & Google Classroom. Ingests teacher-marked test papers and syncs home Socratic remediation results back to school gradebooks.</p>
+        </div>
+        <span class="badge badge-green">2-Way Live Sync Active</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 12px;">
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Partner School</span>
+          <span class="val"><strong>Asten College • Cairo</strong> (British Primary Division)</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">MIS Protocol Provider</span>
+          <span class="val"><span class="badge badge-cyan">SIMS + Google Classroom</span> (Live Webhooks)</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Bi-Directional Telemetry</span>
+          <span class="val">🟢 Ingests Classwork Scans ➔ Pushes Socratic Remediation Deltas</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Gradebook Endpoint</span>
+          <span class="val"><code>https://sims.astencollege.com/api/v1/gradebook-sync</code></span>
+        </div>
+      </div>
+    </div>
+
     <!-- Interactive Intake & Strike Simulator -->
     <div class="card">
       <div class="card-header">
