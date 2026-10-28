@@ -47,6 +47,51 @@ export async function handleCallbackQuery(
   // 2.5 On-Demand Student Mastery & Progress Snapshot Card
   else if (callbackData.startsWith('view_progress:')) {
     const [, studentId] = callbackData.split(':');
+    const isAll = studentId?.toLowerCase() === 'all';
+
+    if (isAll) {
+      const comparativeCard =
+        `📊 <b>Comparative Academic Snapshot • All Children</b>\n` +
+        `👨‍👧‍👧 <i>Family Overview: Lara & Maya (Year 4)</i>\n\n` +
+        `🎯 <b>OVERALL DIMENSIONS</b>\n` +
+        `• <b>Lara:</b> 94% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> | Velocity: +14% 🚀\n` +
+        `  ↳ <i>Active Blocker:</i> <code>Y4.SCI.SND.MEDIUM</code> (Sound Transmission)\n` +
+        `  ↳ <i>Focus Mode:</i> 8m visual sprint • elevator model active\n\n` +
+        `• <b>Maya:</b> 96% 🟢 <code>[▰▰▰▰▰▰▰▰▰▰]</code> | Velocity: +11% 🚀\n` +
+        `  ↳ <i>Active Blocker:</i> <code>Y4.MATH.NPV.5DIGIT</code> (Prefix Ordering)\n` +
+        `  ↳ <i>Focus Mode:</i> 10m verbal sprint • peer teaching role\n\n` +
+        `📚 <b>SUBJECT-BY-SUBJECT BREAKDOWN</b>\n` +
+        `🔬 <b>Science:</b>\n` +
+        `  • Lara: 94% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Mastered)\n` +
+        `  • Maya: 96% 🟢 <code>[▰▰▰▰▰▰▰▰▰▰]</code> (Mastered)\n\n` +
+        `📐 <b>Maths:</b>\n` +
+        `  • Lara: 82% 🟡 <code>[▰▰▰▰▰▰▰▱▱▱]</code> (Place Value)\n` +
+        `  • Maya: 86% 🟡 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Number Lines)\n\n` +
+        `📖 <b>English:</b>\n` +
+        `  • Lara: 88% 🟢 <code>[▰▰▰▰▰▰▰▰▱▱]</code> (Spelling/Grammar)\n` +
+        `  • Maya: 91% 🟢 <code>[▰▰▰▰▰▰▰▰▰▱]</code> (Reading/Vocab)\n\n` +
+        `💡 <b>Family Learning Synergy:</b>\n` +
+        `• Maya's verbal articulation pairs effectively with Lara's visual synthesis during shared practice sprints.`;
+
+      const comparativeKeyboard = {
+        inline_keyboard: [
+          [
+            { text: '👧 Lara Individual Card', callback_data: 'view_progress:lara' },
+            { text: '👧 Maya Individual Card', callback_data: 'view_progress:maya' },
+          ],
+          [
+            { text: '📱 Open AIM Console', web_app: { url: 'https://aim.getvintel.com' } },
+            { text: '↩️ Back to Menu', callback_data: 'open_main_menu' }
+          ]
+        ]
+      };
+
+      await sendAndTrack(cbChatId, comparativeCard, undefined, comparativeKeyboard);
+      return new Response(JSON.stringify({ ok: true, action: 'progress_all_rendered' }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const isMaya = studentId?.toLowerCase() === 'maya';
     const studentName = isMaya ? 'Maya' : 'Lara';
     const duration = isMaya ? '10 min' : '8 min';
