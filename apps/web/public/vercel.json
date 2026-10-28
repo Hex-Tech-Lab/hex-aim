@@ -1,8 +1,15 @@
 {
   "cleanUrls": true,
-  "routes": [
-    { "src": "^/sprint(/.*)?$", "dest": "/sprint/preview.html" },
-    { "src": "^/guide(/.*)?$", "dest": "/guide/preview.html" }
+  "rewrites": [
+    { "source": "/school/asten-college", "destination": "/school/asten-college.html" },
+    { "source": "/school/:path*", "destination": "/school/asten-college.html" },
+    { "source": "/exam/exam_y4_sci_term1", "destination": "/exam/exam_y4_sci_term1.html" },
+    { "source": "/exam/exam_y4_math_term1", "destination": "/exam/exam_y4_math_term1.html" },
+    { "source": "/exam/:path*", "destination": "/exam/exam_y4_sci_term1.html" },
+    { "source": "/sprint/preview", "destination": "/sprint/preview.html" },
+    { "source": "/guide/preview", "destination": "/guide/preview.html" },
+    { "source": "/sprint/:path*", "destination": "/sprint/preview.html" },
+    { "source": "/guide/:path*", "destination": "/guide/preview.html" }
   ],
   "headers": [
     {

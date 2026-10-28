@@ -6,33 +6,8 @@ import { purgeAndResetSession, resetSessionOnly, getChatLanguage, setChatLanguag
 import { handleDiagRoutes } from './handlers/diagHandler.js';
 import { handleVoiceMessage } from './handlers/voiceHandler.js';
 
-export const PERSISTENT_REPLY_KEYBOARD_EN = {
-  keyboard: [
-    [
-      { text: '🎛️ Menu' },
-      { text: '📊 Progress' },
-      { text: '🌐 En/Ar' },
-      { text: '📱 Cons.', web_app: { url: 'https://aim.getvintel.com' } }
-    ]
-  ],
-  resize_keyboard: true,
-  is_persistent: true,
-};
-
-export const PERSISTENT_REPLY_KEYBOARD_AR = {
-  keyboard: [
-    [
-      { text: '🎛️ القائمة' },
-      { text: '📊 التقدم' },
-      { text: '🌐 En/Ar' },
-      { text: '📱 اللوحة', web_app: { url: 'https://aim.getvintel.com' } }
-    ]
-  ],
-  resize_keyboard: true,
-  is_persistent: true,
-};
-
-export const PERSISTENT_REPLY_KEYBOARD = PERSISTENT_REPLY_KEYBOARD_EN;
+export { PERSISTENT_REPLY_KEYBOARD_EN, PERSISTENT_REPLY_KEYBOARD_AR, PERSISTENT_REPLY_KEYBOARD } from './keyboards.js';
+import { PERSISTENT_REPLY_KEYBOARD_EN, PERSISTENT_REPLY_KEYBOARD_AR } from './keyboards.js';
 
 export interface Env {
   STORAGE_PROVIDER?: string;
@@ -238,14 +213,24 @@ export default {
           });
         }
 
-        // 2.8 Language Switching Command (/lang, /language, /ar, /en, "🌐 En/Ar", "🌐 اللغة")
-        const isLangCommand = text.startsWith('/lang') || text.startsWith('/language') || text.startsWith('/ar') || text.startsWith('/en') || /^(🌐|\s*🌐\s*(?:en\s*\/\s*ar|en\/ar|ar|en|اللغة)\s*)$/i.test(text.trim()) || text.includes('En/Ar') || text.includes('اللغة');
+        // 2.8 Language Switching Command (/lang, /language, /ar, /en, "🌐 العربية 🇪🇬", "🌐 English 🇬🇧", "🌐 En/Ar")
+        const isLangCommand =
+          text.startsWith('/lang') ||
+          text.startsWith('/language') ||
+          text.startsWith('/ar') ||
+          text.startsWith('/en') ||
+          text.includes('العربية') ||
+          text.includes('English') ||
+          text.includes('En/Ar') ||
+          text.includes('اللغة') ||
+          /^(🌐|\s*🌐\s*(?:english|العربية|en\s*\/\s*ar|en\/ar|ar|en|اللغة)\s*)$/i.test(text.trim());
+
         if (isLangCommand) {
           const currentLang = await getChatLanguage(storage, chatId);
           let newLang: 'en' | 'ar';
-          if (text.startsWith('/ar')) {
+          if (text.startsWith('/ar') || text.includes('العربية')) {
             newLang = 'ar';
-          } else if (text.startsWith('/en')) {
+          } else if (text.startsWith('/en') || text.includes('English')) {
             newLang = 'en';
           } else {
             newLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -254,22 +239,12 @@ export default {
 
           const isAr = newLang === 'ar';
           const confirmText = isAr
-            ? `🌐 تم تفعيل اللغة <b>العربية 🇪🇬</b> بنجاح!\n(Language switched to Arabic)`
-            : `🌐 Language switched to <b>English 🇬🇧</b> successfully!\n(تم تفعيل اللغة الإنجليزية)`;
+            ? `🌐 تم تفعيل اللغة <b>العربية 🇪🇬</b> بنجاح!`
+            : `🌐 Language switched to <b>English 🇬🇧</b> successfully!`;
 
-          const langChoiceKeyboard = {
-            inline_keyboard: [
-              [
-                { text: isAr ? '🇬🇧 Switch to English' : '🇬🇧 English (Active ✓)', callback_data: 'set_lang:en' },
-                { text: isAr ? '🇪🇬 العربية (مفعلة ✓)' : '🇪🇬 تبديل إلى العربية', callback_data: 'set_lang:ar' },
-              ],
-              [
-                { text: isAr ? '🎛️ القائمة الرئيسية' : '🎛️ Main Menu', callback_data: 'open_main_menu' }
-              ]
-            ]
-          };
-
-          await sendAndTrack(chatId, confirmText, messageId, langChoiceKeyboard);
+          // Explicitly deliver the persistent reply keyboard so Telegram client immediately swaps bottom buttons
+          const targetReplyKeyboard = isAr ? PERSISTENT_REPLY_KEYBOARD_AR : PERSISTENT_REPLY_KEYBOARD_EN;
+          await messaging.sendMessage(chatId, confirmText, messageId, targetReplyKeyboard);
 
           if (messaging.sendInteractiveMenu) {
             await messaging.sendInteractiveMenu(chatId, undefined, newLang);
@@ -279,6 +254,7 @@ export default {
             headers: { 'Content-Type': 'application/json' },
           });
         }
+
 
         // 3. Menu and Control Commands
         const isMenuCommand = text.startsWith('/menu') || /^(\/?menu|🎛️|\s*🎛️\s*(?:menu|القائمة)\s*)$/i.test(text.trim()) || text.includes('Menu') || text.includes('القائمة');
