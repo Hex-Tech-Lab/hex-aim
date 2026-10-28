@@ -79,6 +79,33 @@ export default {
     const diagResponse = await handleDiagRoutes(url, env);
     if (diagResponse) return diagResponse;
 
+    // API endpoint for AGY session to acknowledge instructions or send system receipts
+    if (url.pathname === '/api/telegram/acknowledge' && request.method === 'POST') {
+      try {
+        const body = await request.json() as any;
+        const { chatId = '5055012900', taskNumber, summary, action = 'In Progress' } = body;
+        const messaging = env.TELEGRAM_BOT_TOKEN 
+          ? new TelegramMessagingAdapter({ botToken: env.TELEGRAM_BOT_TOKEN }) 
+          : MessagingFactory.getMessaging();
+
+        const ackText = `🫡 <b>AGY Session Acknowledged Receipt:</b>\n\n` +
+          `📌 <b>Task #:</b> <code>${taskNumber || 'AGY-TASK'}</code>\n` +
+          `⚡ <b>Status:</b> ${action}\n` +
+          `📝 <b>Plan:</b> ${summary}\n\n` +
+          `⏱️ <i>Received and scheduled by AGY agent session.</i>`;
+
+        const res = await messaging.sendMessage(chatId, ackText);
+        return new Response(JSON.stringify({ ok: true, result: res }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ ok: false, error: err?.message || String(err) }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     // Telegram Webhook Intake
     if (url.pathname === '/webhook/telegram' && request.method === 'POST') {
       try {
@@ -153,11 +180,14 @@ export default {
             recentTurns = await storage.getRecentChatTurns(chatId, 5);
           }
 
+          const taskNumber = `TASK-${Date.now().toString().slice(-4)}`;
           const item = {
+            taskNumber,
             chatId,
             instruction: instructionText,
             timestamp: new Date().toISOString(),
             recentTurns,
+            status: 'pending_agent_session',
           };
 
           if (redisStorage.redis) {
@@ -165,17 +195,17 @@ export default {
             await redisStorage.redis.rpush('aim:instructions:log', item);
           }
 
-          console.log(`[Worker] AGY Instruction logged from ${chatId}: "${instructionText}" with ${recentTurns.length} recent context turns`);
+          console.log(`[Worker] AGY Instruction logged from ${chatId} (${taskNumber}): "${instructionText}" with ${recentTurns.length} recent context turns`);
 
           await sendAndTrack(chatId,
-            `📝 <b>Instruction Logged for AGY with Full Context:</b>\n` +
+            `📝 <b>Instruction Logged for AGY (${taskNumber}):</b>\n` +
             `<i>"${instructionText}"</i>\n\n` +
             `🔍 <b>Preceding Context Captured:</b> ${recentTurns.length} recent chat turns attached.\n` +
-            `✅ <i>Stored in state ledger. Antigravity will ingest this directly on the next loop.</i>`,
+            `⏳ <i>Pending AGY session pickup & confirmation receipt.</i>`,
             messageId
           );
 
-          return new Response(JSON.stringify({ ok: true, action: 'instruction_captured', text: instructionText, contextTurns: recentTurns.length }), {
+          return new Response(JSON.stringify({ ok: true, action: 'instruction_captured', taskNumber, text: instructionText, contextTurns: recentTurns.length }), {
             headers: { 'Content-Type': 'application/json' },
           });
         }
@@ -208,6 +238,9 @@ export default {
           const progressKeyboard = {
             inline_keyboard: [
               [
+                { text: '👥 All Kids Side-by-Side Snapshot', callback_data: 'view_progress:all' }
+              ],
+              [
                 { text: '👧 Lara Progress Card', callback_data: 'view_progress:lara' },
                 { text: '👧 Maya Progress Card', callback_data: 'view_progress:maya' },
               ],
@@ -220,7 +253,7 @@ export default {
           await sendAndTrack(
             chatId,
             `📊 <b>On-Demand Student Mastery & Progress:</b>\n\n` +
-            `Choose a child below to view instant diagnostic scores, active priority gaps, and topic mastery trends at will:`,
+            `Choose a view below to compare all children side-by-side or inspect individual diagnostic trajectories:`,
             messageId,
             progressKeyboard
           );

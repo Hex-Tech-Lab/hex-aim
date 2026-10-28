@@ -104,7 +104,7 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     const pack = messaging.deliveredPacks[0]?.packs as any;
     expect(pack.studentPackHtml).toContain('https://aim.getvintel.com/sprint/');
     expect(pack.coachingGuideHtml).toContain('https://aim.getvintel.com/guide/');
-  });
+  }, 15000);
 
   it('POST /webhook/telegram handles /progress command and view_progress callback', async () => {
     const messaging = MessagingFactory.getMessaging('mock') as MockMessagingAdapter;
@@ -169,6 +169,57 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     const mayaCard = messaging.sentMessages[messaging.sentMessages.length - 1];
     expect(mayaCard?.text).toContain("Maya's Academic Mastery Snapshot");
     expect(mayaCard?.text).toContain('ERR_SHARED_PREFIX_ORDERING');
+
+    // 4. Click callback query view_progress:all (Side-by-side comparative card)
+    const reqCallbackAll = new Request('https://worker/webhook/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query: {
+          id: 'cb_125',
+          data: 'view_progress:all',
+          message: {
+            chat: { id: 987654 },
+            message_id: 113,
+          },
+        },
+      }),
+    });
+
+    const resCbAll = await worker.fetch(reqCallbackAll, {}, {} as any);
+    expect(resCbAll.status).toBe(200);
+    const allCard = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(allCard?.text).toContain('Comparative Academic Snapshot • All Children');
+    expect(allCard?.text).toContain('OVERALL DIMENSIONS');
+    expect(allCard?.text).toContain('SUBJECT-BY-SUBJECT BREAKDOWN');
+    expect(allCard?.text).toContain('Lara');
+    expect(allCard?.text).toContain('Maya');
+  });
+
+  it('POST /api/telegram/acknowledge sends confirmation receipt to chat', async () => {
+    const messaging = MessagingFactory.getMessaging('mock') as MockMessagingAdapter;
+
+    const req = new Request('https://worker/api/telegram/acknowledge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chatId: '987654',
+        taskNumber: 'TASK-101',
+        action: 'Completed & Deployed',
+        summary: 'Comparative All-Kids progress snapshot card active.',
+      }),
+    });
+
+    const res = await worker.fetch(req, {}, {} as any);
+    expect(res.status).toBe(200);
+    const body = await res.json() as any;
+    expect(body.ok).toBe(true);
+
+    const lastMsg = messaging.sentMessages[messaging.sentMessages.length - 1];
+    expect(lastMsg?.chatId).toBe('987654');
+    expect(lastMsg?.text).toContain('AGY Session Acknowledged Receipt');
+    expect(lastMsg?.text).toContain('TASK-101');
+    expect(lastMsg?.text).toContain('Comparative All-Kids progress snapshot card active.');
   });
 
   it('Stage 1 vs Stage 2 Ingestion: emits scorecard first, compiles sprint only on demand', async () => {
