@@ -4,7 +4,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -372,6 +372,96 @@ export function createServer(): http.Server {
         'Access-Control-Allow-Origin': '*',
       });
       res.end(JSON.stringify({ studentId, profile, records }));
+      return;
+    }
+
+    // Wave 23: 2-Way School MIS Integration & Telemetry API
+    if (url.pathname.startsWith('/api/school/telemetry/')) {
+      const schoolId = url.pathname.replace('/api/school/telemetry/', '').trim() || 'asten-college';
+      const misEngine = SchoolMisSyncEngine.getInstance();
+      const telemetry = misEngine.getSchoolTelemetry(schoolId);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify(telemetry));
+      return;
+    }
+
+    if (url.pathname === '/api/school/submissions') {
+      const studentId = url.searchParams.get('studentId') || undefined;
+      const misEngine = SchoolMisSyncEngine.getInstance();
+      const submissions = misEngine.listSubmissions(studentId);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ submissions, count: submissions.length }));
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/school/webhook/')) {
+      const provider = url.pathname.replace('/api/school/webhook/', '').trim();
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const misEngine = SchoolMisSyncEngine.getInstance();
+          const result = misEngine.ingestClassworkSubmission({
+            id: payload.id || `sub_ext_${Date.now()}`,
+            schoolId: payload.schoolId || 'asten-college',
+            studentId: payload.studentId || 'lara',
+            assignmentId: payload.assignmentId || 'assign_ext',
+            title: payload.title || 'External School Assignment',
+            subjectId: payload.subjectId || 'science',
+            termWeek: payload.termWeek || 8,
+            submittedAt: new Date().toISOString(),
+            rawGrade: payload.rawGrade || '80%',
+            scannedWorkUrls: payload.scannedWorkUrls || [],
+            teacherComments: payload.teacherComments || 'Ingested via School MIS Webhook'
+          });
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ provider, ...result }));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
+    if (url.pathname === '/api/school/push-remediation' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const misEngine = SchoolMisSyncEngine.getInstance();
+          const syncResult = misEngine.pushRemediationToSchool({
+            submissionId: payload.submissionId || 'sub_asten_y4_sci_w8_lara',
+            studentId: payload.studentId || 'lara',
+            schoolId: payload.schoolId || 'asten-college',
+            remediationSprintId: payload.remediationSprintId || 'sprint_lara_sci_w8',
+            resolvedConcepts: payload.resolvedConcepts || ['Y4.SCI.SND.MEDIUM'],
+            postRemediationScore: payload.postRemediationScore || 94,
+            homeFeedbackNotes: payload.homeFeedbackNotes || 'Socratic remediation completed at home.',
+            syncedAt: '',
+            status: 'pending'
+          });
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify(syncResult));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
       return;
     }
 

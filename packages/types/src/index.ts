@@ -556,3 +556,61 @@ export interface SpacedRepetitionQueueItem {
   suggestedTemplateId: string;
 }
 
+// Wave 23: 2-Way School MIS & Real-Time Classwork Integration Types
+export type SchoolMisProvider = 'sims' | 'google_classroom' | 'ms_teams' | 'isams' | 'arbor';
+
+export interface SchoolMisIntegrationConfig {
+  schoolId: string;
+  schoolName: string;
+  provider: SchoolMisProvider;
+  syncDirection: 'two_way' | 'pull_only' | 'push_only';
+  endpointUrl: string;
+  webhookSecret: string;
+  realTimeActive: boolean;
+  lastSyncedAt?: string;
+}
+
+export interface SchoolClassworkSubmission {
+  id: string;
+  schoolId: string;
+  studentId: string;
+  assignmentId: string;
+  title: string;
+  subjectId: string;
+  termWeek: number;
+  submittedAt: string;
+  rawGrade: string | number;
+  scannedWorkUrls: string[];
+  teacherComments?: string;
+  pedagogicTags?: string[];
+  autoRemediationSprintId?: string;
+}
+
+export interface RemediationSyncPayload {
+  submissionId: string;
+  studentId: string;
+  schoolId: string;
+  remediationSprintId: string;
+  resolvedConcepts: string[];
+  postRemediationScore: number;
+  homeFeedbackNotes: string;
+  syncedAt: string;
+  status: 'synced_to_school' | 'pending' | 'failed';
+}
+
+export interface SchoolSyncTelemetry {
+  schoolId: string;
+  provider: SchoolMisProvider;
+  isOnline: boolean;
+  lastWebhookReceivedAt: string;
+  totalSubmissionsIngested: number;
+  remediationsPushedBack: number;
+  activeClassworkLinks: Array<{
+    assignmentId: string;
+    title: string;
+    studentCount: number;
+    status: 'in_remediation' | 'gradebook_updated';
+  }>;
+}
+
+
