@@ -84,13 +84,42 @@ export class TelegramMessagingAdapter implements IMessagingPort {
     }
   }
 
-  public async sendInteractiveMenu(chatId: string, customTitle?: string): Promise<any> {
-    const title = customTitle || '🎛️ <b>AIM Parent Control Center</b>';
-    const text = `${title}\n\n` +
-      `<i>Access your child's targeted sprints and coaching guides directly inside Telegram below:</i>`;
+  public async sendInteractiveMenu(chatId: string, customTitle?: string, lang: 'en' | 'ar' = 'en'): Promise<any> {
+    const isAr = lang === 'ar';
+    const title = customTitle || (isAr ? '🎛️ <b>مركز تحكم الوالدين • نظام AIM</b>' : '🎛️ <b>AIM Parent Control Center</b>');
+    const text = isAr
+      ? `${title}\n\n<i>وصول فوري لتمارين طفلك المركزة وأدلة التوجيه السقراطي المباشرة:</i>`
+      : `${title}\n\n<i>Access your child's targeted sprints and coaching guides directly inside Telegram below:</i>`;
 
     const inlineKeyboard = {
-      inline_keyboard: [
+      inline_keyboard: isAr ? [
+        [
+          { text: '📊 ملخص لارا الأكاديمي', callback_data: 'view_progress:lara' },
+          { text: '📊 ملخص مايا الأكاديمي', callback_data: 'view_progress:maya' }
+        ],
+        [
+          { text: '👧 تمارين لارا (تطبيق مصغر)', web_app: { url: 'https://aim.getvintel.com/sprint/preview' } },
+          { text: '👧 تمارين مايا (تطبيق مصغر)', web_app: { url: 'https://aim.getvintel.com/sprint/preview' } }
+        ],
+        [
+          { text: '🧭 دليل لارا السقراطي', web_app: { url: 'https://aim.getvintel.com/guide/preview' } },
+          { text: '🧭 دليل مايا السقراطي', web_app: { url: 'https://aim.getvintel.com/guide/preview' } }
+        ],
+        [
+          { text: '📱 لوحة تحكم AIM المباشرة', web_app: { url: 'https://aim.getvintel.com' } }
+        ],
+        [
+          { text: '🌐 اللغة: العربية 🇪🇬 (Switch to English 🇬🇧)', callback_data: 'set_lang:en' }
+        ],
+        [
+          { text: '📚 تغيير أسبوع المراجعة', callback_data: 'menu_change_week' },
+          { text: '🔄 تصفير الجلسة', callback_data: 'reset_session' }
+        ],
+        [
+          { text: '🧹 مسح المحادثة', callback_data: 'clear_chat' },
+          { text: '↩️ إغلاق القائمة', callback_data: 'close_menu' }
+        ]
+      ] : [
         [
           { text: '📊 Lara Progress Snapshot', callback_data: 'view_progress:lara' },
           { text: '📊 Maya Progress Snapshot', callback_data: 'view_progress:maya' }
@@ -105,6 +134,9 @@ export class TelegramMessagingAdapter implements IMessagingPort {
         ],
         [
           { text: '📱 Open AIM Mastery Console', web_app: { url: 'https://aim.getvintel.com' } }
+        ],
+        [
+          { text: '🌐 Language: English 🇬🇧 (تبديل إلى العربية 🇪🇬)', callback_data: 'set_lang:ar' }
         ],
         [
           { text: '📚 Change Target Week', callback_data: 'menu_change_week' },

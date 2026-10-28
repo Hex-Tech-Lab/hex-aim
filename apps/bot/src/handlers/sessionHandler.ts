@@ -105,3 +105,34 @@ export async function resetSessionOnly(
     `📸 <i>You can now upload new worksheets or test the pipeline freely.</i>`
   );
 }
+
+/**
+ * Gets the chat language preference ('en' or 'ar', default 'en').
+ */
+export async function getChatLanguage(storage: IStoragePort, chatId: string): Promise<'en' | 'ar'> {
+  const redisStorage = storage as any;
+  if (redisStorage.redis) {
+    try {
+      const val = await redisStorage.redis.get(`aim:user_lang:${chatId}`);
+      if (val === 'ar' || val === '"ar"') return 'ar';
+    } catch (err) {
+      console.warn('[getChatLanguage] Error reading language from redis:', err);
+    }
+  }
+  return 'en';
+}
+
+/**
+ * Persists the chat language preference ('en' or 'ar').
+ */
+export async function setChatLanguage(storage: IStoragePort, chatId: string, lang: 'en' | 'ar'): Promise<void> {
+  const redisStorage = storage as any;
+  if (redisStorage.redis) {
+    try {
+      await redisStorage.redis.set(`aim:user_lang:${chatId}`, lang);
+    } catch (err) {
+      console.warn('[setChatLanguage] Error saving language to redis:', err);
+    }
+  }
+}
+

@@ -1,5 +1,5 @@
 import type { IStoragePort, IMessagingPort } from '@hex-aim/types';
-import { purgeAndResetSession, resetSessionOnly, type SessionContext } from './sessionHandler.js';
+import { purgeAndResetSession, resetSessionOnly, getChatLanguage, setChatLanguage, type SessionContext } from './sessionHandler.js';
 import { processAssessmentJob } from '../jobs/processAssessment.js';
 
 export interface CallbackHandlerContext extends SessionContext {
@@ -34,6 +34,33 @@ export async function handleCallbackQuery(
   } else if (callbackData === 'reset_session' || callbackData === 'reset_quota') {
     await resetSessionOnly(cbChatId, ctx);
   }
+  // 1.5 Language Switching Callbacks
+  else if (callbackData.startsWith('set_lang:') || callbackData === 'toggle_lang') {
+    let targetLang: 'en' | 'ar' = 'ar';
+    if (callbackData === 'set_lang:en') {
+      targetLang = 'en';
+    } else if (callbackData === 'set_lang:ar') {
+      targetLang = 'ar';
+    } else {
+      const current = await getChatLanguage(storage, cbChatId);
+      targetLang = current === 'ar' ? 'en' : 'ar';
+    }
+
+    await setChatLanguage(storage, cbChatId, targetLang);
+
+    const toastMsg = targetLang === 'ar'
+      ? `🌐 تم تحويل لغة البوت إلى <b>العربية 🇪🇬</b> بنجاح!\n(Bot language switched to Arabic)`
+      : `🌐 Bot language switched to <b>English 🇬🇧</b> successfully!\n(تم تحويل لغة البوت إلى الإنجليزية)`;
+
+    await sendAndTrack(cbChatId, toastMsg);
+
+    if (messaging.sendInteractiveMenu) {
+      await messaging.sendInteractiveMenu(cbChatId, undefined, targetLang);
+    }
+    return new Response(JSON.stringify({ ok: true, action: 'language_switched', lang: targetLang }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
   // 2. Sprint & Guide Deep-Link Previews
   else if (callbackData === 'view_sprint_lara') {
     await sendAndTrack(cbChatId, `📄 <b>Lara's Latest Sprint Pack:</b>\n🔗 https://aim.getvintel.com/sprint/preview`);
@@ -48,40 +75,80 @@ export async function handleCallbackQuery(
   else if (callbackData.startsWith('view_progress:')) {
     const [, studentId] = callbackData.split(':');
     const isAll = studentId?.toLowerCase() === 'all';
+    const lang = await getChatLanguage(storage, cbChatId);
+    const isAr = lang === 'ar';
 
     if (isAll) {
-      const comparativeCard =
-        `📊 <b>Comparative Academic Snapshot • All Children</b>\n` +
-        `👨‍👧‍👧 <i>Family Overview: Lara & Maya (Year 4)</i>\n\n` +
-        `<pre>\n` +
-        `┌──────────────┬────────┬────────┐\n` +
-        `│ Dimension    │  Lara  │  Maya  │\n` +
-        `├──────────────┼────────┼────────┤\n` +
-        `│ Overall Mast.│ 94% 🟢 │ 96% 🟢 │\n` +
-        `│ Learn. Vel.  │ +14% 🚀│ +11% 🚀│\n` +
-        `│ Conf. Index  │  91%   │  95%   │\n` +
-        `│ Sprint Mode  │ 8m Vis │10m Vrb │\n` +
-        `├──────────────┴────────┴────────┤\n` +
-        `│ SUBJECT MASTERY BREAKDOWN      │\n` +
-        `├──────────────┬────────┬────────┤\n` +
-        `│ 🔬 Science   │ 94% 🟢 │ 96% 🟢 │\n` +
-        `│ 📐 Maths     │ 82% 🟡 │ 86% 🟡 │\n` +
-        `│ 📖 English   │ 88% 🟢 │ 91% 🟢 │\n` +
-        `└──────────────┴────────┴────────┘\n` +
-        `</pre>\n\n` +
-        `⚠️ <b>Active Cognitive Priority:</b>\n` +
-        `• <b>Lara:</b> <code>Y4.SCI.SND.MEDIUM</code> (Sound Transmission)\n` +
-        `• <b>Maya:</b> <code>Y4.MATH.NPV.5DIGIT</code> (5-Digit Prefix Ordering)\n\n` +
-        `💡 <i>Tap a child below to view individual diagnostic ledger:</i>`;
+      const comparativeCard = isAr
+        ? `📊 <b>ملخص التميز الأكاديمي الشامل • جميع الأطفال</b>\n` +
+          `👨‍👧‍👧 <i>نظرة عائلية: لارا ومايا (الصف الرابع الابتدائي)</i>\n` +
+          `🏫 <i>مدرسة أستن كوليدج • المنهاج البريطاني</i>\n\n` +
+          `<pre>\n` +
+          `┌──────────────┬────────┬────────┐\n` +
+          `│ المقياس      │  لارا  │  مايا  │\n` +
+          `├──────────────┼────────┼────────┤\n` +
+          `│ الإتقان العام│ 94% 🟢 │ 96% 🟢 │\n` +
+          `│ سرعة التعلم  │ +14% 🚀│ +11% 🚀│\n` +
+          `│ مؤشر الثقة   │  91%   │  95%   │\n` +
+          `│ نمط التمرين  │ 8 د بصر│10د لفظ │\n` +
+          `├──────────────┴────────┴────────┤\n` +
+          `│ تفصيل المواد الدراسية          │\n` +
+          `├──────────────┬────────┬────────┤\n` +
+          `│ 🔬 العلوم    │ 94% 🟢 │ 96% 🟢 │\n` +
+          `│ 📐 الرياضيات │ 82% 🟡 │ 86% 🟡 │\n` +
+          `│ 📖 الإنجليزية│ 88% 🟢 │ 91% 🟢 │\n` +
+          `└──────────────┴────────┴────────┘\n` +
+          `</pre>\n\n` +
+          `⚠️ <b>أولويات التركيز المعرفي النشطة:</b>\n` +
+          `• <b>لارا:</b> <code>Y4.SCI.SND.MEDIUM</code> (انتقال الصوت عبر الأوساط)\n` +
+          `• <b>مايا:</b> <code>Y4.MATH.NPV.5DIGIT</code> (ترتيب أعداد 5 خانات)\n\n` +
+          `💡 <i>اضغط على اسم الطفل لعرض السجل التشخيصي المفصل:</i>`
+        : `📊 <b>Comparative Academic Snapshot • All Children</b>\n` +
+          `👨‍👧‍👧 <i>Family Overview: Lara & Maya (Year 4)</i>\n\n` +
+          `<pre>\n` +
+          `┌──────────────┬────────┬────────┐\n` +
+          `│ Dimension    │  Lara  │  Maya  │\n` +
+          `├──────────────┼────────┼────────┤\n` +
+          `│ Overall Mast.│ 94% 🟢 │ 96% 🟢 │\n` +
+          `│ Learn. Vel.  │ +14% 🚀│ +11% 🚀│\n` +
+          `│ Conf. Index  │  91%   │  95%   │\n` +
+          `│ Sprint Mode  │ 8m Vis │10m Vrb │\n` +
+          `├──────────────┴────────┴────────┤\n` +
+          `│ SUBJECT MASTERY BREAKDOWN      │\n` +
+          `├──────────────┬────────┬────────┤\n` +
+          `│ 🔬 Science   │ 94% 🟢 │ 96% 🟢 │\n` +
+          `│ 📐 Maths     │ 82% 🟡 │ 86% 🟡 │\n` +
+          `│ 📖 English   │ 88% 🟢 │ 91% 🟢 │\n` +
+          `└──────────────┴────────┴────────┘\n` +
+          `</pre>\n\n` +
+          `⚠️ <b>Active Cognitive Priority:</b>\n` +
+          `• <b>Lara:</b> <code>Y4.SCI.SND.MEDIUM</code> (Sound Transmission)\n` +
+          `• <b>Maya:</b> <code>Y4.MATH.NPV.5DIGIT</code> (5-Digit Prefix Ordering)\n\n` +
+          `💡 <i>Tap a child below to view individual diagnostic ledger:</i>`;
 
       const comparativeKeyboard = {
-        inline_keyboard: [
+        inline_keyboard: isAr ? [
+          [
+            { text: '👧 بطاقة لارا التشخيصية', callback_data: 'view_progress:lara' },
+            { text: '👧 بطاقة مايا التشخيصية', callback_data: 'view_progress:maya' },
+          ],
+          [
+            { text: '📱 لوحة تحكم AIM', web_app: { url: 'https://aim.getvintel.com' } },
+            { text: '🌐 English 🇬🇧', callback_data: 'set_lang:en' },
+          ],
+          [
+            { text: '↩️ العودة للقائمة', callback_data: 'open_main_menu' }
+          ]
+        ] : [
           [
             { text: '👧 Lara Diagnostic Card', callback_data: 'view_progress:lara' },
             { text: '👧 Maya Diagnostic Card', callback_data: 'view_progress:maya' },
           ],
           [
             { text: '📱 Open AIM Console', web_app: { url: 'https://aim.getvintel.com' } },
+            { text: '🌐 العربية 🇪🇬', callback_data: 'set_lang:ar' },
+          ],
+          [
             { text: '↩️ Back to Menu', callback_data: 'open_main_menu' }
           ]
         ]
@@ -98,57 +165,118 @@ export async function handleCallbackQuery(
     const duration = isMaya ? '10 min' : '8 min';
     const traits = isMaya ? 'Verbal explanation role • Methodical' : 'ADHD/Dyslexia traits • Visual scaffolds active';
 
-    const progressCard = isMaya
-      ? `📊 <b>Maya's Academic Mastery Snapshot (Year 4)</b>\n` +
-        `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
-        `<pre>\n` +
-        `┌──────────────┬─────┬───┬──────────────┐\n` +
-        `│ Subject      │ %   │St.│ Trajectory   │\n` +
-        `├──────────────┼─────┼───┼──────────────┤\n` +
-        `│ 🔬 Science   │ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
-        `│ 📐 Maths     │ 86% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
-        `│ 📖 English   │ 91% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
-        `├──────────────┴─────┴───┴──────────────┤\n` +
-        `│ LEARNING VELOCITY (WEEKS 1–8)         │\n` +
-        `├──────────────┬─────┬───┬──────────────┤\n` +
-        `│ W1 Intake    │ 60% │ 🟡│ [▰▰▰▰▰▱▱▱▱▱] │\n` +
-        `│ W4 Threshold │ 85% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
-        `│ W8 Midterm   │ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
-        `└──────────────┴─────┴───┴──────────────┘\n` +
-        `</pre>\n\n` +
-        `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
-        `🟠 <code>Y4.MATH.NPV.5DIGIT_ORDERING</code> (<code>ERR_SHARED_PREFIX_ORDERING</code>) — 1x\n` +
-        `🟡 <code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code> (<code>ERR_INTERVAL_DECODE</code>) — 1x\n\n` +
-        `💡 <b>Sprint Strategy:</b>\n` +
-        `• Target: ${duration} (${traits})\n` +
-        `• Peer Teaching: Explaining concepts to Lara solidifies retention.`
-      : `📊 <b>Lara's Academic Mastery Snapshot (Year 4)</b>\n` +
-        `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
-        `<pre>\n` +
-        `┌──────────────┬─────┬───┬──────────────┐\n` +
-        `│ Subject      │ %   │St.│ Trajectory   │\n` +
-        `├──────────────┼─────┼───┼──────────────┤\n` +
-        `│ 🔬 Science   │ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
-        `│ 📐 Maths     │ 82% │ 🟡│ [▰▰▰▰▰▰▰▱▱▱] │\n` +
-        `│ 📖 English   │ 88% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
-        `├──────────────┴─────┴───┴──────────────┤\n` +
-        `│ LEARNING VELOCITY (WEEKS 1–8)         │\n` +
-        `├──────────────┬─────┬───┬──────────────┤\n` +
-        `│ W1 Baseline  │ 52% │ 🔴│ [▰▰▰▰▱▱▱▱▱▱] │\n` +
-        `│ W4 Threshold │ 80% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
-        `│ W8 Midterm   │ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
-        `└──────────────┴─────┴───┴──────────────┘\n` +
-        `</pre>\n\n` +
-        `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
-        `🟠 <code>Y4.MATH.NPV.EMPTY_COLUMNS</code> (<code>ERR_PHANTOM_ZERO</code>) — 3x\n` +
-        `🟡 <code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code> (<code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code>) — 2x\n` +
-        `🟡 <code>Y4.MATH.NPV.WRITING_NUMBERS</code> (<code>ERR_TRANSPOSITION</code>) — 2x\n\n` +
-        `💡 <b>Sprint Strategy:</b>\n` +
-        `• Target: ${duration} (${traits})\n` +
-        `• Scaffold: Elevator model & place-value rooms protect working memory.`;
+    const progressCard = isAr
+      ? (isMaya
+        ? `📊 <b>ملخص الإتقان الأكاديمي لمايا (الصف الرابع الابتدائي)</b>\n` +
+          `🏫 <i>مدرسة أستن كوليدج • المنهاج البريطاني</i>\n\n` +
+          `<pre>\n` +
+          `┌──────────────┬─────┬───┬──────────────┐\n` +
+          `│ المادة       │ %   │الح│ مسار التقدم  │\n` +
+          `├──────────────┼─────┼───┼──────────────┤\n` +
+          `│ 🔬 العلوم    │ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
+          `│ 📐 الرياضيات │ 86% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `│ 📖 الإنجليزية│ 91% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+          `├──────────────┴─────┴───┴──────────────┤\n` +
+          `│ سرعة التعلم (الأسابيع 1–8)            │\n` +
+          `├──────────────┬─────┬───┬──────────────┤\n` +
+          `│ أسبوع 1 إدخال│ 60% │ 🟡│ [▰▰▰▰▰▱▱▱▱▱] │\n` +
+          `│ أسبوع 4 حافة │ 85% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `│ أسبوع 8 منتصف│ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
+          `└──────────────┴─────┴───┴──────────────┘\n` +
+          `</pre>\n\n` +
+          `⚠️ <b>أولويات التركيز المعرفي النشطة:</b>\n` +
+          `🟠 <code>Y4.MATH.NPV.5DIGIT_ORDERING</code> (ترتيب أعداد 5 خانات) — 1x\n` +
+          `🟡 <code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code> (قراءة خط الأعداد) — 1x\n\n` +
+          `💡 <b>استراتيجية التمرين:</b>\n` +
+          `• المدة: 10 دقائق (أسلوب تفسيري منهجي)\n` +
+          `• التعلم التشاركي: شرح المفاهيم للارا يرسخ المعرفة.`
+        : `📊 <b>ملخص الإتقان الأكاديمي للارا (الصف الرابع الابتدائي)</b>\n` +
+          `🏫 <i>مدرسة أستن كوليدج • المنهاج البريطاني</i>\n\n` +
+          `<pre>\n` +
+          `┌──────────────┬─────┬───┬──────────────┐\n` +
+          `│ المادة       │ %   │الح│ مسار التقدم  │\n` +
+          `├──────────────┼─────┼───┼──────────────┤\n` +
+          `│ 🔬 العلوم    │ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+          `│ 📐 الرياضيات │ 82% │ 🟡│ [▰▰▰▰▰▰▰▱▱▱] │\n` +
+          `│ 📖 الإنجليزية│ 88% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `├──────────────┴─────┴───┴──────────────┤\n` +
+          `│ سرعة التعلم (الأسابيع 1–8)            │\n` +
+          `├──────────────┬─────┬───┬──────────────┤\n` +
+          `│ أسبوع 1 أساس │ 52% │ 🔴│ [▰▰▰▰▱▱▱▱▱▱] │\n` +
+          `│ أسبوع 4 حافة │ 80% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `│ أسبوع 8 منتصف│ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+          `└──────────────┴─────┴───┴──────────────┘\n` +
+          `</pre>\n\n` +
+          `⚠️ <b>أولويات التركيز المعرفي النشطة:</b>\n` +
+          `🟠 <code>Y4.MATH.NPV.EMPTY_COLUMNS</code> (حارس خانة المئات) — 3x\n` +
+          `🟡 <code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code> (الأعداد السالبة والمصعد) — 2x\n` +
+          `🟡 <code>Y4.MATH.NPV.WRITING_NUMBERS</code> (كتابة الأرقام) — 2x\n\n` +
+          `💡 <b>استراتيجية التمرين:</b>\n` +
+          `• المدة: 8 دقائق (سمات تشتت انتباه • دعامات بصرية)\n` +
+          `• الدعامة البصرية: نموذج المصعد وغرف القيمة المكانية تحمي الذاكرة العاملة.`)
+      : (isMaya
+        ? `📊 <b>Maya's Academic Mastery Snapshot (Year 4)</b>\n` +
+          `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
+          `<pre>\n` +
+          `┌──────────────┬─────┬───┬──────────────┐\n` +
+          `│ Subject      │ %   │St.│ Trajectory   │\n` +
+          `├──────────────┼─────┼───┼──────────────┤\n` +
+          `│ 🔬 Science   │ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
+          `│ 📐 Maths     │ 86% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `│ 📖 English   │ 91% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+          `├──────────────┴─────┴───┴──────────────┤\n` +
+          `│ LEARNING VELOCITY (WEEKS 1–8)         │\n` +
+          `├──────────────┬─────┬───┬──────────────┤\n` +
+          `│ W1 Intake    │ 60% │ 🟡│ [▰▰▰▰▰▱▱▱▱▱] │\n` +
+          `│ W4 Threshold │ 85% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `│ W8 Midterm   │ 96% │ 🟢│ [▰▰▰▰▰▰▰▰▰▰] │\n` +
+          `└──────────────┴─────┴───┴──────────────┘\n` +
+          `</pre>\n\n` +
+          `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
+          `🟠 <code>Y4.MATH.NPV.5DIGIT_ORDERING</code> (<code>ERR_SHARED_PREFIX_ORDERING</code>) — 1x\n` +
+          `🟡 <code>Y4.MATH.NPV.NUMBER_LINE_SCALES</code> (<code>ERR_INTERVAL_DECODE</code>) — 1x\n\n` +
+          `💡 <b>Sprint Strategy:</b>\n` +
+          `• Target: ${duration} (${traits})\n` +
+          `• Peer Teaching: Explaining concepts to Lara solidifies retention.`
+        : `📊 <b>Lara's Academic Mastery Snapshot (Year 4)</b>\n` +
+          `🏫 <i>Asten College • British Primary Curriculum</i>\n\n` +
+          `<pre>\n` +
+          `┌──────────────┬─────┬───┬──────────────┐\n` +
+          `│ Subject      │ %   │St.│ Trajectory   │\n` +
+          `├──────────────┼─────┼───┼──────────────┤\n` +
+          `│ 🔬 Science   │ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+          `│ 📐 Maths     │ 82% │ 🟡│ [▰▰▰▰▰▰▰▱▱▱] │\n` +
+          `│ 📖 English   │ 88% │ 🟢│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `├──────────────┴─────┴───┴──────────────┤\n` +
+          `│ LEARNING VELOCITY (WEEKS 1–8)         │\n` +
+          `├──────────────┬─────┬───┬──────────────┤\n` +
+          `│ W1 Baseline  │ 52% │ 🔴│ [▰▰▰▰▱▱▱▱▱▱] │\n` +
+          `│ W4 Threshold │ 80% │ 🟡│ [▰▰▰▰▰▰▰▰▱▱] │\n` +
+          `│ W8 Midterm   │ 94% │ 🟢│ [▰▰▰▰▰▰▰▰▰▱] │\n` +
+          `└──────────────┴─────┴───┴──────────────┘\n` +
+          `</pre>\n\n` +
+          `⚠️ <b>Active Cognitive Focus Areas:</b>\n` +
+          `🟠 <code>Y4.MATH.NPV.EMPTY_COLUMNS</code> (<code>ERR_PHANTOM_ZERO</code>) — 3x\n` +
+          `🟡 <code>Y4.MATH.NPV.NEGATIVE_NUMBERS</code> (<code>ERR_NEGATIVE_MAGNITUDE_INVERSION</code>) — 2x\n` +
+          `🟡 <code>Y4.MATH.NPV.WRITING_NUMBERS</code> (<code>ERR_TRANSPOSITION</code>) — 2x\n\n` +
+          `💡 <b>Sprint Strategy:</b>\n` +
+          `• Target: ${duration} (${traits})\n` +
+          `• Scaffold: Elevator model & place-value rooms protect working memory.`);
 
     const actionKeyboard = {
-      inline_keyboard: [
+      inline_keyboard: isAr ? [
+        [
+          { text: `🚀 توليد تمرين ${studentName === 'Maya' ? 'مايا' : 'لارا'} الآن`, callback_data: `gen_sprint:${studentId}:science:8` }
+        ],
+        [
+          { text: '🧭 دليل الوالدين السقراطي', callback_data: `view_guide_${studentId}` },
+          { text: '📱 لوحة تحكم AIM', web_app: { url: 'https://aim.getvintel.com' } }
+        ],
+        [
+          { text: '🌐 English 🇬🇧', callback_data: 'set_lang:en' },
+          { text: '↩️ خطوة للخلف', callback_data: 'open_main_menu' }
+        ]
+      ] : [
         [
           { text: `🚀 Generate ${studentName}'s Sprint Now`, callback_data: `gen_sprint:${studentId}:science:8` }
         ],
@@ -157,7 +285,7 @@ export async function handleCallbackQuery(
           { text: '📱 Open AIM Console', web_app: { url: 'https://aim.getvintel.com' } }
         ],
         [
-          { text: '🧹 Clear Chat', callback_data: 'clear_chat' },
+          { text: '🌐 العربية 🇪🇬', callback_data: 'set_lang:ar' },
           { text: '↩️ Return 1 Step Back', callback_data: 'open_main_menu' }
         ]
       ]
