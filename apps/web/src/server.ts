@@ -6,7 +6,7 @@ import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { renderExamSimulationHtml } from './ui/examSimulationHtml.js';
 import { renderTeacherPortalHtml } from './ui/teacherPortalHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine, PrivacyVaultEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -663,6 +663,63 @@ export function createServer(): http.Server {
       res.end(JSON.stringify({ ok: true, exam }));
       return;
     }
+
+    // Wave 28: Zero-Knowledge Student Privacy Vault APIs
+    if (url.pathname === '/api/privacy/status') {
+      const vault = PrivacyVaultEngine.getInstance();
+      const status = vault.getStatus();
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, status }));
+      return;
+    }
+
+    if (url.pathname === '/api/privacy/audit-logs') {
+      const vault = PrivacyVaultEngine.getInstance();
+      const logs = vault.getAuditLogs();
+      const isIntegrityIntact = vault.verifyAuditTrailIntegrity();
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, isIntegrityIntact, logsCount: logs.length, logs }));
+      return;
+    }
+
+    if (url.pathname === '/api/privacy/pseudonymize' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', async () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const vault = PrivacyVaultEngine.getInstance();
+          const pii = payload.pii || {
+            studentId: 'lara',
+            fullName: 'Lara Sherif',
+            guardianName: 'Sherif Kelly',
+            guardianPhone: '+201001234567',
+            nationalIdMasked: '2980101******8',
+            schoolName: 'Asten College',
+            dateOfBirth: '2016-04-12'
+          };
+          const pseudonymized = await vault.pseudonymizeProfile(pii, payload.neuroProfile || {}, payload.yearGroup || 'Y4');
+          const redactedPrompt = payload.prompt ? vault.redactPromptForLlm(payload.prompt, pii, pseudonymized.pseudonymToken) : '';
+
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ ok: true, pseudonymized, redactedPrompt }));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
 
 
     // API: list students

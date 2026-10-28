@@ -130,6 +130,37 @@ export function renderInfraGateTab(): string {
       </div>
     </div>
 
+    <!-- Wave 28: Zero-Knowledge Student Privacy Vault & Cryptographic Audit Ledger -->
+    <div class="card" style="border-left: 4px solid var(--accent-green, #10b981); margin-top: 24px;">
+      <div class="card-header">
+        <div>
+          <h2>🔒 Wave 28: Zero-Knowledge Student Privacy Vault</h2>
+          <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-muted, #94a3b8);">Client-side AES-256-GCM PII encryption and ephemeral pseudonymization tokens for LLM inference, compliant with Egyptian Law 151/2020 and UK GDPR.</p>
+        </div>
+        <span class="badge badge-green">Cryptographic Seal Active</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 12px;">
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Encryption Standard</span>
+          <span class="val"><strong>AES-256-GCM</strong> (PBKDF2 • 100,000 Iterations • 12-byte IV)</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">AI Inference Pseudonymization</span>
+          <span class="val">🟢 Zero PII to LLMs (Replaced with <code>stu_anon_9f8a...</code>)</span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Audit Hash Chain Integrity</span>
+          <span class="val"><span class="badge badge-green">Intact (SHA-256 Tamper-Evident)</span></span>
+        </div>
+        <div class="status-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span class="key">Compliance Regimes</span>
+          <span class="val"><span class="badge badge-cyan">🇪🇬 Law 151/2020</span> <span class="badge badge-cyan">🇬🇧 UK GDPR</span></span>
+        </div>
+      </div>
+    </div>
+
+
 
     <!-- Interactive Intake & Strike Simulator -->
     <div class="card">

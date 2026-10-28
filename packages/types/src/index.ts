@@ -787,6 +787,57 @@ export interface TeacherCohortMetrics {
   generatedAt: string;
 }
 
+// ==========================================
+// WAVE 28: ZERO-KNOWLEDGE STUDENT PRIVACY VAULT
+// ==========================================
+
+export interface EncryptedDataPayload {
+  ciphertext: string;
+  iv: string;
+  salt: string;
+  tag?: string;
+  algorithm: 'AES-256-GCM';
+}
+
+export interface StudentPiiRecord {
+  studentId: string;
+  fullName: string;
+  guardianName: string;
+  guardianPhone: string;
+  nationalIdMasked: string;
+  schoolName: string;
+  dateOfBirth: string;
+}
+
+export interface PseudonymizedStudentProfile {
+  pseudonymToken: string;
+  yearGroup: string;
+  curriculumTrack: string;
+  neuroProfile: Record<string, any>;
+  encryptedPii: EncryptedDataPayload;
+  redactedPiiSummary: string;
+}
+
+export interface PrivacyAuditLogEntry {
+  id: string;
+  action: 'encrypt_pii' | 'decrypt_pii' | 'pseudonymize_prompt' | 'audit_verify';
+  pseudonymToken: string;
+  timestamp: string;
+  status: 'secure' | 'tamper_detected';
+  previousHash: string;
+  hashChain: string;
+}
+
+export interface PrivacyVaultStatus {
+  vaultInitialized: boolean;
+  activeKeyAlgorithm: 'AES-256-GCM';
+  pbkdf2Iterations: number;
+  totalEncryptedRecords: number;
+  auditTrailIntegrity: 'intact' | 'compromised';
+  complianceStandards: string[];
+}
+
+
 
 
 
