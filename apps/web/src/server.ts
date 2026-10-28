@@ -4,7 +4,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -267,6 +267,84 @@ export function createServer(): http.Server {
         });
         res.end(Buffer.from(pdfBytes));
       }
+      return;
+    }
+
+    // Wave 21: Socratic Oral Evaluation Endpoint
+    if (url.pathname === '/api/socratic/evaluate-oral' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = JSON.parse(body || '{}');
+          const evaluator = SocraticOralEvaluator.getInstance();
+          const evaluation = evaluator.evaluateOralTurn({
+            transcript: payload.transcript || 'Zero guards the hundreds chair so the thousands room does not crash into tens.',
+            drillQuestion: payload.drillQuestion || 'If there are zero hundreds in 24,106, who is guarding the hundreds chair?',
+            targetConceptCode: payload.targetConceptCode || 'Y4.MATH.NPV.EMPTY_COLUMNS',
+            expectedKeywords: payload.expectedKeywords || ['zero', 'guards', 'chair', 'hundreds', 'place-value'],
+            commonMisconceptions: payload.commonMisconceptions || ['skip zero', 'no number'],
+            studentName: payload.studentName || 'Lara',
+          });
+
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ ok: true, evaluation }));
+        } catch (err: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: err?.message || String(err) }));
+        }
+      });
+      return;
+    }
+
+    // Wave 21: Socratic Audio Coaching Prompts (Bilingual Egyptian Arabic + English)
+    if (url.pathname === '/api/socratic/audio-prompts') {
+      const prompts = [
+        {
+          id: 'prompt_1',
+          conceptCode: 'Y4.MATH.NPV.EMPTY_COLUMNS',
+          title: 'Place Value Room Guard (Hundreds Chair)',
+          targetStudent: 'lara',
+          english: {
+            title: 'Hundreds Chair Guard Script',
+            hintText: 'Ask Lara: "If there are zero hundreds in 24,106, who is guarding the hundreds chair? Can the thousands room simply crash into the tens room?"',
+            drillQuestion: 'Why must we write a zero in the hundreds column even if no hundreds are spoken?',
+            expectedKeywords: ['zero', 'guards', 'chair', 'column', 'room', 'place-value'],
+          },
+          arabic: {
+            title: 'حارس خانة المئات (نموذج الكرسي المحجوز)',
+            hintText: 'قول للارا: "لو مفيش مئات في العدد ٢٤,١٠٦، مين اللي حارس كرسي المئات؟ هل ينفع خانة الآلاف تدخل في خانة العشرات على طول من غير حارس؟"',
+            drillQuestion: 'ليه لازم نكتب صفر في خانة المئات حتى لو مش بننطقه؟',
+            expectedKeywords: ['صفر', 'حارس', 'كرسي', 'خانة', 'مكان'],
+          }
+        },
+        {
+          id: 'prompt_2',
+          conceptCode: 'Y4.MATH.NPV.5DIGIT_ORDERING',
+          title: 'Prefix Ordering & Leading Digit Tie-Breakers',
+          targetStudent: 'maya',
+          english: {
+            title: 'Prefix Comparison Strategy',
+            hintText: 'Ask Maya: "When comparing 32,540 and 32,450, both start with 32 thousand. Which room breaks the tie?"',
+            drillQuestion: 'How do you decide which 5-digit number is larger when their first two digits are identical?',
+            expectedKeywords: ['hundreds', 'tie-breaker', 'prefix', 'compare', 'digits'],
+          },
+          arabic: {
+            title: 'مقارنة الأرقام ذات البادئة المتطابقة',
+            hintText: 'اسأل مايا: "لما نقارن ٣٢,٥٤٠ و ٣٢,٤٥٠، الاتنين بيبدأوا بـ ٣٢ ألف. أنهي خانة اللي بتحدد مين الأكبر؟"',
+            drillQuestion: 'إزاي بنحدد الرقم الأكبر لما أول رقمين يكونوا متطابقين؟',
+            expectedKeywords: ['مئات', 'مقارنة', 'خانة', 'أكبر'],
+          }
+        }
+      ];
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify(prompts));
       return;
     }
 
