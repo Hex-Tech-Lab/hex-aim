@@ -89,14 +89,96 @@ export function renderDashboardStyles(): string {
   }
 
   header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin: -24px -24px 20px -24px;
+    padding: 14px 24px;
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--card-border);
-    padding-bottom: 16px;
-    margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 12px;
+  }
+
+  /* Portals Dropdown Switcher */
+  .portal-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .portal-dropdown-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-elevated);
+    border: 1px solid var(--astryx-border-subtle);
+    color: var(--astryx-text-contrast);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: var(--astryx-radius-md);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .portal-dropdown-btn:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .portal-dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background: var(--card-elevated);
+    border: 1px solid var(--card-border);
+    border-radius: var(--astryx-radius-md);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    min-width: 260px;
+    z-index: 150;
+    padding: 6px 0;
+  }
+
+  .portal-dropdown-menu.show {
+    display: block;
+  }
+
+  .portal-dropdown-header {
+    padding: 6px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .portal-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--astryx-text-contrast);
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .portal-dropdown-item:hover {
+    background: rgba(6, 182, 212, 0.12);
+    color: var(--cyan);
+  }
+
+  .portal-dropdown-divider {
+    height: 1px;
+    background: var(--card-border);
+    margin: 4px 0;
   }
 
   .logo-group h1 {
