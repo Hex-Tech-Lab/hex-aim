@@ -23,3 +23,4 @@ export * from './school/SchoolMisSyncEngine.js';
 export * from './vision/SocraticInpaintingEngine.js';
 export * from './socratic/PeerTeachingEngine.js';
 export * from './simulation/ExamSimulationEngine.js';
+export * from './institutional/TeacherPortalEngine.js';

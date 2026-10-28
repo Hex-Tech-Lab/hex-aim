@@ -226,7 +226,50 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(data.result.passed).toBe(true);
     expect(data.result.feedback.ar).toContain('أداء رائع');
   });
+
+  it('GET /school/:id renders teacher institutional diagnostic console', async () => {
+    const res = await fetch(`${baseUrl}/school/asten-college?year=Y4`);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain('Asten College');
+    expect(html).toContain('Macro Diagnostic Concept Heatmap');
+    expect(html).toContain('Student Roster & Sensory Scaffolds');
+  });
+
+  it('GET /api/school/:id/metrics returns aggregated cohort metrics', async () => {
+    const res = await fetch(`${baseUrl}/api/school/asten-college/metrics?year=Y4`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.metrics.totalStudents).toBe(5);
+    expect(data.metrics.conceptHeatmap.length).toBeGreaterThan(0);
+  });
+
+  it('GET /api/school/:id/export.csv downloads formatted CSV roster', async () => {
+    const res = await fetch(`${baseUrl}/api/school/asten-college/export.csv?year=Y4`);
+    expect(res.status).toBe(200);
+    const csv = await res.text();
+    expect(csv).toContain('Student ID,Student Name,Year Group');
+    expect(csv).toContain('"Lara"');
+  });
+
+  it('POST /api/school/:id/observation records teacher observation', async () => {
+    const res = await fetch(`${baseUrl}/api/school/asten-college/observation`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentId: 'lara',
+        conceptCode: 'Y4.SCI.SND.MEDIUM',
+        observationNote: 'Demonstrated solid grasp during small group discussion.'
+      })
+    });
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.result.recorded).toBe(true);
+  });
 });
+
 
 
 

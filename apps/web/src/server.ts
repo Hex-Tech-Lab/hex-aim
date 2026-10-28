@@ -4,8 +4,9 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { renderExamSimulationHtml } from './ui/examSimulationHtml.js';
+import { renderTeacherPortalHtml } from './ui/teacherPortalHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -189,6 +190,24 @@ export function createServer(): http.Server {
       res.end(html);
       return;
     }
+
+    // Wave 27: Teacher Institutional Analytics Portal Interface
+    if (url.pathname.startsWith('/school/') && !url.pathname.startsWith('/school/api/')) {
+      const schoolId = url.pathname.replace('/school/', '').trim() || 'asten-college';
+      const yearGroup = url.searchParams.get('year') || 'Y4';
+      const teacherEngine = TeacherPortalEngine.getInstance();
+      const metrics = teacherEngine.getCohortMetrics(schoolId, yearGroup);
+
+      const html = renderTeacherPortalHtml(metrics);
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': Buffer.byteLength(html, 'utf8'),
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(html);
+      return;
+    }
+
 
 
     // Wave 20 (Approach C): Live Vector PDF Micro-Service for Blank Templates
@@ -406,6 +425,64 @@ export function createServer(): http.Server {
       res.end(JSON.stringify(telemetry));
       return;
     }
+
+    // Wave 27: Teacher Institutional Metrics & CSV Export APIs
+    if (url.pathname.startsWith('/api/school/') && url.pathname.endsWith('/metrics')) {
+      const schoolId = url.pathname.replace('/api/school/', '').replace('/metrics', '').trim() || 'asten-college';
+      const yearGroup = url.searchParams.get('year') || 'Y4';
+      const teacherEngine = TeacherPortalEngine.getInstance();
+      const metrics = teacherEngine.getCohortMetrics(schoolId, yearGroup);
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, metrics }));
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/school/') && url.pathname.endsWith('/export.csv')) {
+      const schoolId = url.pathname.replace('/api/school/', '').replace('/export.csv', '').trim() || 'asten-college';
+      const yearGroup = url.searchParams.get('year') || 'Y4';
+      const teacherEngine = TeacherPortalEngine.getInstance();
+      const csv = teacherEngine.exportCohortCsv(schoolId, yearGroup);
+
+      res.writeHead(200, {
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': `attachment; filename="${schoolId}_${yearGroup}_cohort_mastery.csv"`,
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(csv);
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/school/') && url.pathname.endsWith('/observation') && req.method === 'POST') {
+      const schoolId = url.pathname.replace('/api/school/', '').replace('/observation', '').trim() || 'asten-college';
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const teacherEngine = TeacherPortalEngine.getInstance();
+          const result = teacherEngine.recordTeacherObservation(
+            schoolId,
+            payload.studentId || 'lara',
+            payload.conceptCode || 'Y4.SCI.SND.MEDIUM',
+            payload.observationNote || ''
+          );
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ ok: true, result }));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
 
     if (url.pathname === '/api/school/submissions') {
       const studentId = url.searchParams.get('studentId') || undefined;

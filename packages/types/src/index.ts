@@ -747,6 +747,47 @@ export interface ExamSubmissionResult {
   };
 }
 
+// ==========================================
+// WAVE 27: TEACHER INSTITUTIONAL ANALYTICS PORTAL
+// ==========================================
+
+export interface TeacherCohortHeatmapItem {
+  conceptCode: string;
+  conceptTitle: string;
+  subject: 'science' | 'maths' | 'english';
+  masteryPercentage: number;
+  status: 'critical_gap' | 'stabilizing' | 'mastered';
+  studentsAtRisk: string[];
+}
+
+export interface TeacherStudentRosterItem {
+  studentId: string;
+  name: string;
+  yearGroup: string;
+  averageScore: number;
+  needsSensoryScaffold: boolean;
+  accommodations: string[];
+  primaryInterventionConcept: string;
+}
+
+export interface TeacherCohortMetrics {
+  schoolId: string;
+  schoolName: string;
+  yearGroup: string;
+  totalStudents: number;
+  accommodatedStudentsCount: number;
+  cohortAverageMastery: number;
+  subjectPerformance: {
+    science: number;
+    maths: number;
+    english: number;
+  };
+  conceptHeatmap: TeacherCohortHeatmapItem[];
+  studentsRoster: TeacherStudentRosterItem[];
+  generatedAt: string;
+}
+
+
 
 
 
