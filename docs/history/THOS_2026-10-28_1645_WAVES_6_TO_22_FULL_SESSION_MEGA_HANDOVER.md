@@ -176,7 +176,7 @@ The foundational architecture of `hex-aim` was established in:
 | **Technical Moat** | SVG vector bounding-box inpainting over scanned master images. | Interactive joint Socratic prompt generator with turn-taking state machine. | Timed question delivery with client-side latency compensation and auto-save. | Rollup aggregation engine computing cross-class mastery matrices in Upstash Redis. | Client-side AES-GCM encryption of student PII before cloud storage synchronization. |
 | **Frontend State** | Tab 4 interactive error overlay modal with pan/zoom canvas inspector. | Tab 2 "Sibling Collaboration" mode with split coaching dialogue cards. | Dedicated `/exam/:id` distraction-free full-screen testing interface. | Dedicated `/school/asten-college` institutional portal with CSV/Excel export. | Privacy toggle in settings modal; cryptographic audit log viewer. |
 | **Edge / Perf** | SVG rendering in <10ms; zero heavy server-side image processing. | Lightweight Redis Pub/Sub state synchronization (<50ms). | Offline-capable Service Worker PWA; zero data loss during network dropouts. | Pre-aggregated cohort snapshots compiled asynchronously via QStash cron. | Native Web Cryptography API executing in browser isolate (<2ms). |
-| **Verification** | 🟡 Queued | 🟡 Queued | 🟡 Queued | 🟡 Queued | 🟡 Queued |
+| **Verification** | 🟢 Live (`0db07b8`) | 🟢 Live (`c5d1e32`) | 🟢 Live (`17d779f`) | 🟢 Live (`631467c`) | 🟢 Live (`c228cf7`) |
 
 ---
 
@@ -245,17 +245,22 @@ The Web Console (`apps/web`) is styled using the proprietary **Meta Astryx** cyb
 ## 11. Current System State Snapshot
 
 ### What Works ✅
-- **All 18 Roadmap Waves (W6–W23)**: Fully compiled, tested, and running in production.
-- **Web Console (`https://aim.getvintel.com`)**: 5 tabs active (Mastery Overview, Cognitive Gap Ledger with live decay countdown badges, Classwork Ingestion Terminal with 2-Way School MIS telemetry, Scanned Submissions Register, Master Blank Templates & Dry-Runs).
-- **Telegram Bot (`@aim_pal_bot`)**: Crisp 33-column monospace comparison tables, instant callback routing, and live session confirmation receipts.
+- **All 28 Roadmap Waves (W1–W28)**: Fully compiled, tested, and running in production.
+- **Web Console (`https://aim.getvintel.com`)**: 5 tabs active with bilingual En/Ar switcher, icon-only theme button, and dedicated sub-portals.
+- **Telegram Bot (`@aim_pal_bot`)**: Bilingual En/Ar toggle with 1-tap persistent reply button, 33-column monospace comparison tables, instant callback routing, and live session confirmation receipts.
 - **Vector PDF Micro-Service**: On-demand printable worksheets compiling in 93ms via warm Chromium pool with `pdf-lib` vector fallback.
 - **Ebbinghaus Cognitive Mastery Decay Engine (Wave 22)**: Predictive mathematical modeling of student knowledge retention curves with ADHD visual scaffolding adjustments and real-time review queues.
 - **2-Way School MIS Integration (Wave 23)**: Bidirectional SIMS & Google Classroom synchronization engine (`SchoolMisSyncEngine.ts`), ingest pipeline for scanned classwork with teacher annotations, and telemetry dashboard in Tab 3.
-- **Monorepo Build & Tests**: **99/99 tests passing clean** (Core: 57/57 across 17 test files; Adapters: 15/15; Web: 16/16; Bot: 11/11).
+- **Socratic Multi-Modal Inpainting (Wave 24)**: Dynamic SVG vector bounding-box error overlays on original student test scans in Tab 4 (`tabSubmissionsRegister.ts`).
+- **Sibling Cross-Teaching Collaboration Mode (Wave 25)**: Peer-to-peer Socratic dialogue cards pairing Lara and Maya's cognitive strengths in Tab 2 (`tabGapLedger.ts`).
+- **Adaptive Exam Simulation Engine (Wave 26)**: Full-screen distraction-free testing environment (`/exam/:id`) with sensory-friendly countdown and 5m ADHD "Pause & Breathe" interval pacing.
+- **Teacher Institutional Analytics Portal (Wave 27)**: Dedicated school dashboard (`/school/asten-college`) with macro-cohort diagnostic heatmaps, cross-class mastery matrices, sensory scaffold tracking, and MIS CSV exports.
+- **Zero-Knowledge Student Privacy Vault (Wave 28)**: Client-side AES-256-GCM authenticated PII encryption, ephemeral pseudonymization tokens (`stu_anon_...`) for external AI vision inference, and SHA-256 tamper-evident cryptographic audit ledger.
+- **Monorepo Build & Tests**: **114/114 tests passing clean** (Core: 72/72 across 20 test files; Adapters: 15/15 across 3 test files; Web: 24/24 in server.test.ts + PWA + audio; Bot: 12/12 across 2 test files).
 
-### What Is Queued / In-Progress ❌
-- **Wave 24: Socratic Multi-Modal Inpainting**: SVG vector bounding-box error overlays on original student test scans in Tab 4 (`tabSubmissionsRegister.ts`).
-- **Wave 25: Sibling Cross-Teaching Collaboration Mode**: Peer-to-peer Socratic dialogue cards between Lara and Maya in Tab 2.
+### What Is Queued / In-Progress 🎯
+- All 28 Roadmap Waves are successfully implemented, verified, committed, and deployed to production.
+
 
 ---
 
