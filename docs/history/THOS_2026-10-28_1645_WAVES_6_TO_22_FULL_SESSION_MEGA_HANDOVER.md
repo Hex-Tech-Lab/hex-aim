@@ -1,13 +1,13 @@
-# TECHNICAL HANDOVER SUMMARY — hex-aim: Waves 6–22 Full-Session Execution, Architectural Evolution & 2-Way School MIS Architecture
+# TECHNICAL HANDOVER SUMMARY — hex-aim: Waves 6–23 Full-Session Execution, Architectural Evolution & 2-Way School MIS Integration
 
-**Document ID**: `THOS-HEX-AIM-2026-10-28-WAVES-06-TO-22`  
+**Document ID**: `THOS-HEX-AIM-2026-10-28-WAVES-06-TO-23`  
 **Session Date**: 2026-10-25 to 2026-10-28 (Multi-Day Continuous Mega-Session)  
 **Agents Involved**: Antigravity CLI 1.4.7 (Google Gemini 3.8 Flash High)  
-**Target Codebase**: `hex-aim` (Adaptive Individualized Mastery, master branch at commit `7846cbc`)  
+**Target Codebase**: `hex-aim` (Adaptive Individualized Mastery, master branch at commit `926934e`)  
 **Prior Handover Reference**: [`docs/THOS_HANDOVER_HEX_AIM.md`](file:///home/kellyb_dev/projects/hex-aim/docs/THOS_HANDOVER_HEX_AIM.md) (Covered initial foundation & Waves 1–5)  
 **Source Session Log**: `C:\Users\Kelly\Downloads\AGY 5 AIM.txt` (`/mnt/c/Users/Kelly/Downloads/AGY 5 AIM.txt`, 463,679 bytes, 6,055 lines)  
 **Operating DNA**: [`docs/templates/UNIVERSAL_DNA.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/UNIVERSAL_DNA.md) & [`docs/templates/THOS_MASTER_TEMPLATE.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_MASTER_TEMPLATE.md)  
-**Status**: 🟢 **Green — Waves 6 through 22 fully implemented, verified, and deployed; 92/92 monorepo tests passing clean; Web Console live on `https://aim.getvintel.com`; Telegram Bot live on `@aim_pal_bot`; 5-min Redis polling cron active (`task-4847`)**  
+**Status**: 🟢 **Green — Waves 6 through 23 fully implemented, verified, and deployed; 99/99 monorepo tests passing clean; Web Console live on `https://aim.getvintel.com`; Telegram Bot live on `@aim_pal_bot`; 5-min Redis polling cron active (`task-4847`)**  
 
 ---
 
@@ -245,16 +245,17 @@ The Web Console (`apps/web`) is styled using the proprietary **Meta Astryx** cyb
 ## 11. Current System State Snapshot
 
 ### What Works ✅
-- **All 17 Roadmap Waves (W6–W22)**: Fully compiled, tested, and running in production.
-- **Web Console (`https://aim.getvintel.com`)**: 5 tabs active (Mastery Overview, Cognitive Gap Ledger, Classwork Ingestion Terminal, Scanned Submissions Register, Master Blank Templates & Dry-Runs).
+- **All 18 Roadmap Waves (W6–W23)**: Fully compiled, tested, and running in production.
+- **Web Console (`https://aim.getvintel.com`)**: 5 tabs active (Mastery Overview, Cognitive Gap Ledger with live decay countdown badges, Classwork Ingestion Terminal with 2-Way School MIS telemetry, Scanned Submissions Register, Master Blank Templates & Dry-Runs).
 - **Telegram Bot (`@aim_pal_bot`)**: Crisp 33-column monospace comparison tables, instant callback routing, and live session confirmation receipts.
 - **Vector PDF Micro-Service**: On-demand printable worksheets compiling in 93ms via warm Chromium pool with `pdf-lib` vector fallback.
-- **Ebbinghaus Cognitive Mastery Decay Engine**: Predictive mathematical modeling of student knowledge retention curves with ADHD visual scaffolding adjustments.
-- **Monorepo Build & Tests**: **90/90 tests passing clean** across all packages.
+- **Ebbinghaus Cognitive Mastery Decay Engine (Wave 22)**: Predictive mathematical modeling of student knowledge retention curves with ADHD visual scaffolding adjustments and real-time review queues.
+- **2-Way School MIS Integration (Wave 23)**: Bidirectional SIMS & Google Classroom synchronization engine (`SchoolMisSyncEngine.ts`), ingest pipeline for scanned classwork with teacher annotations, and telemetry dashboard in Tab 3.
+- **Monorepo Build & Tests**: **99/99 tests passing clean** (Core: 57/57 across 17 test files; Adapters: 15/15; Web: 16/16; Bot: 11/11).
 
 ### What Is Queued / In-Progress ❌
-- **Wave 23: 2-Way School MIS / Classwork Integration**: Architecture fully defined; implementation queued as the immediate next priority.
-- **Web Console Decay Badges**: Backend `CognitiveDecayEngine` is complete; frontend warning countdown badges (`⏳ Sound Waves: 68% in 3d`) need rendering in Tab 1 & Tab 2.
+- **Wave 24: Socratic Multi-Modal Inpainting**: SVG vector bounding-box error overlays on original student test scans in Tab 4 (`tabSubmissionsRegister.ts`).
+- **Wave 25: Sibling Cross-Teaching Collaboration Mode**: Peer-to-peer Socratic dialogue cards between Lara and Maya in Tab 2.
 
 ---
 
@@ -281,34 +282,37 @@ The Web Console (`apps/web`) is styled using the proprietary **Meta Astryx** cyb
 ### Bridge Prompt 7: Scope Clarification & Lineage Alignment
 > *"no. the waves we carried out in this session are at least 9-22. we started much further back than wave 19. i gave you the full text dump of this session. so? or is there a previous thos covering part of that? if there is it has to be referenced."*
 
+### Bridge Prompt 8: Canonical Template Identification
+> *"is it the thos_spec? does it map to the thos docs you found? is it the latest version? date?"*
+
+### Bridge Prompt 9: Spec vs Template Harmonization
+> *"so we need to combine the spec and template into one thos template? or how do you plan to use them?"*
+
 ---
 
 ## 13. Critical Path Forward (Top 3 Priority Actions for Incoming Agent)
 
-### Priority 1: Render Wave 22 Cognitive Decay Alerts in Web Console Tab 1 & Tab 2
-- **Action**: In `apps/web/src/ui/tabGapLedger.ts`, call `CognitiveDecayEngine.getInstance().getStudentDecayLedger(activeStudentId)` and render countdown warning pills above the gap table when retention drops below 80%.
-- **Dependencies**: `CognitiveDecayEngine.ts` (Commit `cbfe7d2`).
-- **Verification Criteria**: Run `pnpm test` in `apps/web` (11/11 pass); curl `http://localhost:3000` to verify alert markup.
-- **Complexity**: Low (~15 mins).
-
-### Priority 2: Implement Wave 23: 2-Way School MIS / Classwork Live Integration
-- **Action**:
-  1. Add MIS contracts to `packages/types/src/index.ts` (`SchoolMisConnector`, `ClassworkAssignmentPayload`, `GradebookSyncResult`).
-  2. Implement `SchoolMisSyncAdapter.ts` in `packages/adapters/src/school/` supporting SIMS, Google Classroom, and MS Teams webhooks.
-  3. Ingest teacher feedback and scanned test papers directly into `PilotBatchIngestor`.
-- **Dependencies**: `@hex-aim/types` and `@hex-aim/adapters`.
-- **Verification Criteria**: Vitest suite in `packages/adapters/test/schoolSync.test.ts` verifying bidirectional sync and error handling.
+### Priority 1: Implement Wave 24: Socratic Multi-Modal Inpainting & Vector Overlays
+- **Action**: In `apps/web/src/ui/tabSubmissionsRegister.ts`, inject dynamic SVG bounding-box overlays over original scanned student exam papers (`submission-p1-lara.png`). Highlight detected error zones with amber borders and embed interactive Socratic questioning tooltips.
+- **Dependencies**: `@hex-aim/core` and `apps/web`.
+- **Verification Criteria**: Unit test in `apps/web/test/inpainting.test.ts`; visual verification in Web Console Tab 4 modal viewer.
 - **Complexity**: Medium (~30 mins).
+
+### Priority 2: Implement Wave 25: Sibling Cross-Teaching Collaboration Mode
+- **Action**: Pair Lara's conceptual mastery in Science (Sound Waves / Pitch) with Maya's number line arithmetic strengths in Maths. Render peer-to-peer Socratic dialogue cards in Tab 2 allowing one sibling to prompt the other using guided discovery rubrics.
+- **Dependencies**: `CurriculumDependencyGraph.ts` and `CognitiveDecayEngine.ts`.
+- **Verification Criteria**: Unit tests in `packages/core/test/peerTeaching.test.ts` (4/4 pass).
+- **Complexity**: Medium (~25 mins).
 
 ### Priority 3: Monorepo Deployment & Production Verification
 - **Action**:
   ```bash
   cd /home/kellyb_dev/projects/hex-aim/apps/web && pnpm run build
   /home/kellyb_dev/.local/share/pnpm/vercel deploy public --prod --yes
-  cd /home/kellyb_dev/projects/hex-aim && pnpm test
+  cd /home/kellyb_dev/projects/hex-aim && pnpm -r run test
   ```
-- **Dependencies**: Priorities 1 & 2 complete.
-- **Verification Criteria**: All 90+ workspace tests pass; `curl -I https://aim.getvintel.com` returns HTTP/2 200.
+- **Dependencies**: Wave 24 complete.
+- **Verification Criteria**: All 100+ workspace tests pass clean; `curl -I https://aim.getvintel.com` returns HTTP/2 200.
 - **Complexity**: Low (~5 mins).
 
 ---
