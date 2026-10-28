@@ -190,8 +190,9 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     expect(resCbAll.status).toBe(200);
     const allCard = messaging.sentMessages[messaging.sentMessages.length - 1];
     expect(allCard?.text).toContain('Comparative Academic Snapshot • All Children');
-    expect(allCard?.text).toContain('OVERALL DIMENSIONS');
-    expect(allCard?.text).toContain('SUBJECT-BY-SUBJECT BREAKDOWN');
+    expect(allCard?.text).toContain('<pre>');
+    expect(allCard?.text).toContain('Overall Mast.');
+    expect(allCard?.text).toContain('SUBJECT MASTERY BREAKDOWN');
     expect(allCard?.text).toContain('Lara');
     expect(allCard?.text).toContain('Maya');
   });
