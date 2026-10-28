@@ -613,4 +613,43 @@ export interface SchoolSyncTelemetry {
   }>;
 }
 
+// ==========================================
+// WAVE 24: SOCRATIC MULTI-MODAL INPAINTING
+// ==========================================
+
+export interface InpaintingBoundingBox {
+  x: number;          // Normalized or pixel x (0-1000 or px)
+  y: number;          // Normalized or pixel y
+  width: number;
+  height: number;
+  label: string;
+  confidence: number;
+}
+
+export type InpaintingRedactionMode = 'redact_and_hint' | 'side_by_side_contrast' | 'scaffold_only';
+
+export interface SocraticInpaintingOverlay {
+  questionNumber: string;
+  conceptId: string;
+  errorTaxonomyId: string;
+  boundingBox: InpaintingBoundingBox;
+  misconceptionSummary: string;
+  socraticPromptText: string;
+  visualScaffoldType: 'particle_proximity_grid' | 'place_value_scale' | 'fraction_bar_model' | 'timeline_axis';
+  svgScaffoldSnippet: string;
+  redactedQuestionText: string;
+  guidedBlankPrompt: string;
+  remediationActionUrl: string;
+}
+
+export interface InpaintingInspectionResult {
+  submissionId: string;
+  studentId: string;
+  pageNumber: number;
+  originalScanUrl: string;
+  detectedErrorsCount: number;
+  overlays: SocraticInpaintingOverlay[];
+}
+
+
 
