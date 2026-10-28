@@ -268,7 +268,48 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(data.ok).toBe(true);
     expect(data.result.recorded).toBe(true);
   });
+
+  it('GET /api/privacy/status returns cryptographic vault health and compliance standards', async () => {
+    const res = await fetch(`${baseUrl}/api/privacy/status`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.status.vaultInitialized).toBe(true);
+    expect(data.status.activeKeyAlgorithm).toBe('AES-256-GCM');
+    expect(data.status.pbkdf2Iterations).toBe(100000);
+    expect(data.status.auditTrailIntegrity).toBe('intact');
+    expect(data.status.complianceStandards).toContain('Egyptian Data Protection Law No. 151/2020');
+  });
+
+  it('GET /api/privacy/audit-logs verifies SHA-256 tamper-evident hash chain', async () => {
+    const res = await fetch(`${baseUrl}/api/privacy/audit-logs`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.isIntegrityIntact).toBe(true);
+    expect(data.logsCount).toBeGreaterThan(0);
+    expect(data.logs[0].hashChain).toBeDefined();
+  });
+
+  it('POST /api/privacy/pseudonymize generates ephemeral token and redacts PII from prompt', async () => {
+    const res = await fetch(`${baseUrl}/api/privacy/pseudonymize`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'Grade paper for Lara Sherif. Contact Sherif Kelly at +201001234567.',
+        yearGroup: 'Y4'
+      })
+    });
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.pseudonymized.pseudonymToken).toMatch(/^stu_anon_/);
+    expect(data.redactedPrompt).not.toContain('Lara Sherif');
+    expect(data.redactedPrompt).toContain(data.pseudonymized.pseudonymToken);
+    expect(data.redactedPrompt).toContain('[GUARDIAN_COACH]');
+  });
 });
+
 
 
 
