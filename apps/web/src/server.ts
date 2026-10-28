@@ -4,7 +4,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -462,6 +462,21 @@ export function createServer(): http.Server {
           res.end(JSON.stringify({ error: e.message }));
         }
       });
+      return;
+    }
+
+    // Wave 24: Socratic Multi-Modal Inpainting API
+    if (url.pathname.startsWith('/api/vision/inpainting/')) {
+      const submissionId = url.pathname.replace('/api/vision/inpainting/', '').trim() || 'pkt-sci-w8';
+      const pageNumber = Number(url.searchParams.get('page') || '1');
+      const inpaintingEngine = SocraticInpaintingEngine.getInstance();
+      const inpainting = inpaintingEngine.generateInpaintingOverlays(submissionId, pageNumber);
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, inpainting }));
       return;
     }
 

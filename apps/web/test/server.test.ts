@@ -149,6 +149,18 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(data.synced).toBe(true);
     expect(data.confirmationCode).toContain('MIS-SYNC-ASTEN-COLLEGE');
   });
+
+  it('GET /api/vision/inpainting/:submissionId returns vector bounding-box overlays and Socratic hint', async () => {
+    const res = await fetch(`${baseUrl}/api/vision/inpainting/pkt-sci-w8?page=1`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.inpainting.detectedErrorsCount).toBeGreaterThan(0);
+    expect(data.inpainting.overlays[0].conceptId).toBe('Y4.SCI.SND.MEDIUM');
+    expect(data.inpainting.overlays[0].boundingBox.label).toBeDefined();
+    expect(data.inpainting.overlays[0].svgScaffoldSnippet).toContain('GAS / AIR');
+  });
 });
+
 
 

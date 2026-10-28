@@ -420,6 +420,7 @@ export function renderSubmissionsRegisterTab(): string {
             <span class="scan-tool-badge">🟢 De-skewed (+1.8°)</span>
             <span class="scan-tool-badge">✨ Contrast 100%</span>
             <span class="scan-tool-badge">🔍 OCR Anchors: ON</span>
+            <span class="scan-tool-badge" style="background: rgba(245,158,11,0.15); color: var(--orange); border: 1px solid var(--orange);">🎯 Socratic Inpainting: ACTIVE</span>
           </div>
 
           <div class="scan-paper-simulation">
@@ -435,11 +436,45 @@ export function renderSubmissionsRegisterTab(): string {
               <div class="sim-grade-tag grade-pass">✓ 2/2 Marks (Handwriting OCR: 99.8% Confidence)</div>
             </div>
 
-            <div class="sim-question-box ocr-box-orange">
+            <div class="sim-question-box ocr-box-orange" style="position: relative;">
               <div class="sim-q-num">Q2 [2 Marks] (Concept: Y4.SCI.SND.MEDIUM)</div>
               <div class="sim-q-text">Compare the speed of sound through water compared to air.</div>
-              <div class="sim-student-handwriting">Sound travels faster in air than water because water is heavier and slows it down.</div>
+              <div class="sim-student-handwriting" style="text-decoration: line-through; opacity: 0.65;">Sound travels faster in air than water because water is heavier and slows it down.</div>
               <div class="sim-grade-tag grade-fail">✗ 0/2 Marks (Misconception: Dense Medium Acceleration Inversion)</div>
+
+              <!-- Wave 24: Socratic Multi-Modal Inpainting Vector Overlay -->
+              <div class="inpainting-vector-box" style="margin-top: 10px; border: 1.5px dashed var(--orange); background: rgba(245,158,11,0.06); padding: 10px; border-radius: 6px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--orange);">🎯 Socratic Vector Inpainting Overlay (bbox: [75, 390, 650, 125])</span>
+                  <span class="badge badge-yellow" style="font-size: 9px;">99.4% OCR Confidence</span>
+                </div>
+                <div style="font-size: 11px; color: var(--astryx-text-contrast); margin-bottom: 6px;">
+                  <strong>Parent Socratic Prompt:</strong> <em>"Think of sound as dominos knocking together. If dominos are packed tightly like in water, does the wave reach the end faster or slower than in air?"</em>
+                </div>
+                <!-- Inline SVG Particle Proximity Scaffold -->
+                <svg viewBox="0 0 460 70" style="width: 100%; max-height: 70px; background: rgba(0,0,0,0.2); border-radius: 4px; margin-bottom: 6px;">
+                  <g transform="translate(10, 10)">
+                    <text x="0" y="12" fill="#8892b0" font-size="9" font-weight="700">AIR (343 m/s) • Widely Spaced Particles</text>
+                    <circle cx="15" cy="30" r="4" fill="#4ade80" />
+                    <circle cx="55" cy="30" r="4" fill="#4ade80" />
+                    <circle cx="95" cy="30" r="4" fill="#4ade80" />
+                    <circle cx="135" cy="30" r="4" fill="#4ade80" />
+                    <path d="M 20 30 L 50 30" stroke="#64748b" stroke-dasharray="2 2" stroke-width="1.5" />
+                  </g>
+                  <g transform="translate(240, 10)">
+                    <text x="0" y="12" fill="#00e5ff" font-size="9" font-weight="700">WATER (1,480 m/s) • Close Domino Effect 🚀</text>
+                    <circle cx="10" cy="30" r="4" fill="#00e5ff" />
+                    <circle cx="25" cy="30" r="4" fill="#00e5ff" />
+                    <circle cx="40" cy="30" r="4" fill="#00e5ff" />
+                    <circle cx="55" cy="30" r="4" fill="#00e5ff" />
+                    <circle cx="70" cy="30" r="4" fill="#00e5ff" />
+                    <path d="M 10 30 L 70 30" stroke="#00e5ff" stroke-width="1.5" />
+                  </g>
+                </svg>
+                <div style="background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 4px; font-size: 11px; font-family: monospace; color: var(--cyan);">
+                  ✏️ <strong>Guided Student Inpainting:</strong> Sound travels <u>[_______]</u> in water than air because molecules are <u>[closer / further]</u>.
+                </div>
+              </div>
             </div>
 
             <div class="sim-question-box ocr-box-green">
