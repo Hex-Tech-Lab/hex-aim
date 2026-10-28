@@ -174,8 +174,8 @@ ${renderDashboardStyles()}
             <i data-lucide="user" class="w-4 h-4"></i>
           </span>
           <span class="student-info">
-            <span class="name">Lara</span>
-            <span class="meta">Year 4 • British Primary Track</span>
+            <span class="name"><span class="lang-en-only">Lara</span><span class="lang-ar-only">لارا</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • British Primary Track</span><span class="lang-ar-only">الصف الرابع • المنهاج البريطاني</span></span>
           </span>
           <span class="active-dot"></span>
         </span>
@@ -188,8 +188,50 @@ ${renderDashboardStyles()}
             <i data-lucide="user-check" class="w-4 h-4"></i>
           </span>
           <span class="student-info">
-            <span class="name">Maya</span>
-            <span class="meta">Year 4 • British Primary Track</span>
+            <span class="name"><span class="lang-en-only">Maya</span><span class="lang-ar-only">مايا</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • British Primary Track</span><span class="lang-ar-only">الصف الرابع • المنهاج البريطاني</span></span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-youssef" onclick="setStudent('youssef')" title="Switch to Youssef's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); color: #60a5fa;">
+            <i data-lucide="compass" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name"><span class="lang-en-only">Youssef</span><span class="lang-ar-only">يوسف</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • Spatial / Visual</span><span class="lang-ar-only">الصف الرابع • بصري وفراغي</span></span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-omar" onclick="setStudent('omar')" title="Switch to Omar's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name"><span class="lang-en-only">Omar</span><span class="lang-ar-only">عمر</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • Speed & Fluency</span><span class="lang-ar-only">الصف الرابع • سرعة وطلاقة</span></span>
+          </span>
+          <span class="active-dot"></span>
+        </span>
+      </button>
+
+      <button class="pill-btn" id="pill-nour" onclick="setStudent('nour')" title="Switch to Nour's Dossier">
+        <span class="pill-ring-spin"></span>
+        <span class="pill-inner">
+          <span class="avatar-ring" style="border-color: #ec4899; background: rgba(236, 72, 153, 0.15); color: #f472b6;">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </span>
+          <span class="student-info">
+            <span class="name"><span class="lang-en-only">Nour</span><span class="lang-ar-only">نور</span></span>
+            <span class="meta"><span class="lang-en-only">Year 4 • Analytical Logic</span><span class="lang-ar-only">الصف الرابع • منطق وتحليل</span></span>
           </span>
           <span class="active-dot"></span>
         </span>
@@ -200,19 +242,39 @@ ${renderDashboardStyles()}
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
     <button id="tab-btn-mastery" class="nav-tab active" onclick="switchTab('tab-student-view', this)">
-      <i data-lucide="line-chart" class="w-4 h-4"></i> <span class="tab-label">Student Progress & Mastery</span>
+      <i data-lucide="line-chart" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Student Progress & Mastery</span>
+        <span class="lang-ar-only">١. مسار الإتقان والتقدم</span>
+      </span>
     </button>
     <button id="tab-btn-ledger" class="nav-tab" onclick="switchTab('tab-gap-ledger', this)">
-      <i data-lucide="brain-circuit" class="w-4 h-4"></i> <span class="tab-label">Cognitive Gap Ledger</span>
+      <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Cognitive Gap Ledger</span>
+        <span class="lang-ar-only">٢. سجل الفجوات وخطة التدخل</span>
+      </span>
     </button>
     <button id="tab-btn-infra" class="nav-tab" onclick="switchTab('tab-infra-gate', this)">
-      <i data-lucide="shield-alert" class="w-4 h-4"></i> <span class="tab-label">Ingestion Gate & Infrastructure</span>
+      <i data-lucide="shield-alert" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Ingestion Gate & Infrastructure</span>
+        <span class="lang-ar-only">٣. بوابة الاستيعاب والربط التقني</span>
+      </span>
     </button>
     <button id="tab-btn-submissions" class="nav-tab" onclick="switchTab('tab-submissions-register', this)">
-      <i data-lucide="scan-line" class="w-4 h-4"></i> <span class="tab-label">Scanned Submissions (52)</span>
+      <i data-lucide="scan-line" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Scanned Submissions (52)</span>
+        <span class="lang-ar-only">٤. إجابات الطلاب والتقييم التشخيصي</span>
+      </span>
     </button>
     <button id="tab-btn-templates" class="nav-tab" onclick="switchTab('tab-blank-templates', this)">
-      <i data-lucide="file-check" class="w-4 h-4"></i> <span class="tab-label">Blank Templates & Dry-Runs</span>
+      <i data-lucide="file-check" class="w-4 h-4"></i>
+      <span class="tab-label">
+        <span class="lang-en-only">Blank Templates & Dry-Runs</span>
+        <span class="lang-ar-only">٥. قوالب التمارين والتدريبات</span>
+      </span>
     </button>
   </div>
 
@@ -242,17 +304,23 @@ ${renderDashboardStyles()}
     const studentsData = {
       lara: {
         name: "Lara",
+        nameAr: "لارا",
         meta: "Asten College • Year 4 British Track • ADHD/Dyslexia traits active",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • سمات تشتت الانتباه وعسر القراءة نشطة",
         termAvg: "92%",
         science: "94%",
         maths: "82%",
         english: "88%",
         status: "Mastery Stable (92% Avg)",
+        statusAr: "الإتقان مستقر (متوسط ٩٢٪)",
         score: "19 / 20",
         scorePct: "(95%)",
         eval: "Science Midterm: Mastered skeletons, muscles, and medicines. Working memory slipped on negative scale.",
+        evalAr: "منتصف الفصل لمادة العلوم: إتقان تام للهيكل العظمي والعضلات والأدوية. زلة في الذاكرة العاملة بالأرقام السالبة.",
         strategyTitle: "Target: 8 Min Sprint • Visual Chunking",
+        strategyTitleAr: "الهدف: تمرين ٨ دقائق • تقسيم بصري مكثف",
         strategyDesc: "ADHD & Dyslexia traits active. Visual room partitions protect place-value working memory under speed.",
+        strategyDescAr: "سمات تشتت الانتباه نشطة. تقسيم الخانات بصرياً يحمي الذاكرة العاملة للقيمة المكانية أثناء السرعة.",
         radar: [98, 91, 78, 72],
         gaugeVal: 94,
         series: {
@@ -261,24 +329,30 @@ ${renderDashboardStyles()}
           english: [60, 68, 75, 80, 82, 85, 86, 88]
         },
         misconceptions: [
-          { code: "Y4.MATH.NPV.EMPTY_COLUMNS", class: "ERR_PHANTOM_ZERO", desc: "Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)", priority: "orange" },
-          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -4°C as warmer than -1°C", priority: "yellow" },
-          { code: "Y4.MATH.NPV.WRITING_NUMBERS", class: "ERR_TRANSPOSITION", desc: "Transposing digits under time rush (writes 03 for thirty)", priority: "yellow" }
+          { code: "Y4.MATH.NPV.EMPTY_COLUMNS", class: "ERR_PHANTOM_ZERO", desc: "Omits zero in unmentioned place-value rooms (writes 24,16 for 24,106)", descAr: "إسقاط الصفر في خانات القيمة المكانية غير المنطوقة (كتابة ٢٤,١٦ بدلاً من ٢٤,١٠٦)", priority: "orange" },
+          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -4°C as warmer than -1°C", descAr: "ترتيب -٤ مئوية على أنها أدفأ من -١ مئوية", priority: "yellow" },
+          { code: "Y4.MATH.NPV.WRITING_NUMBERS", class: "ERR_TRANSPOSITION", desc: "Transposing digits under time rush (writes 03 for thirty)", descAr: "قلب مواقع الأرقام تحت ضغط الوقت (كتابة ٠٣ بدلاً من ثلاثين)", priority: "yellow" }
         ]
       },
       maya: {
         name: "Maya",
+        nameAr: "مايا",
         meta: "Asten College • Year 4 British Track • Verbal strengths & peer teacher",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • مهارات لفظية وتعليم تبادلي",
         termAvg: "94%",
         science: "96%",
         maths: "86%",
         english: "91%",
         status: "Mastery Advanced (94% Avg)",
+        statusAr: "إتقان متقدم (متوسط ٩٤٪)",
         score: "20 / 20",
         scorePct: "(100%)",
         eval: "Science Midterm: Perfect classification keys and vertebrate traits. Clear methodical execution.",
+        evalAr: "منتصف الفصل لمادة العلوم: إتقان تام لمفاتيح التصنيف وصفات الفقاريات. تنفيذ منهجي واضح ومتقن.",
         strategyTitle: "Target: 10 Min Sprint • Verbal Peer Teaching",
+        strategyTitleAr: "الهدف: تمرين ١٠ دقائق • تعليم تبادلي لفظي",
         strategyDesc: "High verbal retention and methodical steps. Explaining concepts aloud to Lara reinforces long-term schemas.",
+        strategyDescAr: "تثبيت لفظي مرتفع وخطوات منهجية. الشرح بصوت عالٍ للارا يعزز الذاكرة المعرفية طويلة المدى.",
         radar: [99, 95, 86, 84],
         gaugeVal: 96,
         series: {
@@ -287,9 +361,102 @@ ${renderDashboardStyles()}
           english: [65, 75, 82, 86, 88, 89, 90, 91]
         },
         misconceptions: [
-          { code: "Y4.MATH.NPV.5DIGIT_ORDERING", class: "ERR_SHARED_PREFIX_ORDERING", desc: "Sequencing 5-digit numbers that share leading prefix digits", priority: "orange" },
-          { code: "Y4.MATH.NPV.NUMBER_LINE_SCALES", class: "ERR_INTERVAL_DECODE", desc: "Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)", priority: "yellow" },
-          { code: "Y4.MATH.NPV.CROSSING_ZERO", class: "ERR_FENCEPOST_COUNT", desc: "Counting the starting tick mark across zero bridge", priority: "yellow" }
+          { code: "Y4.MATH.NPV.5DIGIT_ORDERING", class: "ERR_SHARED_PREFIX_ORDERING", desc: "Sequencing 5-digit numbers that share leading prefix digits", descAr: "ترتيب أعداد ٥ خانات المشتركة في البادئة الأولى", priority: "orange" },
+          { code: "Y4.MATH.NPV.NUMBER_LINE_SCALES", class: "ERR_INTERVAL_DECODE", desc: "Counting tick marks by 1s instead of decoding jump size (+2, +5, +10)", descAr: "عد علامات خط الأعداد بالآحاد بدلاً من قراءة فترات القفز (+٢، +٥، +١٠)", priority: "yellow" },
+          { code: "Y4.MATH.NPV.CROSSING_ZERO", class: "ERR_FENCEPOST_COUNT", desc: "Counting the starting tick mark across zero bridge", descAr: "احتساب نقطة البداية عند عبور جسر الصفر", priority: "yellow" }
+        ]
+      },
+      youssef: {
+        name: "Youssef",
+        nameAr: "يوسف",
+        meta: "Asten College • Year 4 British Track • Spatial & Visual Strengths",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • نقاط قوة بصرية وفراغية",
+        termAvg: "89%",
+        science: "91%",
+        maths: "84%",
+        english: "92%",
+        status: "Mastery Progressing (89% Avg)",
+        statusAr: "تقدم مستمر (متوسط ٨٩٪)",
+        score: "18 / 20",
+        scorePct: "(90%)",
+        eval: "Maths & Geometry: Excellent spatial reasoning. Multi-digit column alignment requires visual grid frames.",
+        evalAr: "الرياضيات والهندسة: إدراك فراغي ممتاز. محاذاة أعمدة الأرقام المتعددة تتطلب شبكات بصرية محددة.",
+        strategyTitle: "Target: 8 Min Sprint • Visual Grid Scaffolding",
+        strategyTitleAr: "الهدف: تمرين ٨ دقائق • شبكات بصرية محددة الأعمدة",
+        strategyDesc: "Visual grids prevent column drift. Scaffolding place-value boxes reinforces standard arithmetic procedures.",
+        strategyDescAr: "الشبكات البصرية تمنع انزلاق الأعمدة. تدعيم مربعات القيمة المكانية يعزز دقة الحساب القياسي.",
+        radar: [88, 92, 85, 76],
+        gaugeVal: 89,
+        series: {
+          science: [50, 62, 70, 78, 82, 85, 88, 91],
+          maths:   [40, 52, 60, 68, 74, 78, 80, 84],
+          english: [58, 68, 76, 82, 85, 88, 90, 92]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.COL.REGROUP", class: "ERR_COLUMN_DRIFT", desc: "Misaligning borrowed tens into hundreds column under fast writing", descAr: "انزلاق العشرات المستلفة إلى خانة المئات أثناء الكتابة السريعة", priority: "orange" },
+          { code: "Y4.SCI.LGT.SHADOW", class: "ERR_SHADOW_ORIENTATION", desc: "Projecting shadow length without accounting for light source angle", descAr: "تحديد طول الظل دون حساب زاوية سقوط مصدر الضوء", priority: "yellow" }
+        ]
+      },
+      omar: {
+        name: "Omar",
+        nameAr: "عمر",
+        meta: "Asten College • Year 4 British Track • High Processing Speed & Fluency",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • سرعة معالجة عالية وطلاقة حسابية",
+        termAvg: "91%",
+        science: "93%",
+        maths: "88%",
+        english: "92%",
+        status: "Mastery Advanced (91% Avg)",
+        statusAr: "إتقان متقدم (متوسط ٩١٪)",
+        score: "19 / 20",
+        scorePct: "(95%)",
+        eval: "Maths Fluency: Rapid mental calculation speed. Rushing leads to inversions on negative temperature scales.",
+        evalAr: "الطلاقة الحسابية: سرعة فائقة في الحساب الذهني. التسرع يؤدي لقلب ترتيب درجات الحرارة السالبة.",
+        strategyTitle: "Target: 5 Min Sprint • Calibrated Pacing Timer",
+        strategyTitleAr: "الهدف: تمرين ٥ دقائق • مؤقت لضبط وتيرة الحل والتأني",
+        strategyDesc: "High retrieval velocity benefits from intentional 30s pause checkpoints before submitting final steps.",
+        strategyDescAr: "السرعة العالية تستفيد من وقفات تأملية مدتها ٣٠ ثانية قبل اعتماد الخطوات النهائية.",
+        radar: [92, 88, 94, 82],
+        gaugeVal: 91,
+        series: {
+          science: [55, 68, 75, 82, 86, 89, 91, 93],
+          maths:   [48, 60, 68, 75, 80, 84, 86, 88],
+          english: [62, 72, 80, 85, 88, 89, 90, 92]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.NPV.NEGATIVE_NUMBERS", class: "ERR_NEGATIVE_MAGNITUDE_INVERSION", desc: "Orders -5°C as warmer than -2°C due to fast magnitude scanning", descAr: "ترتيب -٥ مئوية على أنها أدفأ من -٢ مئوية بسبب مسح الأرقام سريعاً", priority: "orange" },
+          { code: "Y4.ENG.SPL.PREFIX_DIS", class: "ERR_PREFIX_DOUBLE_LETTER", desc: "Omitting prefix letter duplication in dissolve and disappoint", descAr: "إسقاط تكرار حرف البادئة في الكلمات الإنجليزية المركبة", priority: "yellow" }
+        ]
+      },
+      nour: {
+        name: "Nour",
+        nameAr: "نور",
+        meta: "Asten College • Year 4 British Track • Verbal & Analytical Logic Strengths",
+        metaAr: "مدرسة أستن كوليدج • الصف الرابع المنهاج البريطاني • مهارات تحليلية ومنطقية استثنائية",
+        termAvg: "95%",
+        science: "97%",
+        maths: "91%",
+        english: "97%",
+        status: "Mastery Exemplary (95% Avg)",
+        statusAr: "إتقان استثنائي (متوسط ٩٥٪)",
+        score: "20 / 20",
+        scorePct: "(100%)",
+        eval: "English & Science: Outstanding analytical comprehension. Building automaticity on fraction wall representations.",
+        evalAr: "اللغة والعلوم: فهم تحليلي فائق للنصوص المعقدة. تعمل على ترسيخ الطلاقة في حائط الكسور المتكافئة.",
+        strategyTitle: "Target: 10 Min Sprint • Deep Socratic Inquiry",
+        strategyTitleAr: "الهدف: تمرين ١٠ دقائق • استقصاء وحوار سقراطي عميق",
+        strategyDesc: "Thrives on why questions. Connecting fractions to physical measurement scales cements deep conceptual models.",
+        strategyDescAr: "تزدهر مع أسئلة 'لماذا وكيف'. ربط الكسور بمقاييس القياس الفيزيائية يرسخ النماذج المعرفية العميقة.",
+        radar: [98, 96, 92, 90],
+        gaugeVal: 95,
+        series: {
+          science: [65, 78, 85, 89, 92, 94, 96, 97],
+          maths:   [55, 68, 76, 82, 85, 88, 90, 91],
+          english: [70, 82, 88, 91, 93, 95, 96, 97]
+        },
+        misconceptions: [
+          { code: "Y4.MATH.FRAC.EQUIV", class: "ERR_FRACTION_SIMPLIFY_SPEED", desc: "Simplifying 2/4 to 1/2 under mental time rush", descAr: "تبسيط ٢/٤ إلى ١/٢ تحت ضغط الوقت الذهني السريع", priority: "yellow" },
+          { code: "Y4.SCI.MAT.STATE", class: "ERR_VAPOR_VISIBILITY", desc: "Conflating visible steam droplet clouds with invisible water vapor gas", descAr: "الخلط بين قطرات البخار السحابية المرئية وغاز بخار الماء غير المرئي", priority: "yellow" }
         ]
       }
     };
