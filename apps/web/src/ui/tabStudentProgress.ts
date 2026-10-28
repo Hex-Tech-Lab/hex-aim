@@ -134,7 +134,29 @@ export function renderStudentProgressTab(): string {
             🧭 Open Socratic Guide Companion (2-Page A4)
           </a>
         </div>
+
+        <!-- Wave 26: Adaptive Exam Simulator Quick Launch -->
+        <div class="card" style="border-left: 3px solid var(--accent-cyan, #06b6d4);">
+          <div class="card-header">
+            <h2 class="flex items-center gap-1.5"><i data-lucide="timer" class="w-4 h-4 text-cyan-400"></i> Exam Simulator (Wave 26)</h2>
+            <span class="badge badge-cyan">ADHD Paced</span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">
+            High-fidelity Year 4 mock testing environment with sensory-friendly countdowns and 5m "Pause & Breathe" pacing breaks.
+          </div>
+          <div style="display: grid; gap: 8px;">
+            <a href="/exam/exam_y4_sci_term1?student=lara" target="_blank" style="display: flex; justify-content: space-between; align-items: center; background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--text-primary, #f1f5f9); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none;">
+              <span>🔬 Science Mock: Sound & Matter</span>
+              <span style="color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 11px;">15m • Start →</span>
+            </a>
+            <a href="/exam/exam_y4_math_term1?student=lara" target="_blank" style="display: flex; justify-content: space-between; align-items: center; background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); color: var(--text-primary, #f1f5f9); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none;">
+              <span>📐 Maths Mock: Columns & Fractions</span>
+              <span style="color: var(--purple, #a855f7); font-family: 'JetBrains Mono', monospace; font-size: 11px;">15m • Start →</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>`;
+
 }
