@@ -1,10 +1,10 @@
 # TOTAL HANDOVER OF STATE (THOS) — PROJECT HEX-AIM
 
-> **Current Canonical THOS (Waves 19–22 & Stabilization):** [`docs/history/THOS_2026-10-28_1635_WAVES_19_TO_22_AND_TELEGRAM_STABILIZATION.md`](file:///home/kellyb_dev/projects/hex-aim/docs/history/THOS_2026-10-28_1635_WAVES_19_TO_22_AND_TELEGRAM_STABILIZATION.md)  
-> **Canonical Specification Template:** [`docs/templates/THOS_SPEC.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_SPEC.md)  
+> **Current Canonical THOS (Waves 6–22 Full Mega-Session):** [`docs/history/THOS_2026-10-28_1645_WAVES_6_TO_22_FULL_SESSION_MEGA_HANDOVER.md`](file:///home/kellyb_dev/projects/hex-aim/docs/history/THOS_2026-10-28_1645_WAVES_6_TO_22_FULL_SESSION_MEGA_HANDOVER.md)  
+> **Unified Canonical Master Template:** [`docs/templates/THOS_MASTER_TEMPLATE.md`](file:///home/kellyb_dev/projects/hex-aim/docs/templates/THOS_MASTER_TEMPLATE.md)  
 > **Project:** `hex-aim` (Adaptive Individualized Mastery)  
 > **Target Path:** `/home/kellyb_dev/projects/hex-aim`  
-> **Last Updated:** 2026-10-28T16:35:00+03:00  
+> **Last Updated:** 2026-10-28T16:52:00+03:00  
 > **Source Session:** Antigravity (AGY / Gemini 3.8 Flash High)
 
 ---
