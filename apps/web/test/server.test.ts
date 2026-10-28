@@ -160,7 +160,37 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(data.inpainting.overlays[0].boundingBox.label).toBeDefined();
     expect(data.inpainting.overlays[0].svgScaffoldSnippet).toContain('GAS / AIR');
   });
+
+  it('GET /api/collaboration/siblings returns reciprocal Socratic pairing for Lara & Maya', async () => {
+    const res = await fetch(`${baseUrl}/api/collaboration/siblings?studentA=lara&studentB=maya`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.pairing.activeCardsCount).toBe(2);
+    expect(data.pairing.primaryPairing.scienceLead.tutorStudentName).toBe('Lara');
+    expect(data.pairing.primaryPairing.mathsLead.tutorStudentName).toBe('Maya');
+    expect(data.pairing.primaryPairing.scienceLead.hookPrompt.ar).toBeDefined();
+  });
+
+  it('POST /api/collaboration/evaluate grades peer discovery interaction', async () => {
+    const res = await fetch(`${baseUrl}/api/collaboration/evaluate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cardId: 'peer_card_lara_science_Y4_SCI_SND_MEDIUM',
+        tutorExplanation: 'Sound waves need particles to vibrate',
+        learnerResponse: 'Because sound cannot travel in a vacuum!'
+      })
+    });
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.evaluation.success).toBe(true);
+    expect(data.evaluation.confidenceGain).toBe(15);
+    expect(data.evaluation.feedback.ar).toContain('موجة ميكانيكية');
+  });
 });
+
 
 
 

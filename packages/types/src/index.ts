@@ -651,5 +651,54 @@ export interface InpaintingInspectionResult {
   overlays: SocraticInpaintingOverlay[];
 }
 
+// ==========================================
+// WAVE 25: SIBLING CROSS-TEACHING COLLABORATION MODE
+// ==========================================
+
+export interface PeerTeachingDialogueCard {
+  id: string;
+  topicCode: string;
+  topicTitle: string;
+  subject: 'science' | 'maths' | 'english';
+  tutorStudentId: string;
+  tutorStudentName: string;
+  learnerStudentId: string;
+  learnerStudentName: string;
+  tutorStrengthScore: number;
+  learnerNeedScore: number;
+  hookPrompt: {
+    en: string;
+    ar: string;
+  };
+  guidedAnalogy: {
+    en: string;
+    ar: string;
+  };
+  socraticDiscoveryPrompt: {
+    en: string;
+    ar: string;
+  };
+  verificationCheck: {
+    en: string;
+    ar: string;
+  };
+  recommendedDurationMins: number;
+}
+
+export interface SiblingCollaborationPairing {
+  sessionId: string;
+  createdAt: string;
+  primaryPairing: {
+    scienceLead: PeerTeachingDialogueCard; // Lara teaches Maya Science
+    mathsLead: PeerTeachingDialogueCard;   // Maya teaches Lara Maths
+  };
+  collaborationRationale: {
+    en: string;
+    ar: string;
+  };
+  activeCardsCount: number;
+}
+
+
 
 
