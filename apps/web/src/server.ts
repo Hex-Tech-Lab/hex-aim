@@ -4,7 +4,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -345,6 +345,33 @@ export function createServer(): http.Server {
         'Access-Control-Allow-Origin': '*',
       });
       res.end(JSON.stringify(prompts));
+      return;
+    }
+
+    // Wave 22: Predictive Cognitive Mastery Decay API
+    if (url.pathname.startsWith('/api/decay/')) {
+      const parts = url.pathname.replace('/api/decay/', '').split('/');
+      const studentId = parts[0] || 'lara';
+      const isQueue = parts[1] === 'queue';
+      const decayEngine = CognitiveDecayEngine.getInstance();
+
+      if (isQueue) {
+        const queue = decayEngine.generateSpacedRepetitionQueue(studentId);
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        });
+        res.end(JSON.stringify({ studentId, queue, totalItems: queue.length }));
+        return;
+      }
+
+      const records = decayEngine.getStudentDecayLedger(studentId);
+      const profile = decayEngine.getProfile(studentId);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ studentId, profile, records }));
       return;
     }
 

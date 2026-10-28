@@ -24,6 +24,50 @@ export function renderGapLedgerTab(): string {
       </div>
     </div>
 
+    <!-- Wave 22: Predictive Cognitive Mastery Decay Warnings -->
+    <div class="card" style="border-left: 4px solid var(--accent-orange, #f97316); margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.2rem;">⏳</span>
+          <div>
+            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary, #f1f5f9);">Wave 22: Predictive Mastery Decay Warnings (Ebbinghaus Spaced Repetition)</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-muted, #94a3b8);">Mathematical retention modeling adjusted for Lara (ADHD visual anchor half-life: 6.2d) vs Maya (rapid consolidation: 8.8d).</p>
+          </div>
+        </div>
+        <span class="badge badge-orange" style="font-size: 11px;">Active Ebbinghaus Guard</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-top: 8px;">
+        <div style="background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.25); border-radius: 8px; padding: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: #f97316; font-size: 0.85rem;">👧 Lara • Sound Transmission</strong>
+            <span class="badge badge-orange" style="font-size: 10px;">Vulnerable (68%)</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted, #94a3b8); margin-top: 6px;">
+            Last practiced: 10 days ago. Predicted retention down to 68%. <strong>3 days until critical (&lt;60%)</strong>.
+          </div>
+          <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.75rem; color: #94a3b8;">Accommodation: 8m Visual Micro-Sprint</span>
+            <a href="/api/template/sci-w8/pdf" target="_blank" class="btn" style="padding: 4px 8px; font-size: 11px; margin: 0; width: auto;">⚡ Launch Booster</a>
+          </div>
+        </div>
+
+        <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; padding: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: #f59e0b; font-size: 0.85rem;">👧 Maya • Sound Wave Pitch</strong>
+            <span class="badge badge-yellow" style="font-size: 10px;">Stabilizing (74%)</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted, #94a3b8); margin-top: 6px;">
+            Last practiced: 8 days ago. Retention at 74%. <strong>5 days until review threshold</strong>.
+          </div>
+          <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.75rem; color: #94a3b8;">Accommodation: 12m Review Drill</span>
+            <a href="/api/template/sci-w8/pdf" target="_blank" class="btn btn-outline" style="padding: 4px 8px; font-size: 11px; margin: 0; width: auto;">⚡ Queue Drill</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-header">
         <h2>Detailed Cognitive Gap Ledger (All Students)</h2>
