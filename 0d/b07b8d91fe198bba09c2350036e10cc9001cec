@@ -1,0 +1,21 @@
+apps/web/public/index.html
+  s_6625bc67577472::t_830ea1e41560ea 2503,2519,2522,2524-2557
+apps/web/src/server.ts
+  s_6625bc67577472::t_e9d6f391162a52 7,468-482
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0db07b8d91fe198bba09c2350036e10cc9001cec",
+  "prompts": {},
+  "sessions": {
+    "s_6625bc67577472": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e3d758-e9b9-4cdb-bb9d-00d9ef397297",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
