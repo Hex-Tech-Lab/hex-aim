@@ -1,0 +1,16 @@
+docs/reports/WAVES_REASONING_PROCESS_AUDIT.html
+  h_cdd764b4030252 1-181
+docs/reports/WAVES_REASONING_PROCESS_AUDIT.md
+  h_cdd764b4030252 1-179
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f387ad4bca6be6753c6e3f3727dccf07d4402305",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
