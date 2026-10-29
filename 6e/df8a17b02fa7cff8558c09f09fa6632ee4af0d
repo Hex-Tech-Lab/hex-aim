@@ -1,0 +1,37 @@
+docs/reports/STRATEGIC_WAVE_GENERATION_FRAMEWORK.html
+  s_99ed77941625bd::t_e57b68b9e02fcc 46
+docs/reports/STRATEGIC_WAVE_GENERATION_FRAMEWORK.md
+  s_99ed77941625bd::t_e57b68b9e02fcc 2-9
+docs/reports/WAVES_HISTORICAL_CENSUS.md
+  s_99ed77941625bd::t_e57b68b9e02fcc 2-9
+docs/reports/SESSION_WAVES_EVOLUTION_REVIEW.md
+  s_99ed77941625bd::t_e57b68b9e02fcc 2-9
+docs/reports/FIRST_WAVES_REQUEST_AUDIT.md
+  s_99ed77941625bd::t_e57b68b9e02fcc 3-11
+docs/reports/FIRST_WAVES_REQUEST_AUDIT.html
+  s_99ed77941625bd::t_e57b68b9e02fcc 106
+docs/reports/WAVES_REASONING_PROCESS_AUDIT.html
+  s_99ed77941625bd::t_e57b68b9e02fcc 111
+docs/reports/WAVES_HISTORICAL_CENSUS.html
+  s_99ed77941625bd::t_e57b68b9e02fcc 48
+docs/reports/SESSION_WAVES_EVOLUTION_REVIEW.html
+  s_99ed77941625bd::t_e57b68b9e02fcc 58
+docs/reports/WAVES_REASONING_PROCESS_AUDIT.md
+  s_99ed77941625bd::t_e57b68b9e02fcc 3-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6edf8a17b02fa7cff8558c09f09fa6632ee4af0d",
+  "prompts": {},
+  "sessions": {
+    "s_99ed77941625bd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8aff6cbd-403b-4230-aada-715e0267b327",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
