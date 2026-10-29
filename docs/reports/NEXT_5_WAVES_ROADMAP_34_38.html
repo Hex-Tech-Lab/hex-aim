@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HEX-AIM: Next 5 Waves Architectural Roadmap (Waves 34 – 38)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #0e1526;
+      --card: #131b2e;
+      --border: rgba(148, 163, 184, 0.15);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --cyan: #00e5ff;
+      --emerald: #10b981;
+      --purple: #8b5cf6;
+      --blue: #3b82f6;
+      --amber: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 32px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .badge-cyan {
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+    }
+    .badge-purple {
+      background: rgba(139, 92, 246, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #fff; }
+    h2 { font-size: 20px; font-weight: 700; margin: 24px 0 14px; color: var(--cyan); }
+    h3 { font-size: 16px; font-weight: 700; margin: 16px 0 8px; color: #e2e8f0; }
+    p, li { font-size: 14px; color: #cbd5e1; margin-bottom: 10px; }
+    ul { padding-left: 20px; margin-bottom: 16px; }
+    .table-container {
+      overflow-x: auto;
+      margin: 20px 0 30px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.6);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 1200px;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid rgba(148, 163, 184, 0.08);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    th {
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--cyan);
+      font-weight: 700;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 0;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.3);
+    }
+    td strong {
+      color: #f8fafc;
+    }
+    td code {
+      font-family: 'JetBrains Mono', monospace;
+      color: #38bdf8;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <span class="badge badge-purple">Roadmap Architecture</span>
+      <span class="badge badge-cyan">Waves 34 – 38</span>
+    </div>
+    <h1>HEX-AIM: Strategic Architectural Roadmap (Waves 34 – 38)</h1>
+    <p style="color: var(--muted); font-size: 13.5px; margin-bottom: 24px;">
+      Enterprise Cognitive Acceleration, Sensory Telemetry, Statutory Compliance & Autonomous Co-Piloting • Generated 2026-10-29
+    </p>
+
+    <!-- Strategic Wave Summaries -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <div class="card" style="border-left: 3px solid #00e5ff; margin-bottom: 0;">
+        <span class="badge badge-cyan" style="margin-bottom: 8px;">Wave 34</span>
+        <h3 style="color: #fff; margin-top: 4px;">Multi-Modal Ink & Dysgraphia Telemetry</h3>
+        <p style="font-size: 12.5px; color: var(--muted);">WebGL digital inking capturing stroke velocity, hesitation latency, and ghost-ink Socratic spatial column alignment.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #10b981; margin-bottom: 0;">
+        <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); margin-bottom: 8px;">Wave 35</span>
+        <h3 style="color: #fff; margin-top: 4px;">Offline-First CRDT Edge PWA</h3>
+        <p style="font-size: 12.5px; color: var(--muted);">Zero-latency offline sprint completion using Yjs CRDTs and Background Sync API for total network disruption immunity.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #8b5cf6; margin-bottom: 0;">
+        <span class="badge badge-purple" style="margin-bottom: 8px;">Wave 36</span>
+        <h3 style="color: #fff; margin-top: 4px;">Automated SENCO EHCP Review</h3>
+        <p style="font-size: 12.5px; color: var(--muted);">One-click statutory evidence compilation mapping sprint metrics to UK SEND Section F annual reviews in under 3 minutes.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #f59e0b; margin-bottom: 0;">
+        <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); margin-bottom: 8px;">Wave 37</span>
+        <h3 style="color: #fff; margin-top: 4px;">Cognitive Soundscapes & Binaural Beats</h3>
+        <p style="font-size: 12.5px; color: var(--muted);">Real-time procedural Web Audio generating 40Hz gamma beats and dynamic cardiac-calming sweeps during sensory pause intervals.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #3b82f6; margin-bottom: 0;">
+        <span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); margin-bottom: 8px;">Wave 38</span>
+        <h3 style="color: #fff; margin-top: 4px;">Parent Micro-Podcasts & WhatsApp Co-Pilot</h3>
+        <p style="font-size: 12.5px; color: var(--muted);">Personalized 60-second neural audio briefings delivered via WhatsApp with curiosity-driven dinner conversation prompts.</p>
+      </div>
+    </div>
+
+    <!-- The Comprehensive Transposed Multi-Dimensional Matrix -->
+    <h2>Comprehensive Transposed Multi-Dimensional Comparison Matrix (Waves 34 – 38)</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width: 170px;">Dimension</th>
+            <th style="min-width: 240px;">Wave 34: Multi-Modal Ink & Dysgraphia Telemetry</th>
+            <th style="min-width: 240px;">Wave 35: Offline-First Edge PWA & CRDT Sync</th>
+            <th style="min-width: 240px;">Wave 36: Automated SENCO EHCP Review Compiler</th>
+            <th style="min-width: 240px;">Wave 37: Adaptive Cognitive Soundscapes & Binaural Beats</th>
+            <th style="min-width: 240px;">Wave 38: Autonomous Parent Daily Podcast & Micro-CoPilot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>What</strong></td>
+            <td>WebGL/Canvas digital inking engine capturing stroke velocity, hesitation latency, pressure, and column alignment with ghost Socratic ink.</td>
+            <td>Local-first PWA architecture using IndexedDB and Yjs CRDTs with Background Sync API for 100% offline sprint execution.</td>
+            <td>Automated statutory evidence compiler generating formal UK SEND Section F annual review dossiers with longitudinal Ebbinghaus metrics.</td>
+            <td>In-browser procedural Web Audio engine generating 40Hz gamma binaural beats, pink noise, and cardiac-calming pause sweeps.</td>
+            <td>Asynchronous 60-second neural audio podcast ("School Run Brief") delivered via WhatsApp/Telegram with dinner conversational prompts.</td>
+          </tr>
+          <tr>
+            <td><strong>Why</strong></td>
+            <td>Neurodivergent children lose exam marks not from conceptual failure, but from spatial digit transposition and handwriting fatigue.</td>
+            <td>Egyptian home/school Wi-Fi instability and mobile throttling interrupt deep cognitive flow and trigger task abandonment.</td>
+            <td>SENCOs spend 15–20 hours per child manually collating fragmented paper notes to defend statutory funding and accommodations.</td>
+            <td>ADHD learners suffer from auditory distraction and sensory under-arousal, leading to restlessness during complex procedural tasks.</td>
+            <td>Parents feel disconnected from daily learning and interrogate children aggressively, creating domestic friction around homework.</td>
+          </tr>
+          <tr>
+            <td><strong>Why Now</strong></td>
+            <td>Approaching end-of-year physical paper assessments where handwriting speed and column layout dictate final grades.</td>
+            <td>Students taking tablets on school commutes and into offline classroom zones where continuous internet is unavailable.</td>
+            <td>Annual EHCP statutory review cycles require rigorous quantitative evidence to maintain school support allocations.</td>
+            <td>Transitioning to multi-step column arithmetic and dense scientific reasoning that require sustained 15-minute deep focus.</td>
+            <td>Working parents operate on tight schedules and do not log into web dashboards, requiring 60-second passive audio briefings.</td>
+          </tr>
+          <tr>
+            <td><strong>USP</strong></td>
+            <td>Ghost-ink Socratic visual guides providing non-judgmental spatial realignment + pre-error hesitation latency detection.</td>
+            <td>Conflict-free CRDT state reconciliation ensuring zero merge collisions and 100% data preservation across offline sessions.</td>
+            <td>One-click transformation of daily sprint telemetry into legally binding, LA-compliant statutory Section F provision proofs.</td>
+            <td>100% procedurally synthesized audio with zero MP3 streaming latency; dynamically drops heart rate during 5m pause timers.</td>
+            <td>Frictionless 60-second voice note delivered directly to parent's messaging app with 1-tap interactive reaction buttons.</td>
+          </tr>
+          <tr>
+            <td><strong>Value Added to Vision</strong></td>
+            <td>Extends cognitive acceleration into the physical motor-spatial domain, ensuring conceptual mastery translates to paper exams.</td>
+            <td>Guarantees indestructible platform resilience, proving AIM functions seamlessly anywhere in the world without connectivity lock.</td>
+            <td>Establishes AIM as the indispensable compliance and legal intelligence infrastructure for school SENCO departments.</td>
+            <td>Elevates AIM into a physiological sensory regulation prosthetic, addressing the somatic foundations of attention and focus.</td>
+            <td>Transforms parents from anxious monitors into collaborative conversational partners at the family dinner table.</td>
+          </tr>
+          <tr>
+            <td><strong>Primary Target Persona</strong></td>
+            <td>Students with Dysgraphia / fine-motor delay, Occupational Therapists, and Math Teachers.</td>
+            <td>Commuting Students, Expat Families, and School IT Network Administrators.</td>
+            <td>School SENCOs, Inclusion Leads, Educational Psychologists, and Advocacy Parents.</td>
+            <td>ADHD Students with auditory distractibility and Sensory Occupational Therapists.</td>
+            <td>Working Parents, Busy Dual-Career Guardians, and Extended Family Mentors.</td>
+          </tr>
+          <tr>
+            <td><strong>ADHD / Sensory Scaffold</strong></td>
+            <td>Tactile-feel stroke smoothing, high-contrast column grid snapping, and zero-shame automatic correction guides.</td>
+            <td>Eliminates network timeout alarms, connection spinners, and lost-work panic (vital for ADHD emotional stability).</td>
+            <td>Validates neurodiverse learning differences with hard psychometric telemetry, preventing "lazy" characterizations.</td>
+            <td>Gentle acoustic cocoon that masks sharp domestic noises; automatic volume ducking during Socratic voice dialogue turns.</td>
+            <td>Replaces adversarial interrogation ("Did you do your homework?") with joyful conversational prompts ("Ask Lara about ice particles!").</td>
+          </tr>
+          <tr>
+            <td><strong>Competition & Alternative Gap</strong></td>
+            <td><strong>GoodNotes / Notability:</strong> Passive digital paper, zero pedagogical stroke analysis.<br/><strong>IXL / Century:</strong> Typed input only, completely blind to handwriting motor failure.</td>
+            <td><strong>Century AI / Sparx:</strong> Freeze instantly on connection drops; zero offline execution.<br/><strong>Duolingo:</strong> Brittle offline mode, requires cloud ping to unlock next units.</td>
+            <td><strong>Edukey / Provision Map:</strong> Manual teacher data entry forms; lack automated psychometric telemetry.<br/><strong>SIMS / ISAMS:</strong> Generic administrative databases.</td>
+            <td><strong>Brain.fm / Endel:</strong> Generic adult focus audio, separate paid subscriptions, disconnected from sprint state.<br/><strong>Standard EdTech:</strong> Harsh gamified buzzers.</td>
+            <td><strong>ClassDojo / Toddle:</strong> Cluttered notification boards and generic announcements.<br/><strong>Parent Portal:</strong> Dense web tables with delayed term grades.</td>
+          </tr>
+          <tr>
+            <td><strong>Technical Moat & Complexity</strong></td>
+            <td>WebGL Bezier smoothing, timestamped stroke vector calculation ($dx/dt, dy/dt$), dynamic column collision bounds.</td>
+            <td>Yjs state vector compaction, Service Worker Cache API bytecode caching, Background Sync API (<code>SyncManager</code>) replay.</td>
+            <td>UK SEND Code of Practice rubric mapping engine, longitudinal decay regression curves, Warm Browser Pool PDF compilation.</td>
+            <td>Web Audio API AudioContext graph with dual BiquadFilterNodes, StereoPannerNodes, and algorithmic pink/brown noise nodes.</td>
+            <td>Dynamic LLM synthesis of contextual dinner prompts, low-latency neural TTS synthesis (&lt;800ms), WhatsApp Business webhook API.</td>
+          </tr>
+          <tr>
+            <td><strong>Primary Risks & Mitigations</strong></td>
+            <td>Stylus latency on low-end tablets &rarr; mitigated by client-side WebGL requestAnimationFrame loop with zero server dependency.</td>
+            <td>Local IndexedDB storage quota limits on shared iPads &rarr; mitigated by aggressive LRU eviction of old audio while preserving vectors.</td>
+            <td>Overly legalistic or clinical tone &rarr; mitigated by pedagogical humanization layer emphasizing child strengths and victories.</td>
+            <td>Sensory over-stimulation or sound aversion &rarr; mitigated by opt-in default, soft 3-second audio ramps, and frequency toggles.</td>
+            <td>WhatsApp notification fatigue &rarr; mitigated by strict 60s hard ceiling, customizable delivery schedules, and 1-tap pause.</td>
+          </tr>
+          <tr>
+            <td><strong>Time to Value</strong></td>
+            <td>Instantaneous tactile feedback on first stylus stroke.</td>
+            <td>Instant launch: sub-second cold start even in airplane mode.</td>
+            <td>Cuts annual EHCP review preparation from 18 hours to 3 minutes.</td>
+            <td>Instant focus: 1-tap activation with zero audio file downloads.</td>
+            <td>60 seconds listening time during parent's morning or evening commute.</td>
+          </tr>
+          <tr>
+            <td><strong>Primary Success Metric</strong></td>
+            <td>&ge; 35% reduction in spatial column errors and zero digit transpositions.</td>
+            <td>100% sprint completion reliability across network disconnection events.</td>
+            <td>100% acceptance rate by Local Authorities (LAs) without requests for re-testing.</td>
+            <td>&ge; 22% increase in continuous on-task sprint completion duration.</td>
+            <td>&ge; 85% daily parent listen-through rate and reported dinner engagement.</td>
+          </tr>
+          <tr>
+            <td><strong>Regulatory & Curriculum Compliance</strong></td>
+            <td>British Dyslexia Association (BDA) Classroom Tech Guidelines & UK Equality Act 2010.</td>
+            <td>Offline Data Protection by Design & Default (GDPR Art. 25).</td>
+            <td>UK SEND Code of Practice 2015 & Children and Families Act 2014 (Section F).</td>
+            <td>Sensory Processing Classroom Standards & Web Accessibility Guidelines.</td>
+            <td>GDPR Parental Communication Consent & Meta WhatsApp Business Policy.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
