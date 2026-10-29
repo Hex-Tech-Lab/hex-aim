@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HEX-AIM Wave 31 Technical Verification Report | Generative Mock Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #0e1526;
+      --card: #131b2e;
+      --border: rgba(148, 163, 184, 0.15);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --cyan: #00e5ff;
+      --emerald: #10b981;
+      --purple: #8b5cf6;
+      --amber: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 32px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .badge-cyan {
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #fff; }
+    h2 { font-size: 18px; font-weight: 700; margin: 20px 0 12px; color: var(--cyan); }
+    h3 { font-size: 15px; font-weight: 700; margin: 16px 0 8px; color: #e2e8f0; }
+    p, li { font-size: 14px; color: #cbd5e1; margin-bottom: 10px; }
+    ul { padding-left: 20px; margin-bottom: 16px; }
+    pre {
+      background: #050811;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      overflow-x: auto;
+      color: #38bdf8;
+      margin-bottom: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+    }
+    th, td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <span class="badge badge-emerald">🟢 Wave 31 Shipped</span>
+      <span class="badge badge-cyan">GL & Cambridge Primary</span>
+    </div>
+    <h1>Predictive Exam Readiness & Generative Mock Builder</h1>
+    <p style="color: var(--muted); font-size: 13px; margin-bottom: 24px;">
+      HEX-AIM Autonomous Cognitive Acceleration Platform • Year 4 British Curriculum • Verified 2026-10-29
+    </p>
+
+    <div class="card">
+      <h2>1. Executive Overview</h2>
+      <p>
+        Wave 31 transitions HEX-AIM from static mock exam sitting to an autonomous, cognitive decay-aware examination synthesis platform.
+        Traditional mock testing induces acute working memory fatigue in neurodivergent learners when overwhelmed by early multi-step questions.
+      </p>
+      <p>
+        The newly shipped <strong>GenerativeMockEngine</strong> dynamically synthesizes calibrated exam papers utilizing:
+      </p>
+      <ul>
+        <li><strong>Ebbinghaus Retention Weighting:</strong> Projects realistic readiness percentages and confidence intervals calibrated against student review intervals $R(t) = R_0 \cdot 2^{-t / S}$.</li>
+        <li><strong>Graduated Anxiety Progression:</strong> Structure follows Bloom's Taxonomy: Warmup Recall (Bloom 1–2) &rarr; Targeted Gaps (Bloom 3) &rarr; Synthesis (Bloom 4).</li>
+        <li><strong>Isomorphic Parameterization:</strong> Dynamically replaces values and names with cognitive misconception distractors to prevent rote memorization.</li>
+        <li><strong>Instant Sitting Registration:</strong> Automatically registers generated papers directly into <code>ExamSimulationEngine</code>, allowing seamless one-click launches at <code>/exam/&lt;examId&gt;?student=&lt;id&gt;</code>.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>2. Architecture & Data Flow</h2>
+      <pre>
+[ CognitiveDecayEngine ]       [ Student Profiles ]
+  - Decay R(t) = R_0 * 2^(-t/S)   - Lara: Rush Risk / Pacing 18m
+  - Critical Gap Identification  - Maya: Flow / Pacing 15m
+           \                     /
+            v                   v
+      +-------------------------------+
+      |      GenerativeMockEngine     |
+      +-------------------------------+
+           /          |          \
+          v           v           v
+ [Predictive]   [Isomorphic]  [Graduated]
+ [ Readiness]   [Synthesizer] [Anxiety Curve]
+          \           |           /
+           v          v          v
+      +-------------------------------+
+      |  ExamSimulationEngine (Live)  |
+      |   /exam/&lt;mockId&gt;?student=lara  |
+      +-------------------------------+
+      </pre>
+    </div>
+
+    <div class="card">
+      <h2>3. Test & Verification Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Verification Vector</th>
+            <th>Result</th>
+            <th>Execution Metric</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Generative Mock Unit Tests (<code>generativeMock.test.ts</code>)</td>
+            <td><strong style="color: #34d399;">PASS (4/4)</strong></td>
+            <td>60ms</td>
+          </tr>
+          <tr>
+            <td>Full Monorepo Vitest Suite</td>
+            <td><strong style="color: #34d399;">PASS (155/155)</strong></td>
+            <td>5.95s across 33 suites</td>
+          </tr>
+          <tr>
+            <td>API Route: <code>GET /api/exam/predictive-readiness/lara</code></td>
+            <td><strong style="color: #34d399;">PASS (200 OK)</strong></td>
+            <td>79% predicted (CI: 75%–83%)</td>
+          </tr>
+          <tr>
+            <td>API Route: <code>POST /api/exam/generate</code></td>
+            <td><strong style="color: #34d399;">PASS (200 OK)</strong></td>
+            <td>Synthesizes 4-question adaptive paper</td>
+          </tr>
+          <tr>
+            <td>Exam Simulator Interoperability (<code>/exam/mock_...</code>)</td>
+            <td><strong style="color: #34d399;">PASS (200 OK)</strong></td>
+            <td>Live interactive exam rendered</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

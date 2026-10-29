@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HEX-AIM Wave 32 Technical Verification Report | Intelligent Homework Balancer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #0e1526;
+      --card: #131b2e;
+      --border: rgba(148, 163, 184, 0.15);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --cyan: #00e5ff;
+      --emerald: #10b981;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --amber: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 32px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .badge-blue {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+    .badge-cyan {
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #fff; }
+    h2 { font-size: 18px; font-weight: 700; margin: 20px 0 12px; color: var(--cyan); }
+    p, li { font-size: 14px; color: #cbd5e1; margin-bottom: 10px; }
+    ul { padding-left: 20px; margin-bottom: 16px; }
+    pre {
+      background: #050811;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      overflow-x: auto;
+      color: #60a5fa;
+      margin-bottom: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+    }
+    th, td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <span class="badge badge-blue">🟢 Wave 32 Shipped</span>
+      <span class="badge badge-cyan">iCal RFC 5545</span>
+    </div>
+    <h1>Intelligent Homework Balancer & Calendar Integration</h1>
+    <p style="color: var(--muted); font-size: 13px; margin-bottom: 24px;">
+      HEX-AIM Autonomous Cognitive Acceleration Platform • Year 4 British Curriculum • Verified 2026-10-29
+    </p>
+
+    <div class="card">
+      <h2>1. Executive Overview</h2>
+      <p>
+        Wave 32 eliminates homework clustering and working-memory fatigue in neurodivergent primary learners.
+        By enforcing an anti-clustering protocol and a 25-minute daily ceiling for ADHD profiles, student evening sprints remain sustainable and positive.
+      </p>
+      <ul>
+        <li><strong>ADHD Anti-Clustering:</strong> Procedural Mathematics and analytical Science are strictly separated across days.</li>
+        <li><strong>Screen-Free Spoken Rest Beat:</strong> Wednesday evening features a 10-minute conversational Socratic retrieval session.</li>
+        <li><strong>Pre-loaded Sensory Accommodations:</strong> Every calendar event carries sensory instructions (e.g. Elevator visual model, physical counters).</li>
+        <li><strong>RFC 5545 iCalendar Feed:</strong> Universal subscription feed compatible with Google Calendar, Apple Calendar, and Outlook.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>2. Architecture & Weekly Schedule</h2>
+      <pre>
+Sunday (16:30)    -> Maths Place Value Sprint (15m, Moderate Load)
+Monday (17:00)    -> English Direct Speech & Punctuation (15m, Light Load)
+Tuesday (16:30)   -> Science Sound & Particle Vibrations (15m, Moderate Load)
+Wednesday (18:00) -> Socratic Voice Screen-Free Retrieval (10m, Light Load)
+Thursday (16:00)  -> Maths Negative Numbers Review (15m, Moderate Load)
+
+Feed Endpoint: https://aim.getvintel.com/api/calendar/:studentId/feed.ics
+      </pre>
+    </div>
+
+    <div class="card">
+      <h2>3. Test & Verification Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Verification Vector</th>
+            <th>Result</th>
+            <th>Execution Metric</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Workload Balancer Unit Tests (<code>workloadBalancer.test.ts</code>)</td>
+            <td><strong style="color: #34d399;">PASS (2/2)</strong></td>
+            <td>5ms</td>
+          </tr>
+          <tr>
+            <td>Monorepo Vitest Suite</td>
+            <td><strong style="color: #34d399;">PASS (157/157)</strong></td>
+            <td>6.0s across 34 suites</td>
+          </tr>
+          <tr>
+            <td>Live iCal Feed: <code>GET /api/calendar/lara/feed.ics</code></td>
+            <td><strong style="color: #34d399;">PASS (200 OK)</strong></td>
+            <td>Valid RFC 5545 calendar stream</td>
+          </tr>
+          <tr>
+            <td>Workload JSON API: <code>GET /api/workload/lara</code></td>
+            <td><strong style="color: #34d399;">PASS (200 OK)</strong></td>
+            <td>5-day balanced plan generated</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -6,7 +6,7 @@ import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { renderExamSimulationHtml } from './ui/examSimulationHtml.js';
 import { renderTeacherPortalHtml } from './ui/teacherPortalHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine, PrivacyVaultEngine, AssessmentArchiveEngine, SocraticVoiceEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine, PrivacyVaultEngine, AssessmentArchiveEngine, SocraticVoiceEngine, GenerativeMockEngine, WorkloadBalancerEngine, FederatedBenchmarkEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -616,6 +616,60 @@ export function createServer(): http.Server {
       return;
     }
 
+    // Wave 31: Predictive Readiness & Generative Mock Paper APIs
+    if (url.pathname === '/api/exam/generate' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const mockEngine = GenerativeMockEngine.getInstance();
+          const mockExam = mockEngine.generateMockExam({
+            studentId: payload.studentId || 'lara',
+            subject: payload.subject || 'science',
+            examBoardSpec: payload.examBoardSpec || 'gl_assessment',
+            targetQuestionCount: Number(payload.targetQuestionCount) || 4,
+            totalTimeMins: Number(payload.totalTimeMins) || undefined,
+          });
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ ok: true, mockExam }));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/exam/predictive-readiness/')) {
+      const studentId = url.pathname.replace('/api/exam/predictive-readiness/', '').trim() || 'lara';
+      const subject = (url.searchParams.get('subject') as any) || 'science';
+      const spec = (url.searchParams.get('spec') as any) || 'gl_assessment';
+      const mockEngine = GenerativeMockEngine.getInstance();
+      const readiness = mockEngine.predictReadiness(studentId, subject, spec);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, readiness }));
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/exam/generated/')) {
+      const studentId = url.pathname.replace('/api/exam/generated/', '').trim();
+      const mockEngine = GenerativeMockEngine.getInstance();
+      const exams = mockEngine.listGeneratedExams(studentId);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, exams }));
+      return;
+    }
+
     // Wave 26: Exam Simulation APIs
     if (url.pathname.startsWith('/api/exam/')) {
       const parts = url.pathname.replace('/api/exam/', '').split('/');
@@ -661,6 +715,48 @@ export function createServer(): http.Server {
         'Access-Control-Allow-Origin': '*',
       });
       res.end(JSON.stringify({ ok: true, exam }));
+      return;
+    }
+
+    // Wave 32: Intelligent Homework Balancer & Calendar Integration APIs
+    if (url.pathname.startsWith('/api/calendar/') && url.pathname.endsWith('/feed.ics')) {
+      const studentId = url.pathname.replace('/api/calendar/', '').replace('/feed.ics', '').trim() || 'lara';
+      const balancer = WorkloadBalancerEngine.getInstance();
+      const ics = balancer.generateIcsFeed(studentId);
+      res.writeHead(200, {
+        'Content-Type': 'text/calendar; charset=utf-8',
+        'Content-Disposition': `inline; filename="aim-homework-${studentId}.ics"`,
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=3600',
+      });
+      res.end(ics);
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/workload/')) {
+      const studentId = url.pathname.replace('/api/workload/', '').trim() || 'lara';
+      const balancer = WorkloadBalancerEngine.getInstance();
+      const plan = balancer.generateWeeklyPlan(studentId);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, plan }));
+      return;
+    }
+
+    // Wave 33: Multi-School Federated Benchmark APIs (epsilon-Differential Privacy)
+    if (url.pathname.startsWith('/api/benchmark/')) {
+      const schoolId = url.pathname.replace('/api/benchmark/', '').trim() || 'asten-college';
+      const subject = (url.searchParams.get('subject') as any) || 'science';
+      const epsilon = parseFloat(url.searchParams.get('epsilon') || '0.5');
+      const benchmarkEngine = FederatedBenchmarkEngine.getInstance();
+      const benchmark = benchmarkEngine.getBenchmark(schoolId, subject, epsilon);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, benchmark }));
       return;
     }
 

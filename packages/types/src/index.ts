@@ -788,6 +788,79 @@ export interface TeacherCohortMetrics {
 }
 
 // ==========================================
+// Wave 32: Intelligent Homework Balancer & Calendar Integration
+// ==========================================
+
+export interface HomeworkScheduleItem {
+  id: string;
+  studentId: string;
+  subject: 'science' | 'maths' | 'english';
+  conceptCode: string;
+  title: string;
+  titleAr: string;
+  scheduledDate: string; // YYYY-MM-DD
+  startTime: string; // HH:mm (e.g. "16:30")
+  durationMins: number; // e.g. 15
+  cognitiveLoadWeight: 'light' | 'moderate' | 'intensive';
+  sensoryAccommodationNotes: string;
+  sensoryAccommodationNotesAr: string;
+  directSprintUrl: string;
+  isCompleted: boolean;
+}
+
+export interface StudentWeeklyWorkloadPlan {
+  studentId: string;
+  studentDisplayName: string;
+  weekStartDate: string;
+  totalTargetMins: number;
+  dailyCapMins: number;
+  balancedDailyDistribution: Record<string, HomeworkScheduleItem[]>;
+  cognitiveFatigueAvoidanceScore: number; // 0 - 100
+  icalFeedUrl: string;
+  generatedAt: string;
+}
+
+// ==========================================
+// Wave 33: Multi-School Federated Benchmark & Anonymized Cohort Exchange
+// ==========================================
+
+export interface ConceptBenchmarkStat {
+  conceptCode: string;
+  conceptTitleEn: string;
+  conceptTitleAr: string;
+  schoolCohortMean: number;
+  nationalPercentile: number;
+  differentialMasteryScore: number;
+  privacyNoiseInjected: number;
+  comparativeDecayRate: number; // Half-life ratio vs national average
+}
+
+export interface FederatedPeerSchoolComparison {
+  schoolId: string;
+  schoolName: string;
+  curriculumTrack: string;
+  cohortSizeBand: string;
+  relativeDeltaPct: number;
+  anonymizedConfidenceBand: [number, number];
+}
+
+export interface SchoolCohortBenchmarkSummary {
+  schoolId: string;
+  schoolName: string;
+  yearGroup: string;
+  subject: string;
+  totalStudentsCohort: number;
+  privacyBudgetEpsilon: number; // e.g. 0.5 (Differential Privacy parameter)
+  privacyMechanism: 'laplace_mechanism';
+  conceptBenchmarkStats: Record<string, ConceptBenchmarkStat>;
+  peerComparisons: FederatedPeerSchoolComparison[];
+  schoolCohortOverallPercentile: number;
+  calculatedAt: string;
+}
+
+
+
+// ==========================================
 // WAVE 28: ZERO-KNOWLEDGE STUDENT PRIVACY VAULT
 // ==========================================
 
@@ -1002,6 +1075,147 @@ export interface ProcessVoiceTurnRequest {
   transcript: string;
   audioDurationMs?: number;
 }
+
+// ==========================================
+// Wave 31: Predictive Exam Readiness & Generative Mock Builder
+// ==========================================
+
+export interface PredictiveReadinessScore {
+  studentId: string;
+  studentDisplayName: string;
+  subject: string;
+  predictedExamPercentage: number;
+  confidenceInterval: [number, number];
+  examBoardSpec: 'gl_assessment' | 'cambridge_primary' | 'edexcel_primary';
+  decayRiskConceptsCount: number;
+  criticalInterventionConcepts: string[];
+  anxietyRiskIndex: 'low_confidence_fatigue' | 'moderate_rush_risk' | 'optimal_flow';
+  recommendedPacingMins: number;
+  calculatedAt: string;
+}
+
+export interface IsomorphicQuestionStem {
+  stemId: string;
+  conceptCode: string;
+  bloomLevel: 1 | 2 | 3 | 4;
+  promptTemplateEn: string;
+  promptTemplateAr: string;
+  variableSlots: Record<string, (string | number)[]>;
+  optionGenerators: Array<{
+    key: string;
+    isCorrect: boolean;
+    templateEn: string;
+    templateAr: string;
+    distractorMisconception?: string;
+  }>;
+  explanationTemplateEn: string;
+  explanationTemplateAr: string;
+  partialCreditRules?: Array<{
+    condition: string;
+    pointsFraction: number;
+    guidance: string;
+  }>;
+}
+
+export interface GeneratedMockExamConfig {
+  studentId: string;
+  subject: 'science' | 'maths' | 'english';
+  examBoardSpec?: 'gl_assessment' | 'cambridge_primary' | 'edexcel_primary';
+  targetQuestionCount?: number;
+  totalTimeMins?: number;
+  graduatedAnxietyCurve?: boolean;
+}
+
+export interface GeneratedMockExam {
+  examId: string;
+  title: string;
+  titleAr: string;
+  studentId: string;
+  subject: string;
+  examBoardSpec: string;
+  totalTimeMins: number;
+  totalPoints: number;
+  questionsCount: number;
+  targetDecayConcepts: string[];
+  difficultyCurve: Array<'warmup_recall' | 'targeted_challenge' | 'synthesis_application'>;
+  questions: ExamSimulationQuestion[];
+  predictiveBaselineScore: number;
+  generatedAt: string;
+}
+
+// ==========================================
+// Wave 32: Intelligent Homework Balancer & Calendar Integration
+// ==========================================
+
+export interface HomeworkScheduleItem {
+  id: string;
+  studentId: string;
+  subject: 'science' | 'maths' | 'english';
+  conceptCode: string;
+  title: string;
+  titleAr: string;
+  scheduledDate: string; // YYYY-MM-DD
+  startTime: string; // HH:mm (e.g. "16:30")
+  durationMins: number; // e.g. 15
+  cognitiveLoadWeight: 'light' | 'moderate' | 'intensive';
+  sensoryAccommodationNotes: string;
+  sensoryAccommodationNotesAr: string;
+  directSprintUrl: string;
+  isCompleted: boolean;
+}
+
+export interface StudentWeeklyWorkloadPlan {
+  studentId: string;
+  studentDisplayName: string;
+  weekStartDate: string;
+  totalTargetMins: number;
+  dailyCapMins: number;
+  balancedDailyDistribution: Record<string, HomeworkScheduleItem[]>;
+  cognitiveFatigueAvoidanceScore: number; // 0 - 100
+  icalFeedUrl: string;
+  generatedAt: string;
+}
+
+// ==========================================
+// Wave 33: Multi-School Federated Benchmark & Anonymized Cohort Exchange
+// ==========================================
+
+export interface ConceptBenchmarkStat {
+  conceptCode: string;
+  conceptTitleEn: string;
+  conceptTitleAr: string;
+  schoolCohortMean: number;
+  nationalPercentile: number;
+  differentialMasteryScore: number;
+  privacyNoiseInjected: number;
+  comparativeDecayRate: number; // Half-life ratio vs national average
+}
+
+export interface FederatedPeerSchoolComparison {
+  schoolId: string;
+  schoolName: string;
+  curriculumTrack: string;
+  cohortSizeBand: string;
+  relativeDeltaPct: number;
+  anonymizedConfidenceBand: [number, number];
+}
+
+export interface SchoolCohortBenchmarkSummary {
+  schoolId: string;
+  schoolName: string;
+  yearGroup: string;
+  subject: string;
+  totalStudentsCohort: number;
+  privacyBudgetEpsilon: number; // e.g. 0.5 (Differential Privacy parameter)
+  privacyMechanism: 'laplace_mechanism';
+  conceptBenchmarkStats: Record<string, ConceptBenchmarkStat>;
+  peerComparisons: FederatedPeerSchoolComparison[];
+  schoolCohortOverallPercentile: number;
+  calculatedAt: string;
+}
+
+
+
 
 
 

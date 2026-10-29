@@ -200,6 +200,99 @@ export function renderStudentProgressTab(): string {
           </button>
         </div>
 
+        <!-- Wave 31: Predictive Readiness & Generative Mock Builder -->
+        <div class="card" style="border-left: 3px solid #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(6, 182, 212, 0.04));">
+          <div class="card-header">
+            <h2 class="flex items-center gap-1.5">
+              <span style="font-size: 16px;">🎯</span>
+              <span class="lang-en-only">Predictive Exam Readiness & Mock Builder (Wave 31)</span>
+              <span class="lang-ar-only">الجاهزية التنبؤية وبناء الامتحانات (الموجة ٣١)</span>
+            </h2>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);">
+              <span class="lang-en-only">GL & Cambridge</span>
+              <span class="lang-ar-only">معايير كامبريدج</span>
+            </span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 8px 12px; background: rgba(15, 23, 42, 0.6); border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.2);">
+            <div>
+              <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">
+                <span class="lang-en-only">Predicted Score (Ebbinghaus Decay)</span>
+                <span class="lang-ar-only">الدرجة المتوقعة (منحنى النسيان)</span>
+              </div>
+              <div style="font-size: 18px; font-weight: 800; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+                85% <span style="font-size: 11px; color: #94a3b8; font-weight: normal;">(CI: 80% – 89%)</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">
+                <span class="lang-en-only">Anxiety Risk</span>
+                <span class="lang-ar-only">مستوى القلق</span>
+              </div>
+              <span class="badge badge-yellow" style="font-size: 10px;">
+                <span class="lang-en-only">Moderate Rush Risk</span>
+                <span class="lang-ar-only">تسرع معتدل</span>
+              </span>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">
+            <span class="lang-en-only">Synthesizes targeted isomorphic test questions with graduated Bloom anxiety curves (Warmup → Challenge → Synthesis).</span>
+            <span class="lang-ar-only">يُولّد أسئلة اختبار متماثلة تكيفياً عبر مسار بلوم المتدرج لتخفيف القلق (إحماء ← تحدي مركز ← تركيب).</span>
+          </div>
+          <button class="btn" style="width: 100%; background: #10b981; color: #fff; font-weight: 700; border: none; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;" onclick="openMockBuilderModal()">
+            <span>🎯</span>
+            <span class="lang-en-only">Generate Target Mock Paper</span>
+            <span class="lang-ar-only">إنشاء ورقة اختبار تجريبية مخصصة</span>
+          </button>
+        </div>
+
+        <!-- Wave 32: Intelligent Homework Balancer & Calendar Integration -->
+        <div class="card" style="border-left: 3px solid #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(6, 182, 212, 0.04));">
+          <div class="card-header">
+            <h2 class="flex items-center gap-1.5">
+              <span style="font-size: 16px;">📅</span>
+              <span class="lang-en-only">Intelligent Homework Balancer & Calendar (Wave 32)</span>
+              <span class="lang-ar-only">موزع الواجبات الذكي وتكامل التقويم (الموجة ٣٢)</span>
+            </h2>
+            <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4);">
+              <span class="lang-en-only">iCal (.ics) Feed</span>
+              <span class="lang-ar-only">تزامن iCal</span>
+            </span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 8px 12px; background: rgba(15, 23, 42, 0.6); border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.2);">
+            <div>
+              <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">
+                <span class="lang-en-only">Daily Cognitive Load Cap</span>
+                <span class="lang-ar-only">الحد الأقصى للجهد اليومي</span>
+              </div>
+              <div style="font-size: 18px; font-weight: 800; color: #60a5fa; font-family: 'JetBrains Mono', monospace;">
+                25 mins <span style="font-size: 11px; color: #94a3b8; font-weight: normal;">(Fatigue Avoidance: 96%)</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">
+                <span class="lang-en-only">Pacing Mode</span>
+                <span class="lang-ar-only">نمط التدرج</span>
+              </div>
+              <span class="badge badge-purple" style="font-size: 10px;">
+                <span class="lang-en-only">ADHD Anti-Cluster</span>
+                <span class="lang-ar-only">توزيع مضاد للإرهاق</span>
+              </span>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">
+            <span class="lang-en-only">Staggers heavy procedural tasks across Sun–Thu with sensory buffers. Sync directly to Apple Calendar, Google Calendar, or Outlook.</span>
+            <span class="lang-ar-only">يوزع المهام الإجرائية عبر أيام الأسبوع مع فترات راحة حسية. متوافق مع تقويم جوجل وآبل وآوتلوك عبر رابط iCal مباشر.</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <a href="/api/calendar/lara/feed.ics" download="aim-homework-lara.ics" class="btn" style="text-align: center; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; font-weight: 700; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px;">
+              <span>📥 Download .ics Feed</span>
+            </a>
+            <button class="btn" style="background: #3b82f6; color: #fff; font-weight: 700; border: none; padding: 8px; border-radius: 6px; font-size: 12px; cursor: pointer;" onclick="navigator.clipboard.writeText('https://aim.getvintel.com/api/calendar/lara/feed.ics'); showToast('📅 iCal feed URL copied to clipboard!', 'success');">
+              <span>📋 Copy Subscribe URL</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Wave 26: Adaptive Exam Simulator Quick Launch -->
         <div class="card" style="border-left: 3px solid var(--accent-cyan, #06b6d4);">
           <div class="card-header">

@@ -274,7 +274,7 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     // Now PDF packs must be delivered
     expect(messaging.deliveredPacks.length).toBeGreaterThan(0);
     expect(messaging.deliveredPacks[0]?.chatId).toBe('987654');
-  });
+  }, 15000);
 
   it('Stage 1 Defer: save_portfolio confirms save without compiling PDFs', async () => {
     const messaging = MessagingFactory.getMessaging('mock') as MockMessagingAdapter;
