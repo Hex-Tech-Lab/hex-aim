@@ -6,7 +6,7 @@ import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { renderExamSimulationHtml } from './ui/examSimulationHtml.js';
 import { renderTeacherPortalHtml } from './ui/teacherPortalHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine, PrivacyVaultEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine, PrivacyVaultEngine, AssessmentArchiveEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -721,6 +721,61 @@ export function createServer(): http.Server {
     }
 
 
+
+    // Wave 29: Longitudinal Assessment Archival & Audit Dossier Engine (ADR-005)
+    if (url.pathname.startsWith('/api/archive/')) {
+      const parts = url.pathname.replace('/api/archive/', '').split('/');
+      const studentId = parts[0] || 'lara';
+      const action = parts[1] || 'dossier'; // 'dossier', 'html', 'verify'
+      const archiveEngine = AssessmentArchiveEngine.getInstance();
+      const dossier = archiveEngine.generateStudentDossier(studentId);
+
+      if (action === 'html') {
+        const lang = (url.searchParams.get('lang') || 'en') as 'en' | 'ar';
+        const html = archiveEngine.renderDossierHtml(dossier, lang);
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Length': Buffer.byteLength(html, 'utf8'),
+          'Access-Control-Allow-Origin': '*',
+        });
+        res.end(html);
+        return;
+      }
+
+      if (action === 'verify') {
+        const verification = archiveEngine.verifyDossierIntegrity(dossier);
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        });
+        res.end(JSON.stringify(verification));
+        return;
+      }
+
+      // Default: Return full verifiable JSON dossier
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify(dossier));
+      return;
+    }
+
+    // Direct /archive/:studentId printable route
+    if (url.pathname.startsWith('/archive/')) {
+      const studentId = url.pathname.replace('/archive/', '').split('/')[0] || 'lara';
+      const archiveEngine = AssessmentArchiveEngine.getInstance();
+      const dossier = archiveEngine.generateStudentDossier(studentId);
+      const lang = (url.searchParams.get('lang') || 'en') as 'en' | 'ar';
+      const html = archiveEngine.renderDossierHtml(dossier, lang);
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': Buffer.byteLength(html, 'utf8'),
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(html);
+      return;
+    }
 
     // API: list students
     if (url.pathname === '/api/students') {

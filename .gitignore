@@ -25,3 +25,4 @@ manifest/students.json
 .rendered_sprint_pages/
 storage/
 *:Zone.Identifier
+.vercel

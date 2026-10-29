@@ -936,6 +936,96 @@ ${renderDashboardStyles()}
       if (modal) modal.style.display = 'none';
     }
 
+    // Wave 29: Longitudinal Assessment Archival & Audit Dossier Modal Handlers
+    async function openDossierModal(studentId) {
+      const activeStudent = studentId || window.currentActiveStudent || 'lara';
+      const modal = document.getElementById('dossier-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        await loadDossierData(activeStudent);
+      }
+    }
+
+    function closeDossierModal() {
+      const modal = document.getElementById('dossier-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    async function loadDossierData(studentId) {
+      const stu = studentId || 'lara';
+      const stuSelect = document.getElementById('dossier-student-select');
+      if (stuSelect && stuSelect.value !== stu) {
+        stuSelect.value = stu;
+      }
+      const sealEl = document.getElementById('dossier-sha-seal');
+      const countEl = document.getElementById('dossier-kpi-count');
+      const masteryEl = document.getElementById('dossier-kpi-mastery');
+      const victoriesEl = document.getElementById('dossier-kpi-victories');
+      const remediatedEl = document.getElementById('dossier-kpi-remediated');
+      const r2KeyEl = document.getElementById('dossier-r2-key');
+      const btnJson = document.getElementById('dossier-download-json');
+      const btnHtml = document.getElementById('dossier-view-html');
+      const statusBadge = document.getElementById('dossier-status-badge');
+
+      try {
+        const res = await fetch('/api/archive/' + stu + '/dossier');
+        if (!res.ok) throw new Error('Failed to load dossier');
+        const data = await res.json();
+
+        if (sealEl) sealEl.textContent = data.integrity.payloadChecksum;
+        if (countEl) countEl.textContent = data.summary.totalAssessmentsArchived;
+        if (masteryEl) masteryEl.textContent = data.summary.overallMasteryPercentage + '%';
+        if (victoriesEl) victoriesEl.textContent = data.summary.zeroAlarmVictoriesCount;
+        if (remediatedEl) remediatedEl.textContent = data.summary.gapsRemediatedCount + ' / ' + data.summary.gapsIdentifiedCount;
+        if (r2KeyEl) r2KeyEl.textContent = data.coldStorage.objectKey;
+        if (statusBadge) {
+          statusBadge.className = 'badge badge-green';
+          statusBadge.textContent = '✓ ' + (data.integrity.verificationStatus === 'verified_authentic' ? 'VERIFIED AUTHENTIC' : 'VERIFIED');
+        }
+
+        if (btnJson) {
+          btnJson.onclick = () => {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = data.dossierId + '.json';
+            a.click();
+          };
+        }
+
+        if (btnHtml) {
+          btnHtml.onclick = () => {
+            const isAr = document.documentElement.getAttribute('dir') === 'rtl';
+            window.open('/archive/' + stu + (isAr ? '?lang=ar' : ''), '_blank');
+          };
+        }
+      } catch (err) {
+        console.error('Error loading dossier:', err);
+      }
+    }
+
+    async function verifyDossierIntegrity() {
+      const stuSelect = document.getElementById('dossier-student-select');
+      const stu = stuSelect ? stuSelect.value : 'lara';
+      const statusBadge = document.getElementById('dossier-status-badge');
+      if (statusBadge) statusBadge.textContent = 'Verifying...';
+      try {
+        const res = await fetch('/api/archive/' + stu + '/verify');
+        const check = await res.json();
+        if (statusBadge) {
+          if (check.isValid) {
+            statusBadge.className = 'badge badge-green';
+            statusBadge.textContent = '✓ 100% UNTAMPERED';
+          } else {
+            statusBadge.className = 'badge badge-red';
+            statusBadge.textContent = '⚠️ TAMPER DETECTED';
+          }
+        }
+      } catch (e) {
+        if (statusBadge) statusBadge.textContent = 'Verification error';
+      }
+    }
+
     // Blank Templates & Practice Engine Handlers
     function previewCleanTemplate(templateId) {
       const titleEl = document.getElementById('clean-preview-title');

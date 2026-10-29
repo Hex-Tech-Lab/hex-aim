@@ -3,7 +3,7 @@ import * as path from 'path';
 import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { renderTeacherPortalHtml } from './ui/teacherPortalHtml.js';
 import { renderExamSimulationHtml } from './ui/examSimulationHtml.js';
-import { TeacherPortalEngine, ExamSimulationEngine } from '@hex-aim/core';
+import { TeacherPortalEngine, ExamSimulationEngine, AssessmentArchiveEngine } from '@hex-aim/core';
 
 export function compileAllStaticPages(publicDir: string = './public'): void {
   // 1. Compile Main Dashboard Console
@@ -33,6 +33,22 @@ export function compileAllStaticPages(publicDir: string = './public'): void {
   fs.writeFileSync(path.join(examDir, 'exam_y4_sci_term1.html'), renderExamSimulationHtml(sciExam, 'lara'));
   fs.writeFileSync(path.join(examDir, 'exam_y4_math_term1.html'), renderExamSimulationHtml(mathExam, 'lara'));
   console.log('✓ Compiled public/exam/exam_y4_sci_term1.html and public/exam/exam_y4_math_term1.html');
+
+  // 4. Wave 29: Compile Longitudinal Assessment Dossiers
+  const archiveDir = path.join(publicDir, 'archive');
+  if (!fs.existsSync(archiveDir)) fs.mkdirSync(archiveDir, { recursive: true });
+
+  const archiveEngine = AssessmentArchiveEngine.getInstance();
+  const students = ['lara', 'maya', 'youssef', 'omar', 'nour'];
+
+  for (const stu of students) {
+    const dossier = archiveEngine.generateStudentDossier(stu);
+    const htmlEn = archiveEngine.renderDossierHtml(dossier, 'en');
+    fs.writeFileSync(path.join(archiveDir, `${stu}.html`), htmlEn);
+  }
+  // Default index to Lara
+  fs.writeFileSync(path.join(archiveDir, 'index.html'), archiveEngine.renderDossierHtml(archiveEngine.generateStudentDossier('lara'), 'en'));
+  console.log('✓ Compiled public/archive/*.html dossiers for all 5 students');
 }
 
 // Auto-run if executed directly

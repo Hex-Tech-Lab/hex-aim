@@ -837,6 +837,101 @@ export interface PrivacyVaultStatus {
   complianceStandards: string[];
 }
 
+// ==========================================
+// Wave 29: Longitudinal Assessment Archival & Audit Dossier Engine (ADR-005)
+// ==========================================
+
+export interface ArchivedAssessmentArtifact {
+  assessmentId: string;
+  sourceType: 'scanned_paper' | 'diagnostic_quiz' | 'sprint_remediation' | 'exam_simulation';
+  date: string;
+  termWeek: number;
+  subject: string;
+  title: string;
+  titleAr?: string;
+  rawScore: number;
+  totalScore: number;
+  percentage: number;
+  status: 'mastered' | 'progressing' | 'priority_remediation';
+  scannedImageRef?: string;
+  ocrExtractedText?: string;
+  socraticInterventionsCount: number;
+  identifiedGaps: string[];
+  remediatedGaps: string[];
+  sha256ArtifactChecksum: string;
+}
+
+export interface ArchivedCognitiveVector {
+  domain: string;
+  domainAr: string;
+  baselinePercentage: number;
+  terminalPercentage: number;
+  deltaPercentage: number;
+  retentionStability: number; // 0.0 - 1.0 (Cognitive decay resistance)
+  zeroAlarmConfidence: number; // 0 - 100%
+  masteryClassification: 'solidified' | 'accelerating' | 'fragile_under_rush';
+}
+
+export interface ColdStorageManifest {
+  manifestId: string;
+  storageProvider: 'cloudflare_r2' | 'aws_s3' | 'hybrid_local_cache';
+  bucket: string;
+  objectKey: string;
+  sizeBytes: number;
+  contentType: string;
+  contentSha256: string;
+  presignedDownloadUrl: string;
+  urlExpiresAt: string; // ISO string (~1h TTL)
+  archivedAt: string;
+}
+
+export interface SencoInterventionRecommendation {
+  domain: string;
+  priority: 'high' | 'medium' | 'maintenance';
+  observedPattern: string;
+  observedPatternAr: string;
+  recommendedScaffold: string;
+  recommendedScaffoldAr: string;
+}
+
+export interface AssessmentArchiveDossier {
+  dossierId: string;
+  studentId: string;
+  studentDisplayName: string;
+  schoolName: string;
+  yearGroup: string;
+  academicTerm: string;
+  generatedAt: string;
+  summary: {
+    totalAssessmentsArchived: number;
+    overallMasteryPercentage: number;
+    zeroAlarmVictoriesCount: number;
+    gapsIdentifiedCount: number;
+    gapsRemediatedCount: number;
+    remediationSuccessRate: number; // 0 - 100%
+    streakWeeks: number;
+  };
+  cognitiveVectors: ArchivedCognitiveVector[];
+  artifacts: ArchivedAssessmentArtifact[];
+  sencoRecommendations: SencoInterventionRecommendation[];
+  coldStorage: ColdStorageManifest;
+  integrity: {
+    hashAlgorithm: 'SHA-256';
+    payloadChecksum: string; // SHA-256 of canonical JSON payload
+    parentChainHash?: string;
+    isTamperEvident: boolean;
+    verificationStatus: 'verified_authentic' | 'integrity_compromised';
+  };
+}
+
+export interface ArchiveDossierFilter {
+  studentId: string;
+  term?: string;
+  subject?: string;
+  includeArtifactPayloads?: boolean;
+}
+
+
 
 
 
