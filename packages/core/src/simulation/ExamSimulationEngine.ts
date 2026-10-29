@@ -31,6 +31,10 @@ export class ExamSimulationEngine {
     return this.exams.get(examId) || null;
   }
 
+  public registerExam(exam: ExamSimulationConfig): void {
+    this.exams.set(exam.examId, exam);
+  }
+
   public listExams(subject?: string): ExamSimulationConfig[] {
     const all = Array.from(this.exams.values());
     if (!subject) return all;

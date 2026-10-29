@@ -1586,6 +1586,83 @@ ${renderDashboardStyles()}
       }
     }
 
+    // Wave 31: Predictive Readiness & Generative Mock Paper Handlers
+    function openMockBuilderModal() {
+      const modal = document.getElementById('mock-builder-modal');
+      if (modal) modal.style.display = 'flex';
+      const resultDiv = document.getElementById('mock-generated-result');
+      if (resultDiv) resultDiv.style.display = 'none';
+      const btn = document.getElementById('btn-generate-mock-action');
+      if (btn) btn.disabled = false;
+    }
+
+    function closeMockBuilderModal() {
+      const modal = document.getElementById('mock-builder-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    async function generateAdaptiveMockPaper() {
+      const activeStudent = window.currentActiveStudent || 'lara';
+      const subject = document.getElementById('mock-subject-select')?.value || 'maths';
+      const spec = document.getElementById('mock-spec-select')?.value || 'gl_assessment';
+      const btn = document.getElementById('btn-generate-mock-action');
+      const resultDiv = document.getElementById('mock-generated-result');
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳ Synthesizing Isomorphic Paper...</span>';
+      }
+
+      try {
+        const res = await fetch('/api/exam/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId: activeStudent,
+            subject: subject,
+            examBoardSpec: spec,
+            targetQuestionCount: 4,
+          }),
+        });
+
+        const data = await res.json();
+        if (data.ok && data.mockExam) {
+          const ex = data.mockExam;
+          if (resultDiv) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML =
+              '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">' +
+                '<div>' +
+                  '<div style="font-weight: 700; color: #34d399; font-size: 15px;">✓ Paper Synthesized Successfully!</div>' +
+                  '<div style="font-size: 12px; color: var(--muted);">' + ex.title + '</div>' +
+                '</div>' +
+                '<span class="badge badge-purple">' + ex.questionsCount + ' Questions • ' + ex.totalTimeMins + 'm</span>' +
+              '</div>' +
+              '<div style="font-size: 12px; margin-bottom: 12px; line-height: 1.5; color: #cbd5e1;">' +
+                '<strong>Targeted Cognitive Gaps:</strong> ' +
+                (ex.targetDecayConcepts.length > 0 ? ex.targetDecayConcepts.map(c => '<code style="background: rgba(15,23,42,0.8); padding: 2px 5px; border-radius: 3px; font-size: 10.5px; color: #38bdf8;">' + c + '</code>').join(' ') : 'Comprehensive Review') +
+              '</div>' +
+              '<div style="display: flex; gap: 8px;">' +
+                '<a href="/exam/' + ex.examId + '?student=' + activeStudent + '" target="_blank" class="btn" style="flex: 1; text-align: center; background: #06b6d4; color: #020617; font-weight: 700; text-decoration: none; padding: 10px; border-radius: 6px;">' +
+                  '🚀 Launch & Sit Paper Now →' +
+                '</a>' +
+              '</div>';
+          }
+          showToast('🎯 Mock exam synthesized and registered!', 'success');
+        } else {
+          showToast('Failed to generate mock exam: ' + (data.error || 'Server error'), 'error');
+        }
+      } catch (e) {
+        console.error('Failed to generate mock exam:', e);
+        showToast('Network error while synthesizing exam', 'error');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>⚡</span><span>Generate Another Paper</span>';
+        }
+      }
+    }
+
     // Initialize static waveform on load
     window.addEventListener('load', () => {
       drawStaticWaveform();
@@ -1655,6 +1732,96 @@ ${renderDashboardStyles()}
           </button>
         </div>
         <button class="btn btn-outline" onclick="closeVoiceModal()">End Session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wave 31: Predictive Readiness & Generative Mock Builder Modal -->
+  <div id="mock-builder-modal" class="modal-backdrop" style="display: none;" onclick="if(event.target === this) closeMockBuilderModal()">
+    <div class="modal-box" style="max-width: 680px; width: 95%; background: #0c1222; border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(16, 185, 129, 0.2);">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--astryx-card-border); padding-bottom: 14px; margin-bottom: 16px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);">🎯 Generative Mock Builder (Wave 31)</span>
+            <span id="mock-builder-status" class="badge badge-cyan">Adaptive Isomorphic Engine</span>
+          </div>
+          <h3 style="margin-top: 8px; font-size: 18px; color: var(--astryx-text-contrast);">
+            <span class="lang-en-only">Synthesize Target Exam Paper</span>
+            <span class="lang-ar-only">توليد ورقة اختبار تدريبية مخصصة</span>
+          </h3>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+            <span class="lang-en-only">Graduated Anxiety Curve: Warmup (Bloom 1-2) → Targeted Gaps (Bloom 3) → Synthesis (Bloom 4)</span>
+            <span class="lang-ar-only">منحنى تخفيف القلق المتدرج: إحماء (مستوى ١-٢) ← فجوات مركزة (مستوى ٣) ← تركيب واستنتاج (مستوى ٤)</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="padding: 4px 10px; font-size: 14px;" onclick="closeMockBuilderModal()">✕</button>
+      </div>
+
+      <!-- Controls Form -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div>
+          <label style="font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; text-transform: uppercase;">
+            <span class="lang-en-only">Subject</span>
+            <span class="lang-ar-only">المادة الدراسية</span>
+          </label>
+          <select id="mock-subject-select" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid var(--astryx-card-border); padding: 8px; border-radius: 6px; font-size: 13px;">
+            <option value="maths" selected>Maths (Column Subtraction, Fractions, Place Value)</option>
+            <option value="science">Science (Sound, States of Matter, Digestion)</option>
+            <option value="english">English (Fronted Adverbials, Inverted Commas)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; text-transform: uppercase;">
+            <span class="lang-en-only">Curriculum Spec & Exam Board</span>
+            <span class="lang-ar-only">معيار المنهاج وجهة الاختبار</span>
+          </label>
+          <select id="mock-spec-select" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid var(--astryx-card-border); padding: 8px; border-radius: 6px; font-size: 13px;">
+            <option value="gl_assessment" selected>GL Assessment Format (UK Primary)</option>
+            <option value="cambridge_primary">Cambridge Primary Checkpoint</option>
+            <option value="edexcel_primary">Edexcel Primary iPrimary</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Predictive Readiness Readout -->
+      <div id="mock-readiness-banner" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">
+            <span class="lang-en-only">Current Ebbinghaus Retention Baseline</span>
+            <span class="lang-ar-only">خط الأساس الحالي لمنحنى النسيان</span>
+          </div>
+          <div style="font-size: 20px; font-weight: 800; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+            85% <span style="font-size: 12px; color: var(--muted); font-weight: normal;">(CI: 80% – 89%)</span>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">
+            <span class="lang-en-only">Recommended Pacing</span>
+            <span class="lang-ar-only">التوقيت المقترح</span>
+          </div>
+          <div style="font-size: 14px; font-weight: 700; color: #f59e0b; font-family: 'JetBrains Mono', monospace;">
+            18m (ADHD Pauses)
+          </div>
+        </div>
+      </div>
+
+      <!-- Generated Paper Output Card (Initially Hidden) -->
+      <div id="mock-generated-result" style="display: none; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--astryx-card-border); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+        <!-- Injected Result -->
+      </div>
+
+      <!-- Actions -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--astryx-card-border); padding-top: 14px;">
+        <button class="btn btn-outline" onclick="closeMockBuilderModal()">
+          <span class="lang-en-only">Cancel</span>
+          <span class="lang-ar-only">إلغاء</span>
+        </button>
+        <button id="btn-generate-mock-action" class="btn" style="background: #10b981; color: #fff; font-weight: 700; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;" onclick="generateAdaptiveMockPaper()">
+          <span>⚡</span>
+          <span class="lang-en-only">Generate Adaptive Paper Now</span>
+          <span class="lang-ar-only">إنشاء ورقة الامتحان التكيفية الآن</span>
+        </button>
       </div>
     </div>
   </div>

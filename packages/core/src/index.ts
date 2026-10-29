@@ -27,3 +27,6 @@ export * from './institutional/TeacherPortalEngine.js';
 export * from './privacy/PrivacyVaultEngine.js';
 export * from './archival/AssessmentArchiveEngine.js';
 export * from './voice/SocraticVoiceEngine.js';
+export * from './simulation/GenerativeMockEngine.js';
+export * from './workload/WorkloadBalancerEngine.js';
+export * from './privacy/FederatedBenchmarkEngine.js';
