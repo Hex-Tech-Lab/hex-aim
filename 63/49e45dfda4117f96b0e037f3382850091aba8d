@@ -1,0 +1,25 @@
+docs/reports/10X_STRATEGIC_WAVE_ARCHITECT_PROMPT_V2.md
+  s_99ed77941625bd::t_fa1b1f18c732a2 1-159
+docs/reports/10X_STRATEGIC_WAVE_ARCHITECT_PROMPT_V3.md
+  s_99ed77941625bd::t_e0cf0d613de883 1-215
+docs/reports/10X_STRATEGIC_WAVE_ARCHITECT_PROMPT_V3.html
+  s_99ed77941625bd::t_00cff71b3827ff 1-365
+docs/reports/10X_STRATEGIC_WAVE_ARCHITECT_PROMPT_V2.html
+  s_99ed77941625bd::t_13b0d00b925612 1-321
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6349e45dfda4117f96b0e037f3382850091aba8d",
+  "prompts": {},
+  "sessions": {
+    "s_99ed77941625bd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8aff6cbd-403b-4230-aada-715e0267b327",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
