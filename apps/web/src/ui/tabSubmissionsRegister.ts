@@ -25,18 +25,53 @@ export function renderSubmissionsRegisterTab(): string {
       </div>
     </div>
 
+    <!-- Wave 29: Longitudinal Assessment Archival & Audit Dossier Banner -->
+    <div class="card" style="margin-bottom: 20px; background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(16, 185, 129, 0.05)); border: 1px solid rgba(6, 182, 212, 0.25);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="badge badge-cyan">ADR-005 • Wave 29</span>
+            <span style="font-weight: 700; font-size: 14px; color: var(--astryx-text-contrast);">
+              <span class="lang-en-only">Longitudinal Assessment Archival & Audit Dossier Engine</span>
+              <span class="lang-ar-only">محرك الأرشفة التراكمية وسجل التدقيق المعتمد</span>
+            </span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+            <span class="lang-en-only">Consolidates weekly micro-sprints and scanned papers into SHA-256 tamper-evident student portfolios with Cloudflare R2 cold-storage offload.</span>
+            <span class="lang-ar-only">تجميع ومطابقة الاختبارات الأسبوعية وأوراق الإجابات في ملف تقييم رقمي موثق ومحمي ضد التلاعب ومشفر سحابياً.</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button class="btn btn-outline" style="border-color: var(--cyan); color: var(--cyan); padding: 8px 16px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;" onclick="openDossierModal()">
+            <span>🛡️</span>
+            <span class="lang-en-only">Export Cryptographic Dossier</span>
+            <span class="lang-ar-only">تصدير الملف الموثق كربتوغرافياً</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Controls Bar: Filter by Student, Subject, and View Mode -->
     <div class="card" style="margin-bottom: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-          <label style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Student Filter:</label>
+          <label style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase;">
+            <span class="lang-en-only">Student Filter:</span>
+            <span class="lang-ar-only">تصفية الطالب:</span>
+          </label>
           <div class="filter-pill-group">
             <button class="filter-pill active" onclick="filterSubmissions('all', null)">All (52)</button>
-            <button class="filter-pill" onclick="filterSubmissions('lara', null)">👧 Lara (30)</button>
-            <button class="filter-pill" onclick="filterSubmissions('maya', null)">👧 Maya (22)</button>
+            <button class="filter-pill" onclick="filterSubmissions('lara', null)">👧 Lara</button>
+            <button class="filter-pill" onclick="filterSubmissions('maya', null)">👧 Maya</button>
+            <button class="filter-pill" onclick="filterSubmissions('youssef', null)">👦 Youssef</button>
+            <button class="filter-pill" onclick="filterSubmissions('omar', null)">👦 Omar</button>
+            <button class="filter-pill" onclick="filterSubmissions('nour', null)">👧 Nour</button>
           </div>
 
-          <label style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-left: 10px;">Subject:</label>
+          <label style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-left: 10px;">
+            <span class="lang-en-only">Subject:</span>
+            <span class="lang-ar-only">المادة:</span>
+          </label>
           <div class="filter-pill-group">
             <button class="filter-pill active" onclick="filterSubmissions(null, 'all')">All</button>
             <button class="filter-pill" onclick="filterSubmissions(null, 'science')">Science</button>
@@ -520,6 +555,99 @@ export function renderSubmissionsRegisterTab(): string {
           <div style="margin-top: 20px;">
             <button class="btn" onclick="closeScanModal()">Done Reviewing</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wave 29: Longitudinal Assessment Archival & Audit Dossier Modal -->
+    <div id="dossier-modal" class="modal-backdrop" style="display: none;" onclick="if(event.target === this) closeDossierModal()">
+      <div class="modal-box" style="max-width: 720px; width: 95%;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--astryx-card-border); padding-bottom: 14px; margin-bottom: 16px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="dossier-status-badge" class="badge badge-green">✓ VERIFIED AUTHENTIC</span>
+              <span class="badge badge-cyan">SHA-256 SEALED</span>
+            </div>
+            <h3 style="margin-top: 8px; font-size: 18px; color: var(--astryx-text-contrast);">
+              <span class="lang-en-only">Longitudinal Assessment Archival Dossier</span>
+              <span class="lang-ar-only">الملف الأرشيفي التراكمي الموثق</span>
+            </h3>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+              Asten College • Year 4 British Track • Autumn Term 1 Portfolio
+            </div>
+          </div>
+          <button class="btn btn-outline" style="padding: 4px 10px; font-size: 14px;" onclick="closeDossierModal()">✕</button>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase;">
+            <span class="lang-en-only">Select Student:</span>
+            <span class="lang-ar-only">اختر الطالب:</span>
+          </label>
+          <select id="dossier-student-select" style="background: var(--astryx-bg-primary); color: var(--astryx-text-contrast); border: 1px solid var(--astryx-card-border); border-radius: 6px; padding: 6px 12px; font-size: 13px; margin-left: 8px;" onchange="loadDossierData(this.value)">
+            <option value="lara">👧 Lara Sherif (ADR-005 Primary)</option>
+            <option value="maya">👧 Maya Sherif</option>
+            <option value="youssef">👦 Youssef Kamal</option>
+            <option value="omar">👦 Omar Mahmoud</option>
+            <option value="nour">👧 Nour Hassan</option>
+          </select>
+        </div>
+
+        <!-- KPI Grid -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px;">
+          <div style="background: var(--astryx-bg-primary); border: 1px solid var(--astryx-card-border); border-radius: 8px; padding: 12px; text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700;">
+              <span class="lang-en-only">Overall Mastery</span>
+              <span class="lang-ar-only">الإتقان العام</span>
+            </div>
+            <div id="dossier-kpi-mastery" style="font-size: 22px; font-weight: 800; color: var(--cyan); margin-top: 4px;">92%</div>
+          </div>
+          <div style="background: var(--astryx-bg-primary); border: 1px solid var(--astryx-card-border); border-radius: 8px; padding: 12px; text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700;">
+              <span class="lang-en-only">Assessments</span>
+              <span class="lang-ar-only">التقييمات</span>
+            </div>
+            <div id="dossier-kpi-count" style="font-size: 22px; font-weight: 800; color: var(--astryx-text-contrast); margin-top: 4px;">6</div>
+          </div>
+          <div style="background: var(--astryx-bg-primary); border: 1px solid var(--astryx-card-border); border-radius: 8px; padding: 12px; text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700;">
+              <span class="lang-en-only">Zero-Alarm</span>
+              <span class="lang-ar-only">بلا قلق</span>
+            </div>
+            <div id="dossier-kpi-victories" style="font-size: 22px; font-weight: 800; color: var(--green); margin-top: 4px;">5</div>
+          </div>
+          <div style="background: var(--astryx-bg-primary); border: 1px solid var(--astryx-card-border); border-radius: 8px; padding: 12px; text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700;">
+              <span class="lang-en-only">Remediated Gaps</span>
+              <span class="lang-ar-only">الفجوات المعالجة</span>
+            </div>
+            <div id="dossier-kpi-remediated" style="font-size: 22px; font-weight: 800; color: var(--yellow); margin-top: 4px;">5 / 6</div>
+          </div>
+        </div>
+
+        <!-- Cryptographic Proof Box -->
+        <div style="background: #07101e; border: 1px dashed var(--cyan); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span style="font-size: 11px; font-weight: 700; color: var(--cyan); text-transform: uppercase;">SHA-256 Tamper-Evident Integrity Checksum:</span>
+            <button class="btn btn-outline" style="padding: 2px 8px; font-size: 10px; border-color: var(--cyan); color: var(--cyan);" onclick="verifyDossierIntegrity()">Re-Verify</button>
+          </div>
+          <div id="dossier-sha-seal" style="font-family: monospace; font-size: 11px; color: var(--astryx-text-contrast); word-break: break-all;">
+            e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+          </div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 6px;">
+            <span>Cloudflare R2 Cold Archive Object: </span><code id="dossier-r2-key" style="color: var(--green);">dossiers/2026/term1/lara_archive_term1.json</code>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--astryx-card-border); padding-top: 16px;">
+          <button id="dossier-download-json" class="btn btn-outline" style="border-color: var(--cyan); color: var(--cyan);">
+            <span>⬇ Download Verifiable JSON</span>
+          </button>
+          <button id="dossier-view-html" class="btn" style="background: var(--cyan); color: #000; font-weight: 700;">
+            <span>🖨️ View Formatted Dossier (HTML)</span>
+          </button>
+          <button class="btn btn-outline" onclick="closeDossierModal()">Close</button>
         </div>
       </div>
     </div>

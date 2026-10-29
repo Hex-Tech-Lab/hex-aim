@@ -308,6 +308,46 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(data.redactedPrompt).toContain(data.pseudonymized.pseudonymToken);
     expect(data.redactedPrompt).toContain('[GUARDIAN_COACH]');
   });
+
+  // Wave 29: Longitudinal Assessment Archival & Audit Dossier Engine (ADR-005)
+  it('GET /api/archive/:studentId/dossier returns tamper-evident longitudinal dossier with R2 manifest', async () => {
+    const res = await fetch(`${baseUrl}/api/archive/lara/dossier`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.dossierId).toBe('dossier_2026_t1_lara');
+    expect(data.studentDisplayName).toBe('Lara Sherif');
+    expect(data.summary.totalAssessmentsArchived).toBe(6);
+    expect(data.integrity.payloadChecksum).toMatch(/^[a-f0-9]{64}$/);
+    expect(data.coldStorage.storageProvider).toBe('cloudflare_r2');
+    expect(data.coldStorage.presignedDownloadUrl).toContain('https://pub-r2.aim.getvintel.com/');
+  });
+
+  it('GET /api/archive/:studentId/verify returns authentic integrity verification status', async () => {
+    const res = await fetch(`${baseUrl}/api/archive/lara/verify`);
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.isValid).toBe(true);
+    expect(data.expectedHash).toBe(data.actualHash);
+  });
+
+  it('GET /archive/:studentId returns standalone printable HTML dossier', async () => {
+    const res = await fetch(`${baseUrl}/archive/lara`);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain('Longitudinal Assessment Dossier');
+    expect(html).toContain('Lara Sherif');
+    expect(html).toContain('SHA-256 SEAL:');
+    expect(html).toContain('SENCO & ADHD Sensory Scaffold Recommendations');
+  });
+
+  it('GET /archive/:studentId?lang=ar returns Arabic RTL dossier', async () => {
+    const res = await fetch(`${baseUrl}/archive/maya?lang=ar`);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain('dir="rtl"');
+    expect(html).toContain('الملف التراكمي الشامل');
+    expect(html).toContain('مسارات النمو المعرفي');
+  });
 });
 
 

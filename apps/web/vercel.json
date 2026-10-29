@@ -6,6 +6,8 @@
     { "source": "/exam/exam_y4_sci_term1", "destination": "/exam/exam_y4_sci_term1.html" },
     { "source": "/exam/exam_y4_math_term1", "destination": "/exam/exam_y4_math_term1.html" },
     { "source": "/exam/:path*", "destination": "/exam/exam_y4_sci_term1.html" },
+    { "source": "/archive/:student", "destination": "/archive/:student.html" },
+    { "source": "/archive", "destination": "/archive/index.html" },
     { "source": "/sprint/preview", "destination": "/sprint/preview.html" },
     { "source": "/guide/preview", "destination": "/guide/preview.html" },
     { "source": "/sprint/:path*", "destination": "/sprint/preview.html" },

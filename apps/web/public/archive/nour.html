@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Longitudinal Assessment Dossier • Nour Hassan</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111726;
+      --border: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --orange: #f97316;
+      --purple: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 32px 20px; line-height: 1.5; font-size: 14px; }
+    .container { max-width: 960px; margin: 0 auto; }
+    .header-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .badge-cyan { background: rgba(6, 182, 212, 0.15); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
+    .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .grid-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+    .kpi-title { font-size: 12px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+    .kpi-val { font-size: 32px; font-weight: 800; color: var(--text); }
+    .section-title { font-size: 18px; font-weight: 700; margin: 24px 0 14px; color: var(--cyan); display: flex; align-items: center; gap: 8px; }
+    table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 24px; }
+    th { background: #162032; text-align: left; padding: 12px 16px; font-size: 12px; text-transform: uppercase; color: var(--text-muted); }
+    td { padding: 14px 16px; border-top: 1px solid var(--border); font-size: 13px; }
+    .sha-seal { background: #07101e; border: 1px dashed var(--cyan); border-radius: 8px; padding: 14px; font-family: monospace; font-size: 12px; color: var(--cyan); word-break: break-all; margin-top: 16px; }
+    .recommendation-box { background: rgba(139, 92, 246, 0.08); border-left: 4px solid var(--purple); padding: 16px; border-radius: 6px; margin-bottom: 12px; }
+    @media print {
+      body { background: #fff; color: #000; }
+      .header-card, .kpi-card, table { border: 1px solid #ccc; background: #fff; color: #000; }
+      .sha-seal { border-color: #000; color: #000; }
+      .badge { border: 1px solid #000; color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <span class="badge badge-cyan">Cryptographically Verified Audit Dossier</span>
+          <h1 style="font-size: 26px; margin-top: 8px;">Nour Hassan</h1>
+          <p style="color: var(--text-muted); margin-top: 4px;">
+            Asten College (New Cairo) • Y4 • Term 1 (Autumn 2026)
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <span class="badge badge-green">✓ verified_authentic</span>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
+            Generated: 10/29/2026
+          </div>
+        </div>
+      </div>
+
+      <div class="sha-seal">
+        <strong>SHA-256 SEAL:</strong> 73121a7fd0042e89ffc6a4cee4422ca29e4ccc9965f82bbd928dfb760a8f5367
+        <br>
+        <span style="font-size: 11px; color: var(--text-muted);">
+          Cloudflare R2 Storage Key: dossiers/2026/term1/nour_archive_term1.json
+        </span>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid-kpis">
+      <div class="kpi-card">
+        <div class="kpi-title">Overall Mastery</div>
+        <div class="kpi-val" style="color: var(--cyan);">94%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Archived Assessments</div>
+        <div class="kpi-val">2</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Zero-Alarm Victories</div>
+        <div class="kpi-val" style="color: var(--green);">2</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Gap Remediation Rate</div>
+        <div class="kpi-val" style="color: var(--yellow);">100%</div>
+      </div>
+    </div>
+
+    <!-- Cognitive Growth Vectors -->
+    <h2 class="section-title">📈 Longitudinal Cognitive Vectors</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Cognitive Domain</th>
+          <th>Baseline</th>
+          <th>Terminal</th>
+          <th>Growth (Δ)</th>
+          <th>Retention</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td><strong>Acoustic Transmission & Particle Models</strong></td>
+            <td>68%</td>
+            <td style="color: var(--cyan); font-weight: 700;">94%</td>
+            <td style="color: var(--green); font-weight: 700;">+26%</td>
+            <td>89%</td>
+            <td><span class="badge badge-green">accelerating</span></td>
+          </tr>
+        
+          <tr>
+            <td><strong>Number & Place Value (NPV / Negatives)</strong></td>
+            <td>62%</td>
+            <td style="color: var(--cyan); font-weight: 700;">86%</td>
+            <td style="color: var(--green); font-weight: 700;">+24%</td>
+            <td>84%</td>
+            <td><span class="badge badge-green">solidified</span></td>
+          </tr>
+        
+          <tr>
+            <td><strong>Multi-Step Column Operations & Zero Decomposition</strong></td>
+            <td>58%</td>
+            <td style="color: var(--cyan); font-weight: 700;">82%</td>
+            <td style="color: var(--green); font-weight: 700;">+24%</td>
+            <td>81%</td>
+            <td><span class="badge badge-green">fragile_under_rush</span></td>
+          </tr>
+        
+          <tr>
+            <td><strong>Spelling Rules & Fronted Adverbials</strong></td>
+            <td>74%</td>
+            <td style="color: var(--cyan); font-weight: 700;">89%</td>
+            <td style="color: var(--green); font-weight: 700;">+15%</td>
+            <td>88%</td>
+            <td><span class="badge badge-green">solidified</span></td>
+          </tr>
+        
+      </tbody>
+    </table>
+
+    <!-- Evidence Artifacts Table -->
+    <h2 class="section-title">📂 Archived Assessment Evidence Artifacts</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Assessment</th>
+          <th>Score</th>
+          <th>Remediated Gaps</th>
+          <th>SHA-256 Checksum</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td>W8</td>
+            <td>
+              <strong>Year 4 Science Midterm Summative Assessment</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">scanned_paper • 2026-10-25</div>
+            </td>
+            <td><strong>28/30</strong> (93%)</td>
+            <td><span style="color: var(--green);">✓ Y4.SCI.CIRCUITS.SWITCH</span></td>
+            <td><code style="font-size: 10px; color: var(--cyan);">6c7d8e9f0a1b2c3d...</code></td>
+          </tr>
+        
+          <tr>
+            <td>W7</td>
+            <td>
+              <strong>Year 4 Reading Comprehension & Inference</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">diagnostic_quiz • 2026-10-19</div>
+            </td>
+            <td><strong>19/20</strong> (95%)</td>
+            <td><span style="color: var(--green);">✓ None</span></td>
+            <td><code style="font-size: 10px; color: var(--cyan);">8e9f0a1b2c3d4e5f...</code></td>
+          </tr>
+        
+      </tbody>
+    </table>
+
+    <!-- SENCO & Learning Support Guidance -->
+    <h2 class="section-title">🧠 SENCO & ADHD Sensory Scaffold Recommendations</h2>
+    
+      <div class="recommendation-box">
+        <div style="font-weight: 700; margin-bottom: 4px; color: var(--purple);">
+          Working Memory Load & Timed Assessment Pacing • <span style="text-transform: uppercase; font-size: 11px;">[high]</span>
+        </div>
+        <div style="margin-bottom: 6px;">
+          <strong>Observed Learning Pattern:</strong> High conceptual verbal intuition, but prone to digit transposition when forced to rush under auditory countdown.
+        </div>
+        <div style="color: var(--text);">
+          <strong>Recommended Scaffold:</strong> Enforce 8-minute micro-sprint ceiling with visual stopwatch rather than audio alarm. Provide place-value grid paper.
+        </div>
+      </div>
+    
+      <div class="recommendation-box">
+        <div style="font-weight: 700; margin-bottom: 4px; color: var(--purple);">
+          Sensory Visual Anchoring (Elevator / Particle Model) • <span style="text-transform: uppercase; font-size: 11px;">[high]</span>
+        </div>
+        <div style="margin-bottom: 6px;">
+          <strong>Observed Learning Pattern:</strong> Abstract negative temperatures confuse spatial orientation unless anchored to the physical elevator model (Basement B4 vs Ground 0).
+        </div>
+        <div style="color: var(--text);">
+          <strong>Recommended Scaffold:</strong> Maintain visual number ribbon with zero highlighted as ground baseline across all homework sheets.
+        </div>
+      </div>
+    
+      <div class="recommendation-box">
+        <div style="font-weight: 700; margin-bottom: 4px; color: var(--purple);">
+          Acoustic Density & Particle Proximity • <span style="text-transform: uppercase; font-size: 11px;">[medium]</span>
+        </div>
+        <div style="margin-bottom: 6px;">
+          <strong>Observed Learning Pattern:</strong> Successfully remediated density inversion. Remembers that closely packed particles in water transmit vibrations faster.
+        </div>
+        <div style="color: var(--text);">
+          <strong>Recommended Scaffold:</strong> Spaced repetition check scheduled in 14 days to cement permanence before end-of-year assessment.
+        </div>
+      </div>
+    
+  </div>
+</body>
+</html>

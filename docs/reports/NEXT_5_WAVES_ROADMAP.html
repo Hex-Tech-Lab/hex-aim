@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HEX-AIM: Next 5 Waves Architectural Specification (Waves 29 – 33)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: #111827;
+      --card-border: #1f2937;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --cyan: #06b6d4;
+      --emerald: #10b981;
+      --purple: #a855f7;
+      --amber: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h1 span { color: var(--cyan); }
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--cyan);
+      margin-top: 36px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--emerald);
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    p, ul {
+      margin-bottom: 16px;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+    ul {
+      padding-left: 24px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: rgba(6, 182, 212, 0.1);
+      color: var(--cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+    .mermaid {
+      background: #0d1322;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 14px;
+      text-align: left;
+    }
+    th {
+      background: #1e293b;
+      color: #fff;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--cyan);
+    }
+    .wave-card {
+      background: #0d1322;
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--cyan);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HEX-AIM: <span>Next 5 Waves Architectural Specification</span></h1>
+    <div class="subtitle">Waves 29 through 33 • Enterprise Cognitive Acceleration Platform for UK Primary (Y3–6)</div>
+
+    <h2>Strategic Horizon Overview</h2>
+    <div class="mermaid">
+flowchart LR
+    W28["Wave 28 (Done)<br/>Zero-Knowledge Vault"] --> W29["Wave 29<br/>Longitudinal Archival"]
+    W29 --> W30["Wave 30<br/>Socratic Voice Agent"]
+    W30 --> W31["Wave 31<br/>Predictive Mock Engine"]
+    W31 --> W32["Wave 32<br/>Workload & Cal Sync"]
+    W32 --> W33["Wave 33<br/>Federated Benchmark"]
+    </div>
+
+    <!-- WAVE 29 -->
+    <div class="wave-card">
+      <h2>Wave 29: Longitudinal Assessment Archival & Audit Dossier Engine (ADR-005)</h2>
+      <h3>1. Pedagogical Intent</h3>
+      <p>Consolidates months of weekly micro-sprints and scanned assessments into tamper-evident, verifiable end-of-term student dossiers. Provides parents and schools with longitudinal growth curves, mastery delta trajectories, and standardized UK National Curriculum diagnostic benchmarks for parent-teacher conferences and SENCO reviews.</p>
+
+      <h3>2. ADHD / Sensory Adaptation</h3>
+      <p>Transforms fragmented anxiety-inducing scores into visual celebration milestones (mastered domains, zero-alarm victories, retention streaks). Protects working memory by summarizing historical cognitive trajectories in high-contrast visual infographics rather than dense grade tables.</p>
+
+      <h3>3. Technical Architecture & Moats</h3>
+      <ul>
+        <li><strong>Cryptographic Evidence Chain:</strong> SHA-256 verifiable portfolio packager binding scanned images, OCR extracted text, Socratic hints, and graded mastery vectors.</li>
+        <li><strong>Tiered Cold Storage:</strong> Automated archival offloading from Upstash Redis hot keys to Cloudflare R2 / S3 cold buckets with pre-signed ephemeral download URLs (~1h TTL).</li>
+        <li><strong>Multi-Page Vector Summary:</strong> Generates 6-page A4 end-of-term summary PDF using Warm Browser Pool (&lt;150ms latency) containing radar trends, subject breakdowns, and next-term intervention recommendations.</li>
+      </ul>
+
+      <h3>4. Implementation Deliverables</h3>
+      <ul>
+        <li><code>packages/core/src/archival/AssessmentArchiveEngine.ts</code></li>
+        <li><code>packages/core/test/assessmentArchive.test.ts</code></li>
+        <li>Web Console: Tab 4 "Export Term 1 Cryptographic Dossier (PDF/ZIP)" modal.</li>
+      </ul>
+    </div>
+
+    <!-- WAVE 30 -->
+    <div class="wave-card" style="border-left-color: var(--purple);">
+      <h2 style="color: var(--purple);">Wave 30: Real-Time Socratic Voice Dialogue & Oral Tutoring Agent</h2>
+      <h3>1. Pedagogical Intent</h3>
+      <p>Enables low-friction, screen-free oral tutoring where the student or parent engages in direct two-way spoken Socratic dialogue with AIM. Converts passive reading into active vocal retrieval, which deepens long-term conceptual retention.</p>
+
+      <h3>2. ADHD / Sensory Adaptation</h3>
+      <p>Zero reading/screen fatigue. Specifically engineered for children with ADHD and Dyslexia traits who excel verbally but struggle with dense printed text. Built-in 3-minute spoken drill pacing with calm audio cues and zero-alarm praise feedback.</p>
+
+      <h3>3. Technical Architecture & Moats</h3>
+      <ul>
+        <li><strong>Low-Latency Audio Pipeline:</strong> Client-side audio capture via Web Audio API, streamed directly to OpenRouter STT (<code>openai/gpt-4o-transcribe</code> / Whisper Turbo) with VAD (Voice Activity Detection).</li>
+        <li><strong>Egyptian Arabic & English Dual Dialects:</strong> Native support for Egyptian colloquial Arabic dialogue alongside English British Curriculum terminology.</li>
+        <li><strong>Visual Waveform Oscilloscope:</strong> Canvas-based real-time rotating scope-ring visualizer matching the Meta Astryx design language.</li>
+      </ul>
+
+      <h3>4. Implementation Deliverables</h3>
+      <ul>
+        <li><code>packages/core/src/voice/SocraticVoiceEngine.ts</code></li>
+        <li><code>apps/web/src/ui/components/voiceDialogueModal.ts</code></li>
+        <li><code>packages/core/test/socraticVoice.test.ts</code></li>
+      </ul>
+    </div>
+
+    <!-- WAVE 31 -->
+    <div class="wave-card" style="border-left-color: var(--amber);">
+      <h2 style="color: var(--amber);">Wave 31: Predictive Exam Readiness & Generative Mock Builder</h2>
+      <h3>1. Pedagogical Intent</h3>
+      <p>Synthesizes personalized mock examination papers that mathematically target each student's active cognitive error clusters (<code>ERR_PHANTOM_ZERO</code>, <code>ERR_COLUMN_DRIFT</code>) and items approaching their cognitive decay half-life threshold (<em>R(t) &lt; 0.75</em>).</p>
+
+      <h3>2. ADHD / Sensory Adaptation</h3>
+      <p>Predicts exam anxiety spikes before school test days. Generates calibrated, low-stakes practice drills with graduated question difficulty (starting with high-confidence wins, then scaffolding challenging multi-step questions) to cultivate psychological safety.</p>
+
+      <h3>3. Technical Architecture & Moats</h3>
+      <ul>
+        <li><strong>Isomorphic Question Synthesizer:</strong> Generates novel question stems structurally equivalent to canonical exam boards (GL Assessment, Cambridge Primary, Edexcel) while altering contextual parameters to prevent superficial memorization.</li>
+        <li><strong>Auto-Derived Rubric Vector:</strong> Produces automated multi-tier mark schemes with partial-credit allocation rules and sensory scaffold suggestions.</li>
+      </ul>
+
+      <h3>4. Implementation Deliverables</h3>
+      <ul>
+        <li><code>packages/core/src/simulation/GenerativeMockEngine.ts</code></li>
+        <li><code>apps/web/src/ui/examBuilderHtml.ts</code> (Dynamic <code>/exam/builder</code> route)</li>
+        <li><code>packages/core/test/generativeMock.test.ts</code></li>
+      </ul>
+    </div>
+
+    <!-- WAVE 32 -->
+    <div class="wave-card" style="border-left-color: var(--emerald);">
+      <h2 style="color: var(--emerald);">Wave 32: Intelligent Homework Balancer & Calendar Integration</h2>
+      <h3>1. Pedagogical Intent</h3>
+      <p>Prevents academic burnout and cognitive overload by dynamically scheduling 8-minute micro-sprints around the family's real-world timetable, school assignment deadlines, and extracurricular sports/activities.</p>
+
+      <h3>2. ADHD / Sensory Adaptation</h3>
+      <p>Executive functioning prosthetic: breaks overwhelming weekly homework packets into manageable daily micro-sessions with calm, gentle reminders that eliminate domestic friction between parents and children.</p>
+
+      <h3>3. Technical Architecture & Moats</h3>
+      <ul>
+        <li><strong>Bi-Directional Calendar Engine:</strong> Standard iCalendar (<code>.ics</code>) feed generation compatible with Apple Calendar, Google Calendar, and Microsoft Outlook.</li>
+        <li><strong>Cognitive Load Leveling:</strong> Heuristic scheduler preventing consecutive high-friction subjects (e.g. staggering Column Subtraction after a high-mastery verbal Science sprint).</li>
+      </ul>
+
+      <h3>4. Implementation Deliverables</h3>
+      <ul>
+        <li><code>packages/core/src/calendar/WorkloadBalancerEngine.ts</code></li>
+        <li><code>apps/web/src/server.ts</code> (<code>/api/calendar/:studentId/feed.ics</code> endpoint)</li>
+        <li><code>packages/core/test/workloadBalancer.test.ts</code></li>
+      </ul>
+    </div>
+
+    <!-- WAVE 33 -->
+    <div class="wave-card" style="border-left-color: #38bdf8;">
+      <h2 style="color: #38bdf8);">Wave 33: Multi-School Federated Benchmark & Anonymized Cohort Exchange</h2>
+      <h3>1. Pedagogical Intent</h3>
+      <p>Allows British Curriculum institutions in Cairo (Asten College, BISC, NCBIS, Cairo English School) to benchmark cohort mastery and error class distributions against peer schools without disclosing confidential institutional or student data.</p>
+
+      <h3>2. ADHD / Sensory Adaptation</h3>
+      <p>Destigmatizes neurodiverse learning needs by proving that sensory accommodation requirements (e.g. ADHD visual chunking, dyslexia room partitions) are widespread across top-performing cohorts.</p>
+
+      <h3>3. Technical Architecture & Moats</h3>
+      <ul>
+        <li><strong>Zero-Knowledge Differential Privacy:</strong> Perturbs cohort averages using Laplace noise &epsilon;-differential privacy, guaranteeing zero reconstruction of individual student performance.</li>
+        <li><strong>Topological Mastery Comparison:</strong> Ranks school cohort progress by curriculum graph depth rather than simplistic raw exam score percentages.</li>
+      </ul>
+
+      <h3>4. Implementation Deliverables</h3>
+      <ul>
+        <li><code>packages/core/src/institutional/FederatedBenchmarkEngine.ts</code></li>
+        <li><code>apps/web/src/ui/teacherPortalHtml.ts</code> (Integrated "National Benchmark" tab)</li>
+        <li><code>packages/core/test/federatedBenchmark.test.ts</code></li>
+      </ul>
+    </div>
+
+    <h2>Dimension Comparison Matrix</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Wave</th>
+          <th>Core Module</th>
+          <th>Primary User</th>
+          <th>Pedagogical Impact</th>
+          <th>Technical Moat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>W29</strong></td>
+          <td><code>AssessmentArchiveEngine</code></td>
+          <td>Parents & SENCOs</td>
+          <td>Long-term growth verification</td>
+          <td>Tamper-evident SHA-256 PDF dossier</td>
+        </tr>
+        <tr>
+          <td><strong>W30</strong></td>
+          <td><code>SocraticVoiceEngine</code></td>
+          <td>Students (ADHD/Dyslexia)</td>
+          <td>Screen-free oral retrieval</td>
+          <td>Edge streaming VAD & bilingual STT</td>
+        </tr>
+        <tr>
+          <td><strong>W31</strong></td>
+          <td><code>GenerativeMockEngine</code></td>
+          <td>Students & Tutors</td>
+          <td>Anxiety-free targeted prep</td>
+          <td>Isomorphic question generation</td>
+        </tr>
+        <tr>
+          <td><strong>W32</strong></td>
+          <td><code>WorkloadBalancerEngine</code></td>
+          <td>Families</td>
+          <td>Executive functioning support</td>
+          <td>iCal calendar cognitive load leveling</td>
+        </tr>
+        <tr>
+          <td><strong>W33</strong></td>
+          <td><code>FederatedBenchmarkEngine</code></td>
+          <td>Headteachers & MIS</td>
+          <td>Macro-cohort accreditation</td>
+          <td>&epsilon;-Differential Privacy aggregation</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
