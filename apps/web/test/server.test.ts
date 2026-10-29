@@ -348,6 +348,59 @@ describe('Apps/Web HTTP Server & Console', () => {
     expect(html).toContain('الملف التراكمي الشامل');
     expect(html).toContain('مسارات النمو المعرفي');
   });
+
+  // Wave 30: Real-Time Socratic Voice Dialogue & Oral Tutoring Agent
+  it('POST /api/voice/session/start initializes voice dialogue with bilingual prompts', async () => {
+    const res = await fetch(`${baseUrl}/api/voice/session/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentId: 'lara',
+        conceptCode: 'Y4.SCI.SND.MEDIUM',
+        language: 'bilingual',
+      }),
+    });
+    expect(res.status).toBe(200);
+    const data = await res.json() as any;
+    expect(data.ok).toBe(true);
+    expect(data.session.sessionId).toMatch(/^vsession_lara_/);
+    expect(data.session.conceptCode).toBe('Y4.SCI.SND.MEDIUM');
+    expect(data.session.state).toBe('agent_speaking');
+    expect(data.session.remainingSeconds).toBe(180);
+    expect(data.session.turns.length).toBe(1);
+  });
+
+  it('POST /api/voice/session/:sessionId/turn processes speech and returns next Socratic prompt', async () => {
+    // 1. Start session
+    const startRes = await fetch(`${baseUrl}/api/voice/session/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ studentId: 'lara' }),
+    });
+    const { session } = await startRes.json() as any;
+
+    // 2. Submit student speech
+    const turnRes = await fetch(`${baseUrl}/api/voice/session/${session.sessionId}/turn`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        transcript: 'Sound travels faster in water because particles are crowded closer.',
+        audioDurationMs: 3200,
+      }),
+    });
+    expect(turnRes.status).toBe(200);
+    const turnData = await turnRes.json() as any;
+    expect(turnData.ok).toBe(true);
+    expect(turnData.session.turns.length).toBe(3);
+    expect(turnData.nextAgentTurn.speaker).toBe('agent');
+    expect(turnData.nextAgentTurn.transcript).toContain('iron railing');
+
+    // 3. GET session state
+    const getRes = await fetch(`${baseUrl}/api/voice/session/${session.sessionId}`);
+    expect(getRes.status).toBe(200);
+    const getData = await getRes.json() as any;
+    expect(getData.session.turns.length).toBe(3);
+  });
 });
 
 

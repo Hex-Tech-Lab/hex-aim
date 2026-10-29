@@ -176,6 +176,30 @@ export function renderStudentProgressTab(): string {
           </a>
         </div>
 
+        <!-- Wave 30: Socratic Voice Dialogue Agent Quick Launch -->
+        <div class="card" style="border-left: 3px solid var(--purple, #8b5cf6); background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.04));">
+          <div class="card-header">
+            <h2 class="flex items-center gap-1.5">
+              <span style="font-size: 16px;">🎙️</span>
+              <span class="lang-en-only">Socratic Voice Dialogue (Wave 30)</span>
+              <span class="lang-ar-only">الحوار الصوتي السقراطي (الموجة ٣٠)</span>
+            </h2>
+            <span class="badge badge-purple" style="background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4);">
+              <span class="lang-en-only">Screen-Free</span>
+              <span class="lang-ar-only">بدون شاشات</span>
+            </span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">
+            <span class="lang-en-only">Spoken 3-minute oral retrieval drill with bilingual Egyptian Arabic / English Socratic cues for ADHD/Dyslexia learners.</span>
+            <span class="lang-ar-only">تدريب استرجاع شفهي مدته ٣ دقائق بدون شاشة مع توجيه سقراطي بالعامية المصرية والإنجليزية للأطفال ذوي صعوبات القراءة وفرط الحركة.</span>
+          </div>
+          <button class="btn" style="width: 100%; background: #8b5cf6; color: #fff; font-weight: 700; border: none; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;" onclick="openVoiceModal()">
+            <span>🎙️</span>
+            <span class="lang-en-only">Start 3-Minute Voice Drill</span>
+            <span class="lang-ar-only">بدء تدريب صوتي لمدة ٣ دقائق</span>
+          </button>
+        </div>
+
         <!-- Wave 26: Adaptive Exam Simulator Quick Launch -->
         <div class="card" style="border-left: 3px solid var(--accent-cyan, #06b6d4);">
           <div class="card-header">

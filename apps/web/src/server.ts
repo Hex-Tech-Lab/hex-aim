@@ -6,7 +6,7 @@ import { renderDashboardHtml } from './ui/dashboardHtml.js';
 import { renderExamSimulationHtml } from './ui/examSimulationHtml.js';
 import { renderTeacherPortalHtml } from './ui/teacherPortalHtml.js';
 import { StorageFactory } from '@hex-aim/adapters';
-import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine, PrivacyVaultEngine, AssessmentArchiveEngine } from '@hex-aim/core';
+import { AdaptiveSprintCompiler, SocraticGuideCompiler, StudentIdentityVault, CanonicalTemplateGenerator, WarmBrowserPoolCompiler, SocraticOralEvaluator, CognitiveDecayEngine, SchoolMisSyncEngine, SocraticInpaintingEngine, PeerTeachingEngine, ExamSimulationEngine, TeacherPortalEngine, PrivacyVaultEngine, AssessmentArchiveEngine, SocraticVoiceEngine } from '@hex-aim/core';
 import type { Student, CognitiveGap } from '@hex-aim/types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -774,6 +774,80 @@ export function createServer(): http.Server {
         'Access-Control-Allow-Origin': '*',
       });
       res.end(html);
+      return;
+    }
+
+    // Wave 30: Real-Time Socratic Voice Dialogue & Oral Tutoring Agent
+    if (url.pathname === '/api/voice/session/start' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const voiceEngine = SocraticVoiceEngine.getInstance();
+          const session = voiceEngine.startSession({
+            studentId: payload.studentId || 'lara',
+            conceptCode: payload.conceptCode,
+            language: payload.language || 'bilingual',
+            maxDurationSecs: payload.maxDurationSecs || 180,
+          });
+
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ ok: true, session }));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/voice/session/') && url.pathname.endsWith('/turn') && req.method === 'POST') {
+      const sessionId = url.pathname.replace('/api/voice/session/', '').replace('/turn', '').trim();
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const payload = body ? JSON.parse(body) : {};
+          const voiceEngine = SocraticVoiceEngine.getInstance();
+          const result = voiceEngine.processStudentTurn(
+            sessionId,
+            payload.transcript || '',
+            payload.audioDurationMs || 3500
+          );
+
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ ok: true, ...result }));
+        } catch (e: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/voice/session/') && req.method === 'GET') {
+      const sessionId = url.pathname.replace('/api/voice/session/', '').trim();
+      const voiceEngine = SocraticVoiceEngine.getInstance();
+      const session = voiceEngine.getSession(sessionId);
+
+      if (!session) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Session not found' }));
+        return;
+      }
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify({ ok: true, session }));
       return;
     }
 
