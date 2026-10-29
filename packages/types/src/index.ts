@@ -931,6 +931,79 @@ export interface ArchiveDossierFilter {
   includeArtifactPayloads?: boolean;
 }
 
+// ==========================================
+// Wave 30: Real-Time Socratic Voice Dialogue & Oral Tutoring Agent
+// ==========================================
+
+export type VoiceDialogueState =
+  | 'idle'
+  | 'agent_speaking'
+  | 'listening_for_speech'
+  | 'student_speaking'
+  | 'processing_turn'
+  | 'session_completed';
+
+export interface AudioVADConfig {
+  energyThreshold: number; // 0.0 - 1.0 (RMS threshold)
+  silenceTimeoutMs: number; // 1200ms - 2200ms
+  maxSpeechDurationSecs: number; // default 30s
+}
+
+export interface VoiceDialogueTurn {
+  turnId: string;
+  turnIndex: number;
+  speaker: 'agent' | 'student';
+  timestamp: string;
+  transcript: string;
+  transcriptAr?: string;
+  audioPromptUrl?: string;
+  evaluation?: {
+    masteryPercentage: number;
+    detectedKeywords: string[];
+    missingKeywords: string[];
+    detectedMisconceptions: string[];
+    sensoryPraise: string;
+    sensoryPraiseAr?: string;
+  };
+  durationMs: number;
+}
+
+export interface SocraticVoiceSession {
+  sessionId: string;
+  studentId: string;
+  studentDisplayName: string;
+  conceptCode: string;
+  conceptTitle: string;
+  conceptTitleAr?: string;
+  subject: string;
+  language: 'en' | 'ar' | 'bilingual';
+  state: VoiceDialogueState;
+  startedAt: string;
+  expiresAt: string; // 3-minute ADHD drill ceiling (180s)
+  remainingSeconds: number;
+  turns: VoiceDialogueTurn[];
+  metrics: {
+    totalTurns: number;
+    cumulativeMastery: number;
+    retrievalFluencyScore: number; // 0 - 100
+    zeroAlarmConsolidation: boolean;
+  };
+  vadConfig: AudioVADConfig;
+}
+
+export interface StartVoiceSessionRequest {
+  studentId: string;
+  conceptCode?: string;
+  language?: 'en' | 'ar' | 'bilingual';
+  maxDurationSecs?: number;
+}
+
+export interface ProcessVoiceTurnRequest {
+  transcript: string;
+  audioDurationMs?: number;
+}
+
+
 
 
 

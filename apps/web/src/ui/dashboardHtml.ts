@@ -1422,6 +1422,170 @@ ${renderDashboardStyles()}
       card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
+    // Wave 30: Real-Time Socratic Voice Dialogue Session Handlers
+    let currentVoiceSession = null;
+    let voiceTimerInterval = null;
+    let voiceSecondsRemaining = 180;
+    let isStudentSpeaking = false;
+
+    async function openVoiceModal() {
+      const modal = document.getElementById('voice-dialogue-modal');
+      if (modal) modal.style.display = 'flex';
+      await startVoiceSession();
+    }
+
+    function closeVoiceModal() {
+      const modal = document.getElementById('voice-dialogue-modal');
+      if (modal) modal.style.display = 'none';
+      if (voiceTimerInterval) clearInterval(voiceTimerInterval);
+      currentVoiceSession = null;
+    }
+
+    async function startVoiceSession() {
+      const activeStudent = window.currentActiveStudent || 'lara';
+      const streamEl = document.getElementById('voice-dialogue-stream');
+      const stateLabel = document.getElementById('voice-agent-state-label');
+      const statusBadge = document.getElementById('voice-status-badge');
+      if (streamEl) streamEl.innerHTML = '<div style="color: var(--muted); font-size: 12px; text-align: center;">Connecting voice audio stream...</div>';
+
+      try {
+        const isAr = document.documentElement.getAttribute('dir') === 'rtl';
+        const res = await fetch('/api/voice/session/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId: activeStudent,
+            language: isAr ? 'ar' : 'bilingual',
+          }),
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error('Voice session failed');
+        currentVoiceSession = data.session;
+        voiceSecondsRemaining = data.session.remainingSeconds || 180;
+
+        if (statusBadge) {
+          statusBadge.className = 'badge badge-green';
+          statusBadge.textContent = 'Active Dialogue';
+        }
+
+        renderVoiceTurns();
+        startVoiceTimer();
+      } catch (err) {
+        console.error('Error starting voice session:', err);
+        if (streamEl) streamEl.innerHTML = '<div style="color: var(--orange); font-size: 12px; text-align: center;">Failed to connect audio. Click Quick Demo Answer.</div>';
+      }
+    }
+
+    function startVoiceTimer() {
+      if (voiceTimerInterval) clearInterval(voiceTimerInterval);
+      const timerEl = document.getElementById('voice-timer-badge');
+      voiceTimerInterval = setInterval(() => {
+        if (voiceSecondsRemaining > 0) {
+          voiceSecondsRemaining--;
+          const mins = String(Math.floor(voiceSecondsRemaining / 60)).padStart(2, '0');
+          const secs = String(voiceSecondsRemaining % 60).padStart(2, '0');
+          if (timerEl) timerEl.textContent = '⏱️ ' + mins + ':' + secs;
+        } else {
+          clearInterval(voiceTimerInterval);
+          if (timerEl) timerEl.textContent = '⏱️ Completed';
+        }
+      }, 1000);
+    }
+
+    function renderVoiceTurns() {
+      const streamEl = document.getElementById('voice-dialogue-stream');
+      const stateLabel = document.getElementById('voice-agent-state-label');
+      if (!streamEl || !currentVoiceSession) return;
+
+      const isAr = document.documentElement.getAttribute('dir') === 'rtl';
+      streamEl.innerHTML = currentVoiceSession.turns.map(t => {
+        const isAgent = t.speaker === 'agent';
+        const text = isAr && t.transcriptAr ? t.transcriptAr : t.transcript;
+        const bg = isAgent ? 'rgba(6, 182, 212, 0.12)' : 'rgba(16, 185, 129, 0.12)';
+        const border = isAgent ? 'rgba(6, 182, 212, 0.3)' : 'rgba(16, 185, 129, 0.3)';
+        const align = isAgent ? 'flex-start' : 'flex-end';
+        const color = isAgent ? 'var(--cyan)' : 'var(--green)';
+
+        return '<div style="display: flex; justify-content: ' + align + ';">' +
+          '<div style="max-width: 82%; background: ' + bg + '; border: 1px solid ' + border + '; border-radius: 8px; padding: 10px 14px; font-size: 13px;">' +
+            '<div style="font-size: 11px; font-weight: 700; color: ' + color + '; margin-bottom: 4px;">' +
+              (isAgent ? '🤖 AIM (Socratic Tutor)' : '👧 ' + (currentVoiceSession.studentDisplayName || 'Student')) +
+            '</div>' +
+            '<div>' + text + '</div>' +
+            (t.evaluation ? '<div style="margin-top: 6px; font-size: 11px; color: var(--yellow);">🎯 Mastery: ' + t.evaluation.masteryPercentage + '%</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      streamEl.scrollTop = streamEl.scrollHeight;
+
+      if (stateLabel) {
+        if (currentVoiceSession.state === 'session_completed') {
+          stateLabel.textContent = '🎉 Session Completed (Zero-Alarm Victory)';
+          stateLabel.style.color = 'var(--green)';
+        } else if (isStudentSpeaking) {
+          stateLabel.textContent = 'Listening to Student...';
+          stateLabel.style.color = 'var(--green)';
+        } else {
+          stateLabel.textContent = 'AIM Awaiting Response...';
+          stateLabel.style.color = 'var(--cyan)';
+        }
+      }
+    }
+
+    async function toggleVoiceSpeech() {
+      if (!currentVoiceSession) return;
+      isStudentSpeaking = !isStudentSpeaking;
+      const btnLabel = document.getElementById('mic-btn-label');
+      const ring = document.getElementById('scope-ring');
+
+      if (isStudentSpeaking) {
+        if (btnLabel) btnLabel.textContent = 'Done Speaking';
+        if (ring) {
+          ring.style.borderColor = 'var(--green)';
+          ring.style.animationDuration = '2s';
+        }
+        renderVoiceTurns();
+      } else {
+        if (btnLabel) btnLabel.textContent = 'Speak Response';
+        if (ring) {
+          ring.style.borderColor = '#8b5cf6';
+          ring.style.animationDuration = '8s';
+        }
+        await submitVoiceResponse('Sound travels faster in water because the particles are packed closer together.');
+      }
+    }
+
+    async function simulateStudentResponse() {
+      if (!currentVoiceSession) return;
+      await submitVoiceResponse('I think sound travels faster through water because particles are crowded closer than in air.');
+    }
+
+    async function submitVoiceResponse(text) {
+      if (!currentVoiceSession) return;
+      const stateLabel = document.getElementById('voice-agent-state-label');
+      if (stateLabel) stateLabel.textContent = 'Processing Vocal Response...';
+
+      try {
+        const res = await fetch('/api/voice/session/' + currentVoiceSession.sessionId + '/turn', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transcript: text,
+            audioDurationMs: 3400,
+          }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          currentVoiceSession = data.session;
+          isStudentSpeaking = false;
+          renderVoiceTurns();
+        }
+      } catch (e) {
+        console.error('Failed to submit vocal turn:', e);
+      }
+    }
+
     // Initialize static waveform on load
     window.addEventListener('load', () => {
       drawStaticWaveform();
@@ -1438,6 +1602,62 @@ ${renderDashboardStyles()}
       });
     }
   </script>
+
+  <!-- Wave 30: Real-Time Socratic Voice Dialogue Modal -->
+  <div id="voice-dialogue-modal" class="modal-backdrop" style="display: none;" onclick="if(event.target === this) closeVoiceModal()">
+    <div class="modal-box" style="max-width: 680px; width: 95%; background: #0c1222; border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(139, 92, 246, 0.2);">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--astryx-card-border); padding-bottom: 14px; margin-bottom: 16px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4);">🎙️ Socratic Voice Agent</span>
+            <span id="voice-status-badge" class="badge badge-cyan">Ready</span>
+            <span id="voice-timer-badge" class="badge badge-yellow" style="font-family: monospace;">⏱️ 03:00</span>
+          </div>
+          <h3 id="voice-session-title" style="margin-top: 8px; font-size: 18px; color: var(--astryx-text-contrast);">
+            Oral Socratic Tutoring: States of Matter & Sound
+          </h3>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+            Screen-Free Spoken Retrieval • Zero-Alarm ADHD Protocol (3m Ceiling)
+          </div>
+        </div>
+        <button class="btn btn-outline" style="padding: 4px 10px; font-size: 14px;" onclick="closeVoiceModal()">✕</button>
+      </div>
+
+      <!-- Rotating Scope-Ring & Oscilloscope Visualizer -->
+      <div style="text-align: center; margin-bottom: 20px; position: relative;">
+        <div style="display: inline-block; position: relative; width: 120px; height: 120px;">
+          <div id="scope-ring" style="position: absolute; inset: 0; border: 2px dashed #8b5cf6; border-radius: 50%; animation: spin 8s linear infinite;"></div>
+          <div style="position: absolute; inset: 10px; border: 1px solid rgba(6, 182, 212, 0.4); border-radius: 50%;"></div>
+          <div id="mic-center-icon" style="position: absolute; inset: 25px; background: rgba(139, 92, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+            🎙️
+          </div>
+        </div>
+        <div id="voice-agent-state-label" style="font-size: 12px; font-weight: 700; color: var(--cyan); margin-top: 10px; text-transform: uppercase;">
+          AIM Speaking...
+        </div>
+      </div>
+
+      <!-- Dialogue History Stream -->
+      <div id="voice-dialogue-stream" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; padding: 10px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--astryx-card-border);">
+        <!-- Injected Turns -->
+      </div>
+
+      <!-- Bottom Audio Controls -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--astryx-card-border); padding-top: 14px;">
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-voice-mic" class="btn" style="background: #8b5cf6; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px;" onclick="toggleVoiceSpeech()">
+            <span id="mic-btn-icon">🎙️</span>
+            <span id="mic-btn-label">Speak Response</span>
+          </button>
+          <button class="btn btn-outline" style="border-color: var(--cyan); color: var(--cyan); padding: 8px 12px; font-size: 12px;" onclick="simulateStudentResponse()">
+            <span>⚡ Quick Demo Answer</span>
+          </button>
+        </div>
+        <button class="btn btn-outline" onclick="closeVoiceModal()">End Session</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toast-container"></div>
 </body>
