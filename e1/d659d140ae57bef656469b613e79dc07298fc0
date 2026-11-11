@@ -1,0 +1,27 @@
+docs/reports/QUIZ5_MATH_LARA.html
+  s_99ed77941625bd::t_93a7756094e910 72-75,78-81,84-85,90-93,104
+  s_99ed77941625bd::t_d0c7cc4a4f9438 86-87
+docs/reports/QUIZ5_MATH_MAYA.html
+  s_99ed77941625bd::t_93a7756094e910 80-83,86-89,92-93,98-101,112
+  s_99ed77941625bd::t_d0c7cc4a4f9438 94-95
+docs/progress/lms_progress.json
+  s_99ed77941625bd::t_f41751e652954f 1-192
+docs/reports/LMS_PROGRESS_LARA_MAYA.html
+  s_99ed77941625bd::t_126e09ccf8d9ce 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e1d659d140ae57bef656469b613e79dc07298fc0",
+  "prompts": {},
+  "sessions": {
+    "s_99ed77941625bd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8aff6cbd-403b-4230-aada-715e0267b327",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
