@@ -1,0 +1,19 @@
+packages/core/src/school/SchoolMisSyncEngine.ts
+  s_99ed77941625bd::t_a5524f7e96e98b 1,9-22,36-38,101-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9bc14a0a1f13c6bde5036a670b1fe6acc3368495",
+  "prompts": {},
+  "sessions": {
+    "s_99ed77941625bd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8aff6cbd-403b-4230-aada-715e0267b327",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
