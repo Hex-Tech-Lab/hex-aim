@@ -1,0 +1,24 @@
+docs/reports/QUIZ5_MATH_LARA.html
+  s_99ed77941625bd::t_bed61f501706a7 74,80
+  s_99ed77941625bd::t_c5e28dfc8e8dd1 9,46,52-53,71,73,77,79,83,89,95-97,104
+  s_99ed77941625bd::t_f1d873fe8e10e0 8,10-45,54,56-70,72,75,78,81,84-87,90-93,98-100,103
+docs/reports/QUIZ5_MATH_MAYA.html
+  s_99ed77941625bd::t_c5e28dfc8e8dd1 9,46,52-54,79,81-82,85,87-88,91,97,103-105,112
+  s_99ed77941625bd::t_f1d873fe8e10e0 8,10-45,56-78,80,83,86,89,92-95,98-101,106-108,111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "540071d654e5dff0a12f96d22da37cbeb4975e31",
+  "prompts": {},
+  "sessions": {
+    "s_99ed77941625bd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8aff6cbd-403b-4230-aada-715e0267b327",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
