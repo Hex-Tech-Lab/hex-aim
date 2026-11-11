@@ -1,0 +1,34 @@
+docs/reports/QUIZ5_MATH_MAYA.html
+  s_99ed77941625bd::t_de031986e54d39 109
+  s_99ed77941625bd::t_fbdb428ec62643 1-108,110-112
+scripts/check-instructions.ts
+  s_99ed77941625bd::t_7bc5ff48431851 1-2,5-11,18,20-24,27,30
+docs/reports/PARENT_FACING_TERMS.md
+  s_99ed77941625bd::t_4432988cb64934 1-33
+docs/reports/EXERCISE_AND_HISTORY_DELETE_PLAN.md
+  s_99ed77941625bd::t_910c6215df1939 1-34
+scripts/check-instructions.mjs
+  s_99ed77941625bd::t_51a4dce393581f 1-4,6-9,11-15,17-19,21-27,29-40,43-44,47
+docs/agent_ledger.jsonl
+  s_99ed77941625bd::t_de031986e54d39 20-25
+  s_99ed77941625bd::t_7a61f8989aa6da 17-19
+docs/reports/QUIZ5_MATH_LARA.html
+  s_99ed77941625bd::t_de031986e54d39 103
+  s_99ed77941625bd::t_bdb69df3ca4cf8 1-102,104-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "53744cbd9bf1f7117d12d5ee807edaacf82293ad",
+  "prompts": {},
+  "sessions": {
+    "s_99ed77941625bd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8aff6cbd-403b-4230-aada-715e0267b327",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
