@@ -1,0 +1,32 @@
+apps/bot/src/jobs/processAssessment.ts
+  s_99ed77941625bd::t_06a04ed10398df 5-6
+  s_99ed77941625bd::t_b8cf7207d38702 406
+packages/adapters/src/vision/imageMime.test.ts
+  s_99ed77941625bd::t_b3cd3014aa1b80 1-32
+packages/adapters/src/vision/OpenRouterVisionAdapter.ts
+  s_99ed77941625bd::t_04bce4580e935c 6
+  s_99ed77941625bd::t_8a9501c53f1175 72
+packages/adapters/src/vision/imageMime.ts
+  s_99ed77941625bd::t_8418ae1748a74a 26
+  s_99ed77941625bd::t_98dbf21398718a 34-41
+  s_99ed77941625bd::t_af19c164e3929a 1-25,27-33,42-48,50-53
+  s_99ed77941625bd::t_0ec5f8159409c4 49
+packages/adapters/src/index.ts
+  s_99ed77941625bd::t_557166bde8046a 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cb17f47fbdb6e628b1e7b53752428f83ff7babfb",
+  "prompts": {},
+  "sessions": {
+    "s_99ed77941625bd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8aff6cbd-403b-4230-aada-715e0267b327",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
