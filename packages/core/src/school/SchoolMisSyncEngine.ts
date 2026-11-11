@@ -1,9 +1,24 @@
+import * as crypto from 'crypto';
 import type {
   SchoolMisIntegrationConfig,
   SchoolClassworkSubmission,
   RemediationSyncPayload,
   SchoolSyncTelemetry
 } from '@hex-aim/types';
+
+const SIMS_WEBHOOK_SECRET_ENV = 'SIMS_WEBHOOK_SECRET';
+
+/**
+ * Reads the SIMS webhook secret from the environment.
+ * Throws when unset or empty so verification fails closed instead of using a default.
+ */
+function requireSimsWebhookSecret(): string {
+  const secret = process.env[SIMS_WEBHOOK_SECRET_ENV];
+  if (!secret) {
+    throw new Error(`${SIMS_WEBHOOK_SECRET_ENV} is not set; refusing to verify SIMS webhooks`);
+  }
+  return secret;
+}
 
 export class SchoolMisSyncEngine {
   private static instance: SchoolMisSyncEngine | null = null;
@@ -18,7 +33,9 @@ export class SchoolMisSyncEngine {
         provider: 'sims',
         syncDirection: 'two_way',
         endpointUrl: 'https://sims.astencollege.com/api/v1/gradebook-sync',
-        webhookSecret: '***REMOVED***',
+        get webhookSecret(): string {
+          return requireSimsWebhookSecret();
+        },
         realTimeActive: true,
         lastSyncedAt: new Date().toISOString()
       }
@@ -79,6 +96,21 @@ export class SchoolMisSyncEngine {
 
     this.submissions.set(subLara.id, subLara);
     this.submissions.set(subMaya.id, subMaya);
+  }
+
+  /**
+   * Verifies an HMAC-SHA256 hex signature over the raw SIMS webhook body.
+   * Throws if SIMS_WEBHOOK_SECRET is unset. Returns false for a missing or mismatched signature.
+   */
+  public verifySimsWebhookSignature(rawBody: string, signatureHex: string | undefined): boolean {
+    const secret = requireSimsWebhookSecret();
+    if (!signatureHex) {
+      return false;
+    }
+    const expected = Buffer.from(
+      crypto.createHmac('sha256', secret).update(rawBody).digest('hex'), 'utf8');
+    const provided = Buffer.from(signatureHex, 'utf8');
+    return expected.length === provided.length && crypto.timingSafeEqual(expected, provided);
   }
 
   public getConfig(schoolId: string): SchoolMisIntegrationConfig | undefined {
