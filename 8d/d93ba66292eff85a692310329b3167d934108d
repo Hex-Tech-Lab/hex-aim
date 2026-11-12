@@ -1,0 +1,16 @@
+apps/bot/src/handlers/callbackHandler.ts
+  h_cdd764b4030252 56-75,80-81,104-118,120-121,127-141,143-145
+apps/bot/test/worker.test.ts
+  h_cdd764b4030252 193-195
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bbbc6846dee36345421a01630700c86910558a9f",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
