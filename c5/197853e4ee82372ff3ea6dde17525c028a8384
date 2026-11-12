@@ -1,0 +1,20 @@
+apps/bot/src/handlers/callbackHandler.ts
+  h_cdd764b4030252 50-94
+apps/bot/src/worker.ts
+  h_cdd764b4030252 82-108,183,185,190,198,201,204,208,240-242,256
+apps/bot/test/worker.test.ts
+  h_cdd764b4030252 107,172-222
+scripts/acknowledge-instruction.mjs
+  h_cdd764b4030252 1-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f47ce021989be3c987609162e0cb7a3975d246b8",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
