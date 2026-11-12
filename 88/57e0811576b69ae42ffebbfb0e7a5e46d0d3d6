@@ -1,0 +1,84 @@
+.gitignore
+  h_cdd764b4030252 25-27
+apps/bot/src/api/webhook/telegram.ts
+  h_cdd764b4030252 28-41
+apps/bot/src/handlers/callbackHandler.ts
+  h_cdd764b4030252 1-180
+apps/bot/src/handlers/sessionHandler.ts
+  h_cdd764b4030252 1-107
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 12-13,30,33-45,48-116,128,135,139,145,150,164,180,256-306,308-315,319-320,344-345,352,355,359,361-362,367-368,393-394,408-409,425-429
+apps/bot/src/worker.ts
+  h_cdd764b4030252 4-5,11,96-100,103,106,171,191-216,235-237,396-399,511-514
+apps/bot/test/worker.test.ts
+  h_cdd764b4030252 11,108-172
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 1-5,13,32-42,45-47,49-53,55-58,60-167,169-170,172
+apps/web/src/ui/dashboardStyles.ts
+  h_cdd764b4030252 1-420
+apps/web/src/ui/tabGapLedger.ts
+  h_cdd764b4030252 1-126
+apps/web/src/ui/tabInfraGate.ts
+  h_cdd764b4030252 1-90
+apps/web/src/ui/tabStudentProgress.ts
+  h_cdd764b4030252 1-147
+docs/ADR-002-DECOUPLED-STUDENT-IDENTITY-AND-DYNAMIC-HYDRATION.md
+  h_cdd764b4030252 1-155
+docs/ADR-003-INGESTION-WORKFLOW-AND-CURRICULUM-SSOT.md
+  h_cdd764b4030252 1-141
+docs/ARTAS_V4_AUDIT.md
+  h_cdd764b4030252 4,6,14-28,32-44
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 76-78,81-82,94-97,111-114
+packages/adapters/src/storage/UpstashRedisStorageAdapter.ts
+  h_cdd764b4030252 147-165
+packages/adapters/src/vision/GeminiVisionAdapter.ts
+  h_cdd764b4030252 68,98,103-104
+packages/adapters/src/vision/OpenRouterVisionAdapter.ts
+  h_cdd764b4030252 5,21,49-50,99-100
+packages/core/package.json
+  h_cdd764b4030252 14-15
+packages/core/src/compilers/GuidePdfCompiler.ts
+  h_cdd764b4030252 1-241
+packages/core/src/compilers/PdfPackCompiler.ts
+  h_cdd764b4030252 2-3,5,7-10,20,32
+packages/core/src/compilers/SprintPdfCompiler.ts
+  h_cdd764b4030252 1-483
+packages/core/src/compilers/WarmBrowserPoolCompiler.ts
+  h_cdd764b4030252 1-180
+packages/core/src/curriculum/CurriculumTaxonomyService.ts
+  h_cdd764b4030252 1-275
+packages/core/src/dedup/IntakeDeduplicator.ts
+  h_cdd764b4030252 63-68
+packages/core/src/index.ts
+  h_cdd764b4030252 5-7,10
+packages/core/src/settings/SettingsManager.ts
+  h_cdd764b4030252 41-43
+packages/core/test/taxonomy.test.ts
+  h_cdd764b4030252 1-84
+packages/core/test/warmPool.test.ts
+  h_cdd764b4030252 1-50
+packages/types/src/index.ts
+  h_cdd764b4030252 12-55,96-108,110-112,116
+pnpm-lock.yaml
+  h_cdd764b4030252 101-103,759-771,960-967,990-999,1041-1046,1065-1068,1095-1102,1134-1140,1189-1192,1248-1259,1289-1291,1374-1376,1397-1400,1413-1436,1443-1445,1804-1808,1944-1947,1968-1979,2015-2018,2101-2102,2120-2123,2165-2168,2206-2219,2320-2334,2356-2357,2440-2441,2475-2480,2483-2497,2505-2506
+scripts/generate-science-sprint.mjs
+  h_cdd764b4030252 2,27-67,78-79,84,86,88,95,102,109-131,134-135,163,185,206-212,214-219,221-222,225-226,228-230,232,235,237-238,243-248,251-261,264-285,293,295-297,299,301,303,306-310,313-317,320-325,327,329-331,333,335-343,346-354,357-375,378-382,386-389,392-397,408-415,417-420,422-424,427-428,430-438,441-448,451-452,459,461-463,467-469,477,479-482,494-499,511,517-540,543-551,555-557,559-564,574-579,582-599,603-607,610-618,622,624,626,629-634,636-649,660-663,673,676,678-680,684-686,689-694,702,704,706-707,712,714-720,728-891,893,899,905-909,911-925,933-937,964-969,973,979,982
+scripts/generate_breakfast_qa_sprint.py
+  h_cdd764b4030252 1-511
+scripts/generate_science_sprints.py
+  h_cdd764b4030252 1-1493
+scripts/generate_sprint_packs.py
+  h_cdd764b4030252 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6a268f41af32bbfe8676e65972f5155948c5f94f",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
