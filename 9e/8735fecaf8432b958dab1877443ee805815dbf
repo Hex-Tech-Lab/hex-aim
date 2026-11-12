@@ -1,0 +1,22 @@
+apps/web/public/index.html
+  h_cdd764b4030252 1647-1726,3458-3738
+apps/web/src/server.ts
+  h_cdd764b4030252 7,273-350
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 744-1024
+apps/web/src/ui/tabGapLedger.ts
+  h_cdd764b4030252 125-204
+apps/web/test/socraticAudio.test.ts
+  h_cdd764b4030252 1-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "76e6e7dc3bc827a4f87b27433eab03dc1c553ceb",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
