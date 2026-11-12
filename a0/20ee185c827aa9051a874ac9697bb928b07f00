@@ -1,0 +1,38 @@
+apps/web/public/api/template/eng-w7/html
+  h_cdd764b4030252 1-244
+apps/web/public/api/template/eng-w7/index.html
+  h_cdd764b4030252 1-244
+apps/web/public/api/template/math-w7/html
+  h_cdd764b4030252 1-240
+apps/web/public/api/template/math-w7/index.html
+  h_cdd764b4030252 1-240
+apps/web/public/api/template/math-w8/html
+  h_cdd764b4030252 1-284
+apps/web/public/api/template/math-w8/index.html
+  h_cdd764b4030252 1-284
+apps/web/public/api/template/sci-w7/html
+  h_cdd764b4030252 1-240
+apps/web/public/api/template/sci-w7/index.html
+  h_cdd764b4030252 1-240
+apps/web/public/api/template/sci-w8/html
+  h_cdd764b4030252 1-299
+apps/web/public/api/template/sci-w8/index.html
+  h_cdd764b4030252 1-299
+apps/web/public/vercel.json
+  h_cdd764b4030252 6-21
+packages/core/src/compilers/CanonicalTemplateGenerator.ts
+  h_cdd764b4030252 501-509,511,514,517,536,545,554
+scripts/pregenerate-templates.mjs
+  h_cdd764b4030252 1-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3b228fe18d6bb72aec5280d7381fe4d9d0e82d19",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
