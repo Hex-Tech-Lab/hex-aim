@@ -1,0 +1,24 @@
+apps/bot/src/worker.ts
+  h_cdd764b4030252 19,22-30
+apps/web/public/guide/preview.html
+  h_cdd764b4030252 1-242
+apps/web/public/guide/preview/index.html
+  h_cdd764b4030252 1-242
+apps/web/public/sprint/preview.html
+  h_cdd764b4030252 1-402
+apps/web/public/sprint/preview/index.html
+  h_cdd764b4030252 1-402
+apps/web/public/vercel.json
+  h_cdd764b4030252 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ac5410fbef125e957587656252fe5783a8314a57",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
