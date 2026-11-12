@@ -1,0 +1,30 @@
+apps/bot/src/handlers/callbackHandler.ts
+  h_cdd764b4030252 2,37-63,78-79,82-127,130-142,149-151,168-264,267-279,288
+apps/bot/src/handlers/sessionHandler.ts
+  h_cdd764b4030252 108-138
+apps/bot/src/worker.ts
+  h_cdd764b4030252 5,9,14,22-36,136-140,241-282,284,286,288,299,301-302,304-319,329-331,336-339
+apps/bot/test/worker.test.ts
+  h_cdd764b4030252 304-353
+apps/web/public/index.html
+  h_cdd764b4030252 182-183,186,188-203,209-234,240-258,1374,1377-1386,1430-1431,1433-1434,1436-1437,1439-1440,1442-1443,3324,3335-3336,3338,3350-3397,3443-3444
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 67,70-79,123-124,126-127,129-130,132-133,135-136,445,456-457,459,471-518,564-565
+apps/web/src/ui/dashboardStyles.ts
+  h_cdd764b4030252 136-137,140,142-157,163,169-212
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 87-92,95-122,139-141
+packages/types/src/index.ts
+  h_cdd764b4030252 399
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "003c39bc5eab993fec0cfec25a8a2b806e4d7700",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
