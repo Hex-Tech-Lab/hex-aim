@@ -1,0 +1,38 @@
+apps/bot/src/worker.ts
+  h_cdd764b4030252 63-80,96,99-121,128-140,142,144,146,148,169,174,187-190,212-222,227-238,244,246-247,249,254,259-305,308-311,327,334,342-345
+apps/bot/wrangler.jsonc
+  h_cdd764b4030252 15-16
+apps/web/public/guide/index.html
+  h_cdd764b4030252 5,7-13,154-156
+apps/web/public/guide/preview.html
+  h_cdd764b4030252 5,7-13,154-156
+apps/web/public/index.html
+  h_cdd764b4030252 7-13
+apps/web/public/sprint/index.html
+  h_cdd764b4030252 5,7-13,211-213
+apps/web/public/sprint/preview.html
+  h_cdd764b4030252 5,7-13,211-213
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 39,53,56-68,71,76-77,80-81,84,88,93,232-233,235,238-249,257,272,289
+packages/adapters/src/storage/UpstashRedisStorageAdapter.ts
+  h_cdd764b4030252 177-209
+packages/adapters/src/vision/OpenRouterVisionAdapter.ts
+  h_cdd764b4030252 21,106-108,111-157
+packages/types/src/index.ts
+  h_cdd764b4030252 245-251
+scripts/check-instructions.mjs
+  h_cdd764b4030252 1-48
+scripts/check-instructions.ts
+  h_cdd764b4030252 1-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "582445b90cc5985368059dc3249c76de9759979f",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
