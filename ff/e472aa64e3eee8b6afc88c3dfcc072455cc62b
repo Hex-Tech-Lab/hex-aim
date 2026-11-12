@@ -1,0 +1,26 @@
+apps/web/public/index.html
+  h_cdd764b4030252 2670-2675,3262-3263,3277-3282,3370-3371
+apps/web/src/server.ts
+  h_cdd764b4030252 7,175-272
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 628-629,643-648,736-737
+apps/web/src/ui/tabBlankTemplates.ts
+  h_cdd764b4030252 254-259
+packages/core/src/compilers/CanonicalTemplateGenerator.ts
+  h_cdd764b4030252 1-581
+packages/core/src/index.ts
+  h_cdd764b4030252 8
+packages/core/test/canonicalTemplate.test.ts
+  h_cdd764b4030252 1-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "17d9ce76612ec6b26788d917cd438d4bbc4e14fc",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
