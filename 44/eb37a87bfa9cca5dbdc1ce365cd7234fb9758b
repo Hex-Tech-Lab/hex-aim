@@ -1,0 +1,42 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 10-11,165,168,170-174,178-182,199,201-214,218,220-221
+apps/bot/src/worker.ts
+  h_cdd764b4030252 79-80,87-116,191-198,205-206,210,213,216-222,224-225
+apps/web/public/guide/index.html
+  h_cdd764b4030252 20-25,138-151
+apps/web/public/guide/preview.html
+  h_cdd764b4030252 20-25,138-151
+apps/web/public/index.html
+  h_cdd764b4030252 322-323
+apps/web/public/sprint/index.html
+  h_cdd764b4030252 20-25,195-208
+apps/web/public/sprint/preview.html
+  h_cdd764b4030252 20-25,195-208
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 122-141,155,157,162,168-169,180,183,195,198
+packages/adapters/src/storage/InMemoryStorageAdapter.ts
+  h_cdd764b4030252 137-152
+packages/adapters/src/storage/UpstashRedisStorageAdapter.ts
+  h_cdd764b4030252 163-176
+packages/core/package.json
+  h_cdd764b4030252 13-14
+packages/core/src/compilers/PdfPackCompiler.ts
+  h_cdd764b4030252 1-706
+packages/core/src/index.ts
+  h_cdd764b4030252 4
+packages/types/src/index.ts
+  h_cdd764b4030252 193,204,240-244,283-286
+pnpm-lock.yaml
+  h_cdd764b4030252 98-100,750-755,1101-1103,1117-1119,1203-1205,1684-1691,2032-2033,2042-2048,2169-2170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3353c5738996455fcaae9bdc791a3bd495d96f5a",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
