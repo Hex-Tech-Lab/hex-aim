@@ -1,0 +1,23 @@
+apps/web/src/ui/examSimulationHtml.ts
+  s_6625bc67577472::t_af8995d481f14e 1-453
+packages/core/src/index.ts
+  s_6625bc67577472::t_067188dc57998c 25
+packages/core/test/examSimulation.test.ts
+  s_6625bc67577472::t_008446ef74eeaa 1-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "17d779f5f2409e8290aef4053fcda75114eeb6fe",
+  "prompts": {},
+  "sessions": {
+    "s_6625bc67577472": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e3d758-e9b9-4cdb-bb9d-00d9ef397297",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
