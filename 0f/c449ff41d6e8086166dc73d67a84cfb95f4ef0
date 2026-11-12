@@ -1,0 +1,26 @@
+apps/bot/src/handlers/diagHandler.ts
+  h_cdd764b4030252 6-13,16-17,22,24,29-30,35-37,42,44-53,56,66-67,74-75,83,85,92
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 367-370,372-373,393-410,413-414,417-423,425-454,456-457
+apps/bot/src/worker.ts
+  h_cdd764b4030252 55-62
+apps/web/src/server.ts
+  h_cdd764b4030252 15-21,24-30,67-73,221-226
+packages/adapters/src/vision/OpenRouterVisionAdapter.ts
+  h_cdd764b4030252 5,17,21-24,27,43-44,46,62,67,94,99-103,110-111,116-118,126,129,135,142-144,148
+packages/core/src/settings/SettingsManager.ts
+  h_cdd764b4030252 19-36,38-61,68-71,82-93,115-125,147-184
+packages/core/test/settingsManager.test.ts
+  h_cdd764b4030252 1-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "79f0cc8b2a886ab40f0eb7ea65ff5687bfc8845c",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
