@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist 12 Nov 2026</title>
+<style>
+:root { --bg: #f8fafc; --ink: #1e293b; --muted: #475569; --card: #ffffff; --line: #cbd5e1; --g: #15803d; --y: #b45309; --r: #b91c1c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f172a; --ink: #e2e8f0; --muted: #94a3b8; --card: #1e293b; --line: #334155; } }
+:root[data-theme="dark"] { --bg: #0f172a; --ink: #e2e8f0; --muted: #94a3b8; --card: #1e293b; --line: #334155; }
+body { margin: 0; padding: 16px; background: var(--bg); color: var(--ink); font-family: "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.45; }
+main { max-width: 980px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+p.meta { color: var(--muted); margin: 0 0 12px; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 14px; }
+th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { background: var(--bg); }
+.light { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.g { background: var(--g); } .y { background: var(--y); } .r { background: var(--r); }
+code { font-size: 12px; word-break: break-all; }
+.wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+<main>
+<h1>Checklist, 12 Nov 2026</h1>
+<p class="meta">Repo: <code>/home/kellyb_dev/projects/hex-aim</code>. Status: green = verified by a command that ran, yellow = done but untested or partly verified, red = not done or blocked.</p>
+<div class="wrap"><table>
+<tr><th>#</th><th>Item</th><th>Status</th><th>Evidence or blocker</th></tr>
+<tr><td>1</td><td>Notes remap (git-ai attribution onto rewritten commits)</td><td><span class="light g"></span>Done</td><td>66 of 82 notes copied onto rewritten commits (148 notes on <code>refs/notes/ai</code>). Original kept at <code>refs/notes/ai-archive</code>. 12 local-only notes and 4 unmatched ones are not remapped.</td></tr>
+<tr><td>2</td><td>Merge with squash, not rebase, into master</td><td><span class="light y"></span>In progress</td><td>Squash plan in section 3 below. Run after the simplify pass and tests.</td></tr>
+<tr><td>3</td><td>Explain the "code matching engine"</td><td><span class="light g"></span>Done</td><td>See the explanation in chat. It was a rule that matched photos to a child by reading the code and date on the page.</td></tr>
+<tr><td>4</td><td>Handwriting matching: use existing samples, 1 to 3 copies per child</td><td><span class="light r"></span>Blocked</td><td>The Telegram photos are stored only as URLs with the bot token inside. No handwriting samples have been downloaded. Needs your OK to use the stored photos (see item 14), or 1 to 3 photos per child from you.</td></tr>
+<tr><td>5</td><td>Check free or near-free libraries before building handwriting matching</td><td><span class="light y"></span>Options listed</td><td>See the options in chat. Nothing built yet.</td></tr>
+<tr><td>6</td><td>Why Telegram shows 0 records for Maths and others</td><td><span class="light g"></span>Found</td><td>Three causes, all in code. (a) The overview only read a snapshot that had Humanities; Maths, Science and English showed "no data" by design. (b) Per-child cards were hard-coded numbers. (c) Every re-processed photo was stored again, so Lara's one Maths test sat in the database 12 times. Pushing alone would not have fixed it.</td></tr>
+<tr><td>7</td><td>Fix Telegram overview and child cards</td><td><span class="light g"></span>Done in code, tested</td><td>Core tests 113 of 113, adapters 20 of 20, bot 12 of 12, bot and core typecheck clean. The worker is not redeployed yet (see item 8).</td></tr>
+<tr><td>8</td><td>Deploy the Telegram fix and seed Lara's 12 subject figures</td><td><span class="light y"></span>Waiting for your OK</td><td>Snapshot v2 is already written to <code>hex-aim-prod</code> (read back OK). Worker redeploy needs your explicit approval, per your production rule.</td></tr>
+<tr><td>9</td><td>Clean the 12 stored copies of Lara's Maths test in <code>hex-aim-prod</code></td><td><span class="light y"></span>Waiting for your OK</td><td>Lara: 15 stored tests, 4 unique. Maya: 5 stored, 5 unique. The cleanup would rewrite <code>assessments:lara</code> and keep every photo URL. Not run yet.</td></tr>
+<tr><td>10</td><td>Telegram listener</td><td><span class="light y"></span>Partly verified</td><td>The worker answers <code>POST /webhook/telegram</code> with 200. Whether Telegram is pointed at it is not confirmed (no bot token available here).</td></tr>
+<tr><td>11</td><td>Full LMS logged-in investigation</td><td><span class="light y"></span>Partly done</td><td>Routes found. A SignalR real-time hub exists. The Grade Files page is empty. No grade API found. Still open: the SignalR methods and what the second student ID means.</td></tr>
+<tr><td>12</td><td>Maya's school data</td><td><span class="light r"></span>Blocked</td><td>Needs Maya's own login or a parent account that shows both girls. Only Lara's login is available.</td></tr>
+<tr><td>13</td><td>SIMS SQL error</td><td><span class="light r"></span>Parked</td><td>Needs the URL and time you saw it. Dropped for now, per your instruction.</td></tr>
+<tr><td>14</td><td>Security: Telegram bot token stored inside test records</td><td><span class="light r"></span>Needs your decision</td><td>Every stored <code>sourceImageUrls</code> entry in <code>assessments:lara</code> and <code>assessments:maya</code> contains the bot token in plain text. Options: (1) rotate the bot token in BotFather and update the worker secret, then strip tokens from stored URLs (recommended); (2) strip tokens only; (3) leave as is. Rotation is your call.</td></tr>
+<tr><td>15</td><td>Commit the work and push</td><td><span class="light y"></span>In progress</td><td>Waits on item 2 and the simplify pass result.</td></tr>
+<tr><td>16</td><td>Child work items: French project (due Tue 17 Nov), science 2.4, square numbers, English practice</td><td><span class="light r"></span>Not started</td><td>Attribution to each child not confirmed.</td></tr>
+<tr><td>17</td><td>Write-path fix: stop saving repeat copies of a test</td><td><span class="light g"></span>Done in code, tested</td><td><code>saveAssessment</code> now merges repeat copies. Covered by core and bot tests.</td></tr>
+<tr><td>18</td><td>Old <code>sourceImageUrls</code> token leak: fix the write path too</td><td><span class="light y"></span>Waiting on item 14</td><td>Stored URLs are not yet cleaned. The write path will be changed after your decision.</td></tr>
+</table></div>
+</main>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lara and Maya results, side by side</title>
+<style>
+:root { --bg: #f8fafc; --ink: #1e293b; --muted: #475569; --card: #ffffff; --line: #cbd5e1; --head: #7c2d6b; --gap: #b45309; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f172a; --ink: #e2e8f0; --muted: #94a3b8; --card: #1e293b; --line: #334155; --head: #f0abfc; --gap: #fbbf24; } }
+:root[data-theme="dark"] { --bg: #0f172a; --ink: #e2e8f0; --muted: #94a3b8; --card: #1e293b; --line: #334155; --head: #f0abfc; --gap: #fbbf24; }
+body { margin: 0; padding: 16px; background: var(--bg); color: var(--ink); font-family: "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.45; }
+main { max-width: 980px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 4px; color: var(--head); }
+h2 { font-size: 17px; margin: 22px 0 8px; }
+p.meta { color: var(--muted); margin: 0 0 10px; font-size: 14px; }
+.wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 14px; }
+th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { background: var(--bg); }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.na { color: var(--muted); font-style: italic; }
+.gap { color: var(--gap); font-weight: 600; }
+code { font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Lara and Maya, results side by side</h1>
+<p class="meta">Snapshot date 11 Nov 2026. Lara's figures come from her LMS login. Maya's figures come only from screenshots and are partial. The Telegram overview reads the same snapshot (<code>lms:progress</code> in <code>hex-aim-prod</code>, written 11 Nov, worker redeployed 12 Nov).</p>
+
+<h2>1. Subject overall, current year (Y4 A)</h2>
+<div class="wrap"><table>
+<tr><th>Subject</th><th class="num">Lara</th><th class="num">Maya</th></tr>
+<tr><td>Maths</td><td class="num">82.7%</td><td class="num na">not provided</td></tr>
+<tr><td>Humanities</td><td class="num">85.43%</td><td class="num">90.62%</td></tr>
+<tr><td>Science</td><td class="num">96.88%</td><td class="num na">not provided</td></tr>
+<tr><td>English</td><td class="num">96.06%</td><td class="num na">not provided</td></tr>
+<tr><td>French</td><td class="num">98.18%</td><td class="num na">not provided</td></tr>
+<tr><td>Arabic</td><td class="num">94.09%</td><td class="num na">not provided</td></tr>
+<tr><td>IT Coding</td><td class="num">97.67%</td><td class="num na">not provided</td></tr>
+<tr><td>Islamic Religion</td><td class="num">92.62%</td><td class="num na">not provided</td></tr>
+<tr><td>Arabic Social Studies</td><td class="num">88.39%</td><td class="num na">not provided</td></tr>
+<tr><td>Music</td><td class="num">98.33%</td><td class="num na">not provided</td></tr>
+<tr><td>PE</td><td class="num">100%</td><td class="num na">not provided</td></tr>
+<tr><td>Art</td><td class="num">100%</td><td class="num na">not provided</td></tr>
+</table></div>
+<p class="meta">Lara's 12 figures match the LMS pages you pasted (checked against the transcript). Only Humanities has a Maya figure, so only Humanities is in the bot snapshot. The other 11 are not yet stored for the bot.</p>
+
+<h2>2. Assessments and attendance, Humanities and unlabelled lists</h2>
+<div class="wrap"><table>
+<tr><th>Date</th><th>Item</th><th>Type</th><th class="num">Lara</th><th class="num">Maya</th></tr>
+<tr><td>2026-09-15</td><td>Attendance and Behaviour-1</td><td>attendance</td><td class="num">10/10 (100%)</td><td class="num">10/10 (100%)</td></tr>
+<tr><td>2026-09-24</td><td>S1W3 Quiz 1-2</td><td>quiz</td><td class="num">9/10 (90%)</td><td class="num">8/10 (80%)</td></tr>
+<tr><td>2026-10-07</td><td>S1W5 Quiz 2-3</td><td>quiz</td><td class="num"><span class="gap">3/6 (50%)</span></td><td class="num">5/6 (83.3%)</td></tr>
+<tr><td>2026-10-22</td><td>S1 Midterm Exam-1</td><td>exam</td><td class="num">17/18 (94.4%)</td><td class="num">17/18 (94.4%)</td></tr>
+<tr><td>2026-10-20</td><td>Attendance-14</td><td>attendance</td><td class="num">5/5 (100%)</td><td class="num">5/5 (100%)</td></tr>
+<tr><td>2026-10-21</td><td>Attendance-15</td><td>attendance</td><td class="num">5/5 (100%)</td><td class="num">5/5 (100%)</td></tr>
+<tr><td>2026-09-24</td><td>Quizzes S1W3Q1-1</td><td>quiz</td><td class="num">12/13 (92.3%)</td><td class="num">12/13 (92.3%)</td></tr>
+<tr><td>2026-10-04</td><td>Quizzes S1W4Q2-2</td><td>quiz</td><td class="num">10/10 (100%)</td><td class="num">10/10 (100%)</td></tr>
+<tr><td>2026-10-07</td><td>Quizzes S1W4Q3-3</td><td>quiz</td><td class="num">9/10 (90%)</td><td class="num">9/10 (90%)</td></tr>
+<tr><td>2026-11-10</td><td>Quizzes S1MID1-4 (latest)</td><td>exam</td><td class="num"><span class="gap">25/30 (83.3%)</span></td><td class="num">29/30 (96.7%)</td></tr>
+</table></div>
+<p class="meta">Highlighted: Lara's S1W5 Quiz 2-3 (3/6, 50%) is her lowest score in this set. Her latest mid-term quiz (25/30) is lower than Maya's (29/30). The earlier headline for S1W3 Quiz 1-2 differs between two LMS pages (9/10 and 90%, same value). The source file has the same data.</p>
+
+<h2>3. Last full year (2025/2026), from the report cards</h2>
+<div class="wrap"><table>
+<tr><th>Report</th><th>Lara</th><th>Maya</th></tr>
+<tr><td>End of Year Report Card, 2025/2026 (Year 3 A), "Promoted to Year 4, June 2026"</td><td>Read. Subject averages in the Lara report are English 88, Maths 86, Science 92, French 93, IT Coding 98, Humanities 96, Arabic 90, Religion 91, PE 96, Art 98, Music 97.</td><td class="na">not available: no Maya login or report yet</td></tr>
+</table></div>
+
+<h2>4. What is still missing for Maya</h2>
+<ul>
+<li>Maya's subject overall for the 11 subjects other than Humanities.</li>
+<li>Maya's 2025/2026 report cards (GradeReportID 73 and 63 under Maya's login or a parent account).</li>
+<li>The second unlabelled list has no subject headers; the grouping is a guess.</li>
+</ul>
+</main>
+</body>
+</html>

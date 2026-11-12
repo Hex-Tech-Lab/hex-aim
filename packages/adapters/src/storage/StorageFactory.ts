@@ -16,7 +16,7 @@ export class StorageFactory {
     const provider = forceProvider || settings.get<'upstash' | 'git' | 'memory'>('storage.provider', 'upstash');
     const redisUrl = settings.get<string>('UPSTASH_REDIS_REST_URL', '');
     const redisToken = settings.get<string>('UPSTASH_REDIS_REST_TOKEN', '');
-    const prefix = settings.get<string>('redis.prefix', 'aim:');
+    const prefix = settings.get<string>('redis.prefix', '');
 
     if (provider === 'upstash' && redisUrl && redisToken) {
       try {

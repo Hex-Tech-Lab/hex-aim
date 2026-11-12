@@ -3,6 +3,7 @@ import type {
   AssessmentItem 
 } from '@hex-aim/types';
 import { SettingsManager, CurriculumTaxonomyService, type OpenRouterRoutingConfig } from '@hex-aim/core';
+import { resolveImageMime } from './imageMime.js';
 
 export interface OpenRouterVisionConfig {
   apiKey?: string;
@@ -67,8 +68,8 @@ export class OpenRouterVisionAdapter implements IVisionExtractionPort {
             signal: AbortSignal.timeout(this.routingConfig.imageFetchTimeoutMs),
           });
           if (imgRes.ok) {
-            const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
             const arrayBuf = await imgRes.arrayBuffer();
+            const mimeType = resolveImageMime(new Uint8Array(arrayBuf), imgRes.headers.get('content-type'), rawUrl);
             const base64 = Buffer.from(arrayBuf).toString('base64');
             finalUrl = `data:${mimeType};base64,${base64}`;
           }

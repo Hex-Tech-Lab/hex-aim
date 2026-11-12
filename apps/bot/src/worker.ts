@@ -1,3 +1,4 @@
+import { redisKey } from '@hex-aim/core';
 import { MessagingFactory, QueueFactory, StorageFactory, TelegramMessagingAdapter } from '@hex-aim/adapters';
 import { IntakeDeduplicator, SettingsManager } from '@hex-aim/core';
 import { processAssessmentJob, processBatchAssessmentJob, type ProcessAssessmentPayload } from './jobs/processAssessment.js';
@@ -18,6 +19,7 @@ export interface Env {
   TELEGRAM_SECRET_TOKEN?: string;
   QSTASH_TOKEN?: string;
   UPSTASH_REDIS_REST_URL?: string;
+  REDIS_PREFIX?: string;
   UPSTASH_REDIS_REST_TOKEN?: string;
   GEMINI_API_KEY?: string;
   OPENROUTER_API_KEY?: string;
@@ -42,6 +44,7 @@ export default {
     if (env.QUEUE_PROVIDER) settings.set('queue.provider', env.QUEUE_PROVIDER);
     if (env.VISION_PROVIDER) settings.set('vision.provider', env.VISION_PROVIDER);
     if (env.UPSTASH_REDIS_REST_URL) settings.set('UPSTASH_REDIS_REST_URL', env.UPSTASH_REDIS_REST_URL);
+    if (env.REDIS_PREFIX !== undefined) settings.set('redis.prefix', env.REDIS_PREFIX);
     if (env.UPSTASH_REDIS_REST_TOKEN) settings.set('UPSTASH_REDIS_REST_TOKEN', env.UPSTASH_REDIS_REST_TOKEN);
     if (env.OPENROUTER_API_KEY) {
       settings.set('OPENROUTER_API_KEY', env.OPENROUTER_API_KEY);
@@ -186,8 +189,8 @@ export default {
           };
 
           if (redisStorage.redis) {
-            await redisStorage.redis.set('aim:instructions:latest', item);
-            await redisStorage.redis.rpush('aim:instructions:log', item);
+            await redisStorage.redis.set(redisKey('instructions:latest'), item);
+            await redisStorage.redis.rpush(redisKey('instructions:log'), item);
           }
 
           console.log(`[Worker] AGY Instruction logged from ${chatId} (${taskNumber}): "${instructionText}" with ${recentTurns.length} recent context turns`);
@@ -579,7 +582,7 @@ export default {
                 // Guaranteed lock release: ensures subsequent batches are never deadlocked
                 const redisStorage = storage as any;
                 if (redisStorage.redis) {
-                  await redisStorage.redis.del(`aim:seen_files:intake_active_seen:${chatId}`).catch(() => {});
+                  await redisStorage.redis.del(redisKey(`seen_files:intake_active_seen:${chatId}`)).catch(() => {});
                 }
               }
             };

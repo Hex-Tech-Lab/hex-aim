@@ -1,3 +1,25 @@
+## RESUME HERE (read first; update this block every turn that changes state)
+
+- **Last updated:** 2026-11-11 (session with Haiku 5.5). Supersedes the 2026-10-28 entry below.
+- **Ledger:** `docs/agent_ledger.jsonl` (protocol v2). Latest state per `task_id` is current.
+- **Done today (verified):**
+  - MIME fix for Telegram photos: commit `cb17f47`, adapter tests pass.
+  - Upstash DB `hex-aim-prod` (id `b4a712b4`, eu-central-1, pay-as-you-go). Worker secrets point at it; `/health` 200.
+  - Quiz 5 cheat sheets for Lara and Maya: one A4 page each, real examples from lesson slides 2.1 to 2.3.
+  - LMS results recorded side by side (`docs/progress/lms_progress.json`, `docs/reports/LMS_PROGRESS_LARA_MAYA.html`).
+  - LMS API investigation, public info only, no login (`docs/reports/LMS_API_INVESTIGATION.md`): host `sims.astencollege.com` found in repo but not confirmed as the parent app; 0 result endpoints in public JS; hardcoded `webhookSecret` in `SchoolMisSyncEngine.ts` needs rotation.
+- **In progress:**
+  - Central `redis.prefix` setting, default empty, replacing hard-coded `aim:` keys (`packages/core/src/settings/redisKeys.ts`). Core tests pass (9/9). Core build and bot typecheck still to re-run after the last fix.
+  - Family overview reads the stored LMS snapshot, not constants. Snapshot not yet seeded into `hex-aim-prod`; worker not yet redeployed.
+- **Student records (located 2026-11-11):** the live copy is in Upstash database `becoming-lioness-125833` (id `96bcea5e`), which hex-yt-intel also uses. It holds 53 `aim:*` keys: `aim:student:lara|maya`, `aim:students:index`, `aim:assessments:*`, `aim:gaps:*`, `aim:guide:*`, `aim:sprint:*`, `aim:instructions:*`, `aim:user_lang:*`. Source of truth for the JSON-to-Redis history: `manifest/students.json` and `manifest/asten_college_curriculum.json` in this repo.
+  - Dry run (read-only, nothing written): all 53 keys read. Plan is to copy them into `hex-aim-prod` with the prefix removed, source untouched. Awaiting founder approval for the write (production rule).
+  - Reed Telegram photo: not found in any readable source.
+  - Handwriting engine: needs labelled samples per child before matching can be validated.
+- **Not started:** English practice photos, French project (due Tue 17 Nov), science worksheets, square numbers worksheet. Child attribution unknown.
+- **Next steps (no founder input needed):** finish core build; seed `lms:progress`; redeploy worker; read back the snapshot; read the 1.4 lesson PDF (now readable at `docs/for_sharing/`) to check the Quiz 5 sheets.
+
+---
+
 # TOTAL HANDOVER OF STATE (THOS) — PROJECT HEX-AIM
 
 > **Current Canonical THOS (Waves 6–22 Full Mega-Session):** [`docs/history/THOS_2026-10-28_1645_WAVES_6_TO_22_FULL_SESSION_MEGA_HANDOVER.md`](file:///home/kellyb_dev/projects/hex-aim/docs/history/THOS_2026-10-28_1645_WAVES_6_TO_22_FULL_SESSION_MEGA_HANDOVER.md)  

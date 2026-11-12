@@ -1,42 +1,35 @@
+// Read-only: show the latest Telegram #I: instruction queued by the bot worker.
+// Credentials come only from the environment. Nothing is stored in this file.
 import { Redis } from '@upstash/redis';
 
-const url = process.env.UPSTASH_REDIS_REST_URL || 'https://becoming-lioness-125833.upstash.io';
-const token = process.env.UPSTASH_REDIS_REST_TOKEN || 'gQAAAAAAAeuJAAIgcDI1NTZmNDNiMzlkZjU0NTcxODQ4MTU4ZjRmMzdmNmU2Nw';
+const url = process.env.UPSTASH_REDIS_REST_URL;
+const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+const prefix = process.env.REDIS_PREFIX ?? '';
+const key = (...parts: string[]) => [prefix.replace(/:+$/, ''), ...parts].filter(Boolean).join(':');
+
+if (!url || !token) {
+  console.error('Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in the environment first.');
+  process.exit(1);
+}
 
 const redis = new Redis({ url, token });
 
 async function main() {
-  console.log('📡 Fetching latest Telegram instructions from Upstash Redis...');
-  
-  const latest = await redis.get<any>('aim:instructions:latest');
+  const latest = await redis.get<any>(key('instructions', 'latest'));
   if (!latest) {
-    console.log('ℹ️ No instructions found in aim:instructions:latest');
-    return;
-  }
-
-  console.log('\n======================================================');
-  console.log('📌 LATEST AGY INSTRUCTION:');
-  console.log(`👤 Chat ID:   ${latest.chatId}`);
-  console.log(`⏱️ Timestamp: ${latest.timestamp}`);
-  console.log(`📝 Text:      "${latest.instruction || latest.text}"`);
-
-  if (latest.recentTurns && Array.isArray(latest.recentTurns) && latest.recentTurns.length > 0) {
-    console.log('\n🔍 PRECEDING CHAT CONTEXT (Last turns before instruction):');
-    latest.recentTurns.forEach((turn: any, i: number) => {
-      const role = turn.role === 'user' ? '👤 USER' : '🤖 BOT';
-      console.log(`  [${i + 1}] ${role} (${turn.timestamp}):`);
-      console.log(`      ${turn.text.replace(/\n/g, '\n      ')}`);
-    });
+    console.log('Queue is empty: no entry at ' + key('instructions', 'latest') + '.');
   } else {
-    console.log('\nℹ️ No preceding chat context attached to this instruction.');
+    const data = typeof latest === 'string' ? JSON.parse(latest) : latest;
+    console.log('\nLATEST INSTRUCTION');
+    console.log(`Chat ID:   ${data.chatId}`);
+    console.log(`Timestamp: ${data.timestamp}`);
+    console.log(`Text:      "${data.instruction || data.text}"`);
   }
-
-  const logLen = await redis.llen('aim:instructions:log');
-  console.log(`\n📚 Total logged instructions in history: ${logLen}`);
-  console.log('======================================================\n');
+  const logLen = await redis.llen(key('instructions', 'log'));
+  console.log(`\nLogged instructions in history: ${logLen}`);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Fatal error checking instructions:', err);
   process.exit(1);
 });

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LMS Recon</title>
+<style>
+:root {
+  --bg: #f6f7f9;
+  --fg: #1d2330;
+  --muted: #5b6475;
+  --card: #ffffff;
+  --border: #d9dde5;
+  --accent: #2456b3;
+  --code-bg: #eef1f6;
+  --high: #b42318;
+  --med: #b54708;
+  --low: #3b6e2f;
+  --info: #475467;
+}
+:root[data-theme="dark"] {
+  --bg: #0f1420;
+  --fg: #e6eaf2;
+  --muted: #9aa4b5;
+  --card: #171e2d;
+  --border: #2a3345;
+  --accent: #8ab4ff;
+  --code-bg: #1f2838;
+  --high: #ff8a80;
+  --med: #ffb36b;
+  --low: #8fd18a;
+  --info: #b8c0cf;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1420;
+    --fg: #e6eaf2;
+    --muted: #9aa4b5;
+    --card: #171e2d;
+    --border: #2a3345;
+    --accent: #8ab4ff;
+    --code-bg: #1f2838;
+    --high: #ff8a80;
+    --med: #ffb36b;
+    --low: #8fd18a;
+    --info: #b8c0cf;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 1100px; margin: 0 auto; }
+h1 { font-size: 1.6rem; margin: 0.4em 0 0.2em; }
+h2 { font-size: 1.25rem; margin-top: 2em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+p.meta, .muted { color: var(--muted); }
+a { color: var(--accent); }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+}
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; margin: 10px 0; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; background: var(--card); }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+th { background: var(--code-bg); font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  background: var(--code-bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+  word-break: break-all;
+}
+ol li, ul li { margin: 0.35em 0; }
+.sev-high { color: var(--high); font-weight: 600; }
+.sev-med { color: var(--med); font-weight: 600; }
+.sev-low { color: var(--low); font-weight: 600; }
+.sev-info { color: var(--info); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>LMS, SIMS and astencollege.com recon (unauthenticated)</h1>
+<p class="meta">Run: 2026-11-11 to 2026-11-12 (UTC). Method: GET requests only, no login, no credentials, no form submits. Polite 1 s delay between requests. Only the school hosts and public DNS and CT services were contacted.</p>
+
+<h2>Summary</h2>
+<ul>
+  <li>LMS (lms.astencollege.com) and SIMS (sims.astencollege.com) share one Azure IP (52.168.161.61) on IIS 10 with ASP.NET. LMS is ASP.NET MVC 5.2. SIMS is classic WebForms with ViewState and no antiforgery token. The apex astencollege.com 301s to astencollege.edu.eg, and www serves an nginx "Server Test Page" under a *.name.tools certificate, so the WordPress site and casino text could not be verified.</li>
+  <li>Unauthenticated surface is thin. LMS has 11 app routes (7 live or auth-gated, 4 not found). Zero grade or result routes were found. All 13 guessed grade or result paths returned 302 to the 404 handler, not to Login, so no result page is reachable before login. No HSTS, CSP or nosniff on either host, and LMS cookies lack the Secure flag.</li>
+  <li>Two items need your input: the reported SQL error leak could not be reproduced or found in the repo (reproducing it needs a login submit, which was out of scope), and the cPanel, webmail and mail hostnames are publicly listed on the same IP as www.</li>
+</ul>
+
+<h2>DNS</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Record</th><th>Value</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>lms.astencollege.com</td><td>A</td><td><code>52.168.161.61</code></td><td>No CNAME. No PTR. 52.168.0.0/16 is a Microsoft Azure range (inferred, whois not installed).</td></tr>
+<tr><td>sims.astencollege.com</td><td>A</td><td><code>52.168.161.61</code></td><td>Same IP as LMS.</td></tr>
+<tr><td>www.astencollege.com</td><td>A</td><td><code>169.62.4.20</code></td><td>No CNAME. PTR hs8.name.tools. Certificate is *.name.tools.</td></tr>
+<tr><td>astencollege.com (apex)</td><td>A</td><td><code>15.197.225.128</code>, <code>3.33.251.168</code></td><td>No CNAME, no AAAA. PTR is awsglobalaccelerator.com (AWS Global Accelerator).</td></tr>
+<tr><td>astencollege.com</td><td>MX</td><td><code>0 astencollege-com.mail.protection.outlook.com</code></td><td>Microsoft 365 (Exchange Online).</td></tr>
+<tr><td>astencollege.com</td><td>TXT</td><td><code>v=spf1 include:secureserver.net -all</code></td><td>GoDaddy SPF only. No Microsoft include, see findings.</td></tr>
+<tr><td>astencollege.com</td><td>TXT</td><td><code>NETORGFT11786570.onmicrosoft.com</code></td><td>Microsoft 365 tenant verification record.</td></tr>
+</tbody></table></div>
+<p class="muted">Hosting hint: whois is not installed, so no registry lookup was done. The owner of the IPs is inferred from PTR records and the published ranges only.</p>
+
+<h2>Subdomains</h2>
+<p class="muted">crt.sh returned 723 rows and 12 unique names. The first attempt returned 502 and the second returned 200.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Likely role</th><th>Resolves to</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>lms</td><td>LMS</td><td><code>52.168.161.61</code></td><td>Live. IIS 10, ASP.NET MVC 5.2.</td></tr>
+<tr><td>sims</td><td>SIMS</td><td><code>52.168.161.61</code></td><td>Live. IIS 10, ASP.NET WebForms.</td></tr>
+<tr><td>api</td><td>API</td><td><code>52.168.161.61</code></td><td>Root returns IIS 404. ASP.NET 4.0.30319.</td></tr>
+<tr><td>www</td><td>Public site</td><td><code>169.62.4.20</code></td><td>nginx "Server Test Page". Certificate mismatch.</td></tr>
+<tr><td>apex</td><td>Public site</td><td><code>15.197.225.128</code>, <code>3.33.251.168</code></td><td>301 to astencollege.edu.eg.</td></tr>
+<tr><td>cpanel</td><td>Admin (cPanel)</td><td><code>169.62.4.20</code></td><td>Publicly listed admin name. Not probed.</td></tr>
+<tr><td>webmail</td><td>Mail admin</td><td><code>169.62.4.20</code></td><td>Not probed.</td></tr>
+<tr><td>webdisk</td><td>File admin (cPanel)</td><td><code>169.62.4.20</code></td><td>Not probed.</td></tr>
+<tr><td>cpcalendars</td><td>cPanel calendars</td><td><code>169.62.4.20</code></td><td>Not probed.</td></tr>
+<tr><td>cpcontacts</td><td>cPanel contacts</td><td><code>169.62.4.20</code></td><td>Not probed.</td></tr>
+<tr><td>mail</td><td>Mail</td><td><code>169.62.4.20</code></td><td>Not probed.</td></tr>
+<tr><td>*.astencollege.com</td><td>Wildcard certificate</td><td>n/a</td><td>A wildcard cert was issued.</td></tr>
+</tbody></table></div>
+<p class="muted">Not present in CT: portal, parent, staging, dev. The cPanel-style names share one IP with www, which suggests a shared hosting box.</p>
+
+<h2>Public files</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Path</th><th>LMS</th><th>SIMS</th></tr></thead>
+<tbody>
+<tr><td><code>/robots.txt</code></td><td>404 text/html</td><td>404 text/html</td></tr>
+<tr><td><code>/sitemap.xml</code></td><td>404 text/html</td><td>404 text/html</td></tr>
+<tr><td><code>/.well-known/security.txt</code></td><td>404 text/html</td><td>404 text/html</td></tr>
+<tr><td><code>/favicon.ico</code></td><td>200 image/x-icon, 32038 B</td><td>200 image/x-icon, 4286 B</td></tr>
+<tr><td><code>/swagger/v1/swagger.json</code></td><td>404 text/html</td><td>404 text/html</td></tr>
+<tr><td><code>/swagger</code></td><td>404 text/html</td><td>404 text/html</td></tr>
+<tr><td><code>/api/swagger</code></td><td>404 text/html</td><td>404 text/html</td></tr>
+<tr><td><code>/openapi.json</code></td><td>404 text/html</td><td>404 text/html</td></tr>
+</tbody></table></div>
+<p class="muted">No robots.txt means no Disallow list and no sitemap URLs. No security.txt means no published disclosure contact. No API docs are public.</p>
+
+<h2>Route map</h2>
+<p class="muted">The walk covered 23 same-origin URLs at depth 2, starting from the login page and the root. Culture variants of the same route are counted once.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>Source</th><th>Unauth status</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>/en/Home/Login</code></td><td>Seed, and form action="Login" on the login page</td><td>200</td><td>Login page. Fields: Email, LoginName, Mobile, Password, RememberMe, __RequestVerificationToken.</td></tr>
+<tr><td><code>/ar/Home/Login</code></td><td>Language link on login page</td><td>200</td><td>Arabic login.</td></tr>
+<tr><td><code>/fr/Home/Login</code></td><td>Language link on login page</td><td>200</td><td>French login.</td></tr>
+<tr><td><code>/en/Home/ChangeLoginCulture?returnUrl=...</code></td><td>Language links, 9 returnUrl variants</td><td>200</td><td>Culture switch over GET. returnUrl not tested for open redirect.</td></tr>
+<tr><td><code>/ar/Home/ChangeLoginCulture</code></td><td>Language links</td><td>200</td><td>Culture switch.</td></tr>
+<tr><td><code>/fr/Home/ChangeLoginCulture</code></td><td>Language links</td><td>200</td><td>Culture switch.</td></tr>
+<tr><td><code>/en/Home/Index</code></td><td>Probe (controller existence check)</td><td>302 to /en/Home/Login</td><td>Exists and is auth-gated.</td></tr>
+<tr><td>Reset-with-email and reset-with-login-name forms</td><td>Login page HTML, action=""</td><td>Not probed (forms)</td><td>Password reset by email or mobile code exists. Not submitted.</td></tr>
+<tr><td><code>/Login</code></td><td>Form action resolution from root</td><td>404</td><td>Not a route.</td></tr>
+<tr><td><code>/api/quick_search.php</code></td><td>String in Scripts/Themes/scripts.bundle.js and vendors.bundle.js</td><td>404</td><td>Dead string in bundle.</td></tr>
+<tr><td><code>/api/videos/</code></td><td>String in vendors.bundle.js</td><td>404</td><td>Dead string in bundle.</td></tr>
+<tr><td><code>/api/v2/video/</code></td><td>String in vendors.bundle.js</td><td>404</td><td>Dead string in bundle.</td></tr>
+<tr><td>Static assets (9 files: bundles, jQuery, CSS, favicon)</td><td>Login page</td><td>200</td><td>Static.</td></tr>
+<tr><td>Grade or result guesses (13): /en/Student/Grades, /en/Grade/Index, /en/Grades/Index, /en/Report/Index, /en/Reports/Index, /en/Progress/Index, /en/Quiz/Index, /en/Exam/Index, /en/Result/Index, /en/Results/Index, /en/Assessment/Index, /en/Student/Index, /en/Dashboard/Index</td><td>Guessed names</td><td>302 to /Error?aspxerrorpath=...</td><td>Not found. Same response as a nonexistent control path. Not a login redirect.</td></tr>
+<tr><td>SIMS /</td><td>Root</td><td>200</td><td>SIMS login. WebForms with __VIEWSTATE and __EVENTVALIDATION. Form action "./".</td></tr>
+<tr><td>SIMS /Default.aspx</td><td>Guess</td><td>200</td><td>Same SIMS login page.</td></tr>
+<tr><td>SIMS /Login.aspx</td><td>Guess</td><td>302 to /Error.html?aspxerrorpath=...</td><td>Not found.</td></tr>
+<tr><td>SIMS /Error.aspx</td><td>Guess</td><td>302 to /Error.html?aspxerrorpath=...</td><td>Not found.</td></tr>
+<tr><td>api /</td><td>Root</td><td>404 (IIS)</td><td>Not found at root. Other paths not probed.</td></tr>
+</tbody></table></div>
+<p><strong>Totals:</strong> LMS app routes 11 (7 live or auth-gated, 4 not found). Grade or result routes found: 0. SIMS live pages: 2.</p>
+<p><strong>Control:</strong> /en/zzqxnonexistent/Index returned 302 to /Error?aspxerrorpath=..., and /en/Home/Index returned 302 to Login. So the grade and result 302s are a not-found signal, not an auth signal.</p>
+
+<h2>Security findings</h2>
+<p class="muted">Ranked by impact. Each is one line.</p>
+<ol>
+  <li><span class="sev-high">High if confirmed, unverified:</span> A reported SQL error ("Column 'SchoolDefaultEducationSystem' does not belong to table") was pasted from the SIMS login. It was not reproduced, because reproducing it needs a login submit. It is not in the crawled pages or in the repo under the projects directory. Get the URL and time from the person who saw it. If it is real, SQL errors are reaching users and custom error handling is off.</li>
+  <li><span class="sev-med">Medium:</span> LMS and SIMS send no Strict-Transport-Security header, so the first request can still be downgraded.</li>
+  <li><span class="sev-med">Medium:</span> LMS and SIMS send no Content-Security-Policy, X-Content-Type-Options, Referrer-Policy or Permissions-Policy header.</li>
+  <li><span class="sev-med">Medium:</span> SIMS sends no X-Frame-Options header, so the login page can be framed (clickjacking). LMS sends SAMEORIGIN.</li>
+  <li><span class="sev-med">Medium:</span> The LMS cookies ASP.NET_SessionId and __RequestVerificationToken have no Secure flag. HttpOnly is set.</li>
+  <li><span class="sev-med">Medium:</span> cPanel-style hostnames (cpanel, webmail, webdisk, cpcalendars, cpcontacts, mail) resolve to the shared IP 169.62.4.20 and are listed in public CT logs. Admin surfaces are advertised. They were not probed.</li>
+  <li><span class="sev-med">Medium:</span> www.astencollege.com presents a *.name.tools certificate, so hostname verification fails in browsers. The IP serves an nginx default page, so the school's public site is not live there.</li>
+  <li><span class="sev-low">Low:</span> Stack disclosure on both hosts: Server Microsoft-IIS/10.0, X-AspNet-Version 4.0.30319, X-Powered-By ASP.NET. LMS also sends X-AspNetMvc-Version 5.2.</li>
+  <li><span class="sev-low">Low:</span> The apex 301 response's Server header exposes an internal AWS hostname and region (ip-100-74-4-107.eu-west-2.compute.internal).</li>
+  <li><span class="sev-low">Low:</span> Unknown LMS paths 302 to /Error?aspxerrorpath=&lt;request path&gt;, which echoes the request path into the Location header.</li>
+  <li><span class="sev-low">Low:</span> SIMS loads jQuery and webfont from the Google CDN with no Subresource Integrity attribute.</li>
+  <li><span class="sev-low">Low, verify:</span> SPF is <code>include:secureserver.net -all</code>, but the MX is Microsoft 365 and SPF has no Microsoft include. Mail sent from Microsoft 365 would fail SPF. Confirm with the mail admin.</li>
+  <li><span class="sev-info">Info:</span> No robots.txt, sitemap.xml or security.txt on any host. No published disclosure contact.</li>
+  <li><span class="sev-info">Info:</span> Secret scan of the crawled LMS HTML and JS found no key or token literals (pattern scan, values not printed). Session cookie values and the login-page __RequestVerificationToken value are present in responses and were not copied.</li>
+</ol>
+
+<h2>WordPress check (astencollege.com)</h2>
+<ul>
+  <li>The WordPress version could not be determined. The apex 301s to astencollege.edu.eg, which was not followed because it is outside the three hosts in scope. /readme.html, /wp-json/, /about-us/ and /about/ on the apex returned 404 with empty bodies.</li>
+  <li>www (reached by IP 169.62.4.20 with a Host header, since the certificate does not match) returned the nginx "Server Test Page" (2592 bytes) with no WordPress markers (no wp-content, wp-json or generator meta).</li>
+  <li>Casino or cashback text: 0 matches on www. It cannot be checked on the apex or edu.eg targets without going outside scope.</li>
+  <li>The "critical error" on About Us was not reproduced: no About page is reachable on any host checked.</li>
+  <li>The premise that astencollege.com is a WordPress site is not supported by the hosts checked. The WordPress site is probably at astencollege.edu.eg, which needs your confirmation before it is fetched.</li>
+</ul>
+
+<h2>How to work with it (next step without a password)</h2>
+<ol>
+  <li>Ask school IT for a sanctioned read-only path: a test or parent account from the LMS vendor, or a CSV or SFTP export of grades and progress. No grade data is reachable before login, so nothing else on the public surface gets you there.</li>
+  <li>Identify the LMS and SIMS vendor from the footer or branding after login, then request its API documentation. The public surface has no Swagger or OpenAPI.</li>
+  <li>Confirm with the school: the URL and time of the SQL error, which host is the WordPress site (astencollege.edu.eg?), and whether the cPanel hostnames are meant to be public.</li>
+  <li>Send findings 2 to 7 to school IT as a disclosure list. These are configuration fixes, not code changes in this repo.</li>
+</ol>
+
+<h2>Limits</h2>
+<ul>
+  <li>whois is not installed. Owner hints come from PTR records and published ranges only.</li>
+  <li>crt.sh returned 502 on the first try and 200 on the second.</li>
+  <li>The crawl is login-page-only, with no session. Post-login routes are invisible, so "0 grade routes" means 0 found by guessed names, not 0 exist.</li>
+  <li>Grade and result routes were guessed. The 13 names are not an exhaustive list.</li>
+  <li>The vendors bundle was cut at the 3 MB read cap, so its route strings may be incomplete.</li>
+  <li>GET only. No POSTs, no form submits, no login, no credentials. The culture-switch endpoints were requested with GET and no cookies were kept.</li>
+  <li>Not done: following astencollege.edu.eg, probing the cPanel or webmail hosts, port scanning, fuzzing, and reproducing the SQL error.</li>
+</ul>
+
+</main>
+</body>
+</html>

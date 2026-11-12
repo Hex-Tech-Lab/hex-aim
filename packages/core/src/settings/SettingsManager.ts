@@ -80,6 +80,9 @@ export const DEFAULT_AIM_REGISTRY: Record<string, unknown> = {
   'compiler.chrome_bin': '/usr/bin/google-chrome',
   'compiler.use_warm_pool': true,
 
+  // Redis: empty = no prefix (dedicated database). Set REDIS_PREFIX to change it everywhere.
+  'redis.prefix': '',
+
   // Routes & Endpoints
   'routes.diag.openrouter': '/diag/openrouter',
   'routes.diag.openrouter_cost': '/diag/openrouter-cost',
@@ -91,6 +94,8 @@ export const DEFAULT_AIM_REGISTRY: Record<string, unknown> = {
 const ENV_ALIASES: Record<string, string[]> = {
   'vision.model.primary': ['VISION_MODEL_PRIMARY', 'OPENROUTER_VISION_MODEL'],
   'ai.openrouter.api_key': ['AI_OPENROUTER_API_KEY', 'OPENROUTER_API_KEY'],
+  'UPSTASH_REDIS_REST_URL': ['UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL'],
+  'UPSTASH_REDIS_REST_TOKEN': ['UPSTASH_REDIS_REST_TOKEN', 'KV_REST_API_TOKEN'],
 };
 
 export class SettingsManager implements ISettingsPort {
@@ -189,7 +194,7 @@ export class SettingsManager implements ISettingsPort {
       messagingProvider: this.get('messaging.provider', 'telegram'),
       queueProvider: this.get('queue.provider', 'qstash'),
       visionProvider: this.get('vision.provider', 'gemini'),
-      redisPrefix: this.get('redis.prefix', 'aim:'),
+      redisPrefix: this.get('redis.prefix', ''),
       upstashRedisRestUrl: this.get('UPSTASH_REDIS_REST_URL', process.env.UPSTASH_REDIS_REST_URL || ''),
       upstashRedisRestToken: this.get('UPSTASH_REDIS_REST_TOKEN', process.env.UPSTASH_REDIS_REST_TOKEN || ''),
       qstashUrl: this.get('QSTASH_URL', process.env.QSTASH_URL || 'https://qstash.upstash.io/v2/publish/'),

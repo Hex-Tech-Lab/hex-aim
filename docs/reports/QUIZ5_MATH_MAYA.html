@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hi Maya! Your Quiz 5 Cheat Sheet</title>
+<style>
+:root { --paper: #f7fbff; --topic: #bae6fd; }
+
+@page { size: A4 portrait; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #e5e7eb; }
+body { font-family: "Nunito", "Segoe UI", Roboto, Arial, sans-serif; color: #1e293b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; margin: 0 auto; padding: 8mm 11mm 6mm; background: var(--paper); display: flex; flex-direction: column; gap: 2.4mm; position: relative; overflow: hidden; }
+@media print { html, body { background: none; } .page { margin: 0; } }
+.head { text-align: center; padding: 1mm 0 0; }
+.head h1 { font-size: 30pt; margin: 0; color: #7c2d6b; line-height: 1.05; font-weight: 900; }
+.head p { margin: 1.5mm 0 0; font-size: 12pt; font-weight: 800; color: #0d9488; }
+.stamp { position: absolute; right: 0.5mm; top: 3.2mm; background: #f59e0b; color: #fff; font-weight: 800; border-radius: 999px; padding: 1.1mm 3.2mm; font-size: 9.5pt; white-space: nowrap; transform: rotate(8deg); box-shadow: 0 2px 0 rgba(0,0,0,.15); z-index: 1; }
+.row2 { display: grid; grid-template-columns: 1fr 1.3fr; gap: 2.4mm; }
+.box { border-radius: 14px; padding: 2.2mm 3.8mm; }
+.box h2 { font-size: 10.5pt; margin: 0 0 1mm; }
+.box p { margin: 0.5mm 0; font-size: 9.6pt; line-height: 1.3; }
+.topics { background: var(--topic); }
+.topics ul { margin: 0; padding-left: 4mm; font-size: 9.3pt; font-weight: 700; line-height: 1.35; }
+.words { background: #fff; border: 2px solid #94a3b8; }
+.words dl { margin: 0; display: grid; grid-template-columns: 16mm 1fr; row-gap: 0.5mm; font-size: 9.2pt; }
+.words dt { font-weight: 800; color: #7c2d6b; }
+.words dd { margin: 0; }
+.flow { display: flex; align-items: center; flex-wrap: wrap; gap: 1.1mm; margin: 1mm 0; font-family: "JetBrains Mono", Consolas, monospace; font-size: 9.6pt; }
+.num { background: #fff; border-radius: 7px; padding: 0.6mm 2mm; font-weight: 700; border: 1.5px solid #cbd5e1; }
+.num.ans { background: #dcfce7; border-color: #22c55e; color: #166534; }
+.arr { color: #7c2d6b; font-weight: 800; font-size: 10pt; text-align: center; line-height: 1; }
+.arr small { display: block; font-size: 7.6pt; font-family: "Nunito", Arial, sans-serif; font-weight: 700; color: #475569; margin-bottom: 0.4mm; }
+.why { font-size: 9pt; color: #334155; margin: 0.5mm 0 0; }
+.solved { background: #fff; border: 2px solid var(--solved); }
+.solved h2 { color: var(--solved-ink); }
+.tip { background: #ccfbf1; border: 2px solid #0d9488; }
+.tip h2 { color: #0f766e; }
+.tip ol { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+.tip li { counter-increment: s; font-size: 9.4pt; margin: 0.4mm 0; display: flex; gap: 2mm; align-items: center; }
+.tip li::before { content: counter(s); flex: 0 0 4.6mm; height: 4.6mm; border-radius: 50%; background: #f59e0b; color: #fff; font-weight: 800; font-size: 8.5pt; text-align: center; line-height: 4.6mm; }
+.cheer { background: var(--topic); text-align: center; padding: 2.4mm; }
+.cheer p { font-size: 11pt; font-weight: 800; color: #7c2d6b; margin: 0; }
+.foot { font-size: 7.8pt; color: #475569; text-align: center; margin: auto 0 0; }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="stamp">Quiz Thu 12 Nov</div>
+  <div class="head">
+    <h1>Hi Maya! Your Quiz 5 Cheat Sheet</h1>
+    <p>Read the reason under each example. The gap is the key idea.</p>
+  </div>
+<div class="row2">
+    <div class="box topics">
+      <h2>Quiz 5 covers</h2>
+      <ul><li>1.4 Sequences</li><li>2.1 Counting in 1-digit steps</li><li>2.2 Counting in 1-digit steps beyond zero</li><li>2.3 Sequences</li></ul>
+    </div>
+    <div class="box words">
+      <h2>Key words</h2>
+      <dl>
+        <dt>Jump</dt><dd>the same amount added each time</dd>
+        <dt>Rule</dt><dd>the jump: "add ___" or "take away ___"</dd>
+        <dt>Sequence</dt><dd>numbers that follow one rule</dd>
+        <dt>Gap</dt><dd>the space between two next-door numbers</dd>
+      </dl>
+    </div>
+</div>
+    <div class="box words" style="grid-column: 1 / -1;">
+      <h2>Big idea (Maya): count the gaps, not the marks</h2>
+      <p>On a number line, numbers are the marks. The space between two marks is a gap.</p>
+      <div class="flow">
+        <span class="num">40</span><span class="arr"><small>gap</small>→</span><span class="num">45</span><span class="arr"><small>gap</small>→</span><span class="num">50</span><span class="arr"><small>gap</small>→</span><span class="num">55</span><span class="arr"><small>gap</small>→</span><span class="num">60</span>
+      </div>
+      <p class="why">From 40 to 60 there are <b>4 gaps</b> and <b>5 numbers</b>. Each gap is a jump of 5.</p>
+    </div>
+  <div class="box solved" style="--solved:#7c3aed;--solved-ink:#6d28d9;">
+    <h2>Example 1: going down (rule: subtract 6)</h2>
+    <p><b>Question:</b> 78, 72, 66, ___, ___</p>
+    <div class="flow"><span class="num">78</span><span class="arr">→</span><span class="num">72</span><span class="arr">→</span><span class="num">66</span><span class="arr">→</span><span class="num ans">60</span><span class="arr">→</span><span class="num ans">54</span></div>
+    <p class="why">Each gap is −6 (78 to 72 is −6). Keep the same gap: <b>60, 54</b>.</p>
+  </div>
+  <div class="box solved" style="--solved:#db2777;--solved-ink:#be185d;">
+    <h2>Example 2: going up (rule: add 25)</h2>
+    <p><b>Question:</b> 14, 39, 64, 89, ___, ___</p>
+    <div class="flow"><span class="num">14</span><span class="arr">→</span><span class="num">39</span><span class="arr">→</span><span class="num">64</span><span class="arr">→</span><span class="num">89</span><span class="arr">→</span><span class="num ans">114</span></div>
+    <p class="why">Each gap is +25 (14 to 39 is 25). So 89 + 25 = <b>114</b>.</p>
+  </div>
+  <div class="box solved" style="--solved:#0284c7;--solved-ink:#0369a1;">
+    <h2>Example 3: find the missing number (Tania's count)</h2>
+    <p><b>Question:</b> 0, 3, 9, 12, 15, 21. Which one is missing?</p>
+    <div class="flow"><span class="num">3</span><span class="arr">→</span><span class="num ans">6</span><span class="arr">→</span><span class="num">9</span><span class="arr">→</span><span class="num">12</span></div>
+    <p class="why">Each gap should be 3. The gap from 3 to 9 is 6, which is two gaps of 3, so the missing number is <b>6</b>.</p>
+  </div>
+  <div class="box solved" style="--solved:#65a30d;--solved-ink:#4d7c0f;">
+    <h2>Example 4: count back past zero (steps of 4)</h2>
+    <p><b>Question:</b> start at 0, count back 4s. Give two numbers.</p>
+    <div class="flow"><span class="num">0</span><span class="arr">→</span><span class="num ans">−4</span><span class="arr">→</span><span class="num ans">−8</span></div>
+    <p class="why">Going below zero: each gap is still 4, so the numbers are <b>−4, −8</b>.</p>
+  </div>
+  <div class="box tip">
+    <h2>Before you answer, check (3 steps)</h2>
+    <ol>
+      <li>Find the jump: take one number away from the next.</li>
+      <li>Test that jump on a pair you already know.</li>
+      <li>Use the same jump to fill the blank.</li>
+    </ol>
+  </div>
+  <div class="box cheer"><p>Count the gaps, then count the jumps. You've got this, Maya.</p></div>
+  <p class="foot">Examples come from the class slides for Quiz 5 (Lessons 2.1, 2.2, 2.3). Maria Ehab Wadie, your Math teacher, sets the quiz.</p>
+</div>
+</body>
+</html>

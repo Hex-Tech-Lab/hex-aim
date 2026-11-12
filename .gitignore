@@ -23,6 +23,7 @@ docs/private/
 manifest/*.html
 manifest/students.json
 .rendered_sprint_pages/
-storage/
+/storage/
 *:Zone.Identifier
 .vercel
+.env*.local

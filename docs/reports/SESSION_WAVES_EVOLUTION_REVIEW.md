@@ -1,4 +1,12 @@
 # Retrospective Evolution of Roadmap Generation (Waves 19 – 38)
+
+<!-- evidence-status:start -->
+> **Evidence status** (checked 2026-10-30 against AGY transcript `transcript_full.jsonl` (session 2a57ade8) and the git log).
+>
+> - **❌ CONTRADICTED:** "Stage 3 expanded across 26 dimensions." The 34–38 matrix in NEXT_5_WAVES_ROADMAP_34_38.md has 13 dimension rows. The 26-dimension list belongs to the 10X meta-prompt, not the roadmap.
+> - **✅ VERIFIED:** The build-to-spec change. Waves 14–33 have feature commits. cb1b47e (Waves 34–38) changes only docs/reports.
+> - **⚠️ UNVERIFIED:** The three-stage "maturation" framing. It interprets wave topics and is not a recorded decision process.
+<!-- evidence-status:end -->
 ## Architectural Maturity Analysis Across Session Horizons
 
 **Location:** `hex-aim/docs/reports/SESSION_WAVES_EVOLUTION_REVIEW.md`  

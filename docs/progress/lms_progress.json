@@ -1,0 +1,236 @@
+{
+  "source": "LMS screenshots shared 2026-11-11 (Humanities Y4 A and a second unlabelled list)",
+  "note": "Lara's subject overall figures are from her LMS Student Progress page (checked against the pasted list). Maya's figures are only from the screenshots (Humanities only). Null means not provided.",
+  "subject_progress": {
+    "Humanities Y4 A": {
+      "Lara": 85.43,
+      "Maya": 90.62
+    },
+    "Maths Y4 A": {
+      "Lara": 82.7,
+      "Maya": null
+    },
+    "Science Y4 A": {
+      "Lara": 96.88,
+      "Maya": null
+    },
+    "English Y4 A": {
+      "Lara": 96.06,
+      "Maya": null
+    },
+    "French Y4 A": {
+      "Lara": 98.18,
+      "Maya": null
+    },
+    "Arabic Y4 A": {
+      "Lara": 94.09,
+      "Maya": null
+    },
+    "IT Coding Y4 A": {
+      "Lara": 97.67,
+      "Maya": null
+    },
+    "Islamic Religion Y4 A": {
+      "Lara": 92.62,
+      "Maya": null
+    },
+    "Arabic Social Studies Y4 A": {
+      "Lara": 88.39,
+      "Maya": null
+    },
+    "Music Y4 A": {
+      "Lara": 98.33,
+      "Maya": null
+    },
+    "PE Y4 A": {
+      "Lara": 100.0,
+      "Maya": null
+    },
+    "Art Y4 A": {
+      "Lara": 100.0,
+      "Maya": null
+    }
+  },
+  "records": [
+    {
+      "subject": "Humanities Y4 A",
+      "item": "Attendance and Behaviour-1",
+      "date": "2026-09-15",
+      "kind": "attendance",
+      "Lara": [
+        10,
+        10
+      ],
+      "Maya": [
+        10,
+        10
+      ],
+      "pct": {
+        "Lara": 100.0,
+        "Maya": 100.0
+      }
+    },
+    {
+      "subject": "Humanities Y4 A",
+      "item": "S1W3 Quiz 1-2",
+      "date": "2026-09-24",
+      "kind": "quiz",
+      "Lara": [
+        9,
+        10
+      ],
+      "Maya": [
+        8,
+        10
+      ],
+      "pct": {
+        "Lara": 90.0,
+        "Maya": 80.0
+      }
+    },
+    {
+      "subject": "Humanities Y4 A",
+      "item": "S1W5 Quiz 2-3",
+      "date": "2026-10-07",
+      "kind": "quiz",
+      "Lara": [
+        3,
+        6
+      ],
+      "Maya": [
+        5,
+        6
+      ],
+      "pct": {
+        "Lara": 50.0,
+        "Maya": 83.33
+      }
+    },
+    {
+      "subject": "Humanities Y4 A",
+      "item": "S1 Midterm Exam-1",
+      "date": "2026-10-22",
+      "kind": "exam",
+      "Lara": [
+        17,
+        18
+      ],
+      "Maya": [
+        17,
+        18
+      ],
+      "pct": {
+        "Lara": 94.44,
+        "Maya": 94.44
+      }
+    },
+    {
+      "subject": "Unlabelled",
+      "item": "Attendance-14",
+      "date": "2026-10-20",
+      "kind": "attendance",
+      "Lara": [
+        5,
+        5
+      ],
+      "Maya": [
+        5,
+        5
+      ],
+      "pct": {
+        "Lara": 100.0,
+        "Maya": 100.0
+      }
+    },
+    {
+      "subject": "Unlabelled",
+      "item": "Attendance-15",
+      "date": "2026-10-21",
+      "kind": "attendance",
+      "Lara": [
+        5,
+        5
+      ],
+      "Maya": [
+        5,
+        5
+      ],
+      "pct": {
+        "Lara": 100.0,
+        "Maya": 100.0
+      }
+    },
+    {
+      "subject": "Unlabelled",
+      "item": "Quizzes S1W3Q1-1",
+      "date": "2026-09-24",
+      "kind": "quiz",
+      "Lara": [
+        12,
+        13
+      ],
+      "Maya": [
+        12,
+        13
+      ],
+      "pct": {
+        "Lara": 92.31,
+        "Maya": 92.31
+      }
+    },
+    {
+      "subject": "Unlabelled",
+      "item": "Quizzes S1W4Q2-2",
+      "date": "2026-10-04",
+      "kind": "quiz",
+      "Lara": [
+        10,
+        10
+      ],
+      "Maya": [
+        10,
+        10
+      ],
+      "pct": {
+        "Lara": 100.0,
+        "Maya": 100.0
+      }
+    },
+    {
+      "subject": "Unlabelled",
+      "item": "Quizzes S1W4Q3-3",
+      "date": "2026-10-07",
+      "kind": "quiz",
+      "Lara": [
+        9,
+        10
+      ],
+      "Maya": [
+        9,
+        10
+      ],
+      "pct": {
+        "Lara": 90.0,
+        "Maya": 90.0
+      }
+    },
+    {
+      "subject": "Unlabelled",
+      "item": "Quizzes S1MID1-4",
+      "date": "2026-11-10",
+      "kind": "exam",
+      "Lara": [
+        25,
+        30
+      ],
+      "Maya": [
+        29,
+        30
+      ],
+      "pct": {
+        "Lara": 83.33,
+        "Maya": 96.67
+      }
+    }
+  ]
+}

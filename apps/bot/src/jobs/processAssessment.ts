@@ -2,7 +2,8 @@ import {
   StorageFactory,
   VisionFactory,
   MessagingFactory,
-  DubLinkAdapter
+  DubLinkAdapter,
+  resolveImageMime
 } from '@hex-aim/adapters';
 import {
   CanonicalDeduplicator,
@@ -401,8 +402,8 @@ Return strict JSON matching this schema:
                 signal: AbortSignal.timeout(routing.imageFetchTimeoutMs),
               });
               if (imgRes.ok) {
-                const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
                 const arrayBuf = await imgRes.arrayBuffer();
+                const mimeType = resolveImageMime(new Uint8Array(arrayBuf), imgRes.headers.get('content-type'), rawUrl);
                 const base64 = Buffer.from(arrayBuf).toString('base64');
                 finalUrl = `data:${mimeType};base64,${base64}`;
               }

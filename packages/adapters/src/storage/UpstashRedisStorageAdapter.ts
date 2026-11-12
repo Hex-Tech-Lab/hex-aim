@@ -1,5 +1,7 @@
 import { Redis } from '@upstash/redis';
+import { dedupeAssessments } from '@hex-aim/core';
 import type {
+  LmsSnapshot,
   IStoragePort,
   Student,
   Guardian,
@@ -23,7 +25,7 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
   private prefix: string;
 
   constructor(config: UpstashRedisConfig) {
-    this.prefix = config.prefix || 'aim:';
+    this.prefix = config.prefix ?? '';
     this.redis = new Redis({
       url: config.url,
       token: config.token,
@@ -32,6 +34,14 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
 
   private k(subKey: string): string {
     return `${this.prefix}${subKey}`;
+  }
+
+  public async getLmsProgress(): Promise<LmsSnapshot | null> {
+    return await this.redis.get<LmsSnapshot>(this.k('lms:progress'));
+  }
+
+  public async saveLmsProgress(snapshot: LmsSnapshot): Promise<void> {
+    await this.redis.set(this.k('lms:progress'), snapshot);
   }
 
   public async getStudent(id: string): Promise<Student | null> {
@@ -80,8 +90,8 @@ export class UpstashRedisStorageAdapter implements IStoragePort {
   public async saveAssessment(submission: AssessmentSubmission): Promise<void> {
     const key = this.k(`assessments:${submission.studentId}`);
     const existing = (await this.redis.get<AssessmentSubmission[]>(key)) || [];
-    existing.push(submission);
-    await this.redis.set(key, existing);
+    // A re-processed photo is the same test: merge it instead of storing a copy.
+    await this.redis.set(key, dedupeAssessments([...existing, submission]));
   }
 
   public async getStudentAssessments(studentId: string, subjectId?: string): Promise<AssessmentSubmission[]> {

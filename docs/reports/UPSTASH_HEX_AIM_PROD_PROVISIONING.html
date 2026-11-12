@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upstash Redis Provisioning & Vercel Alignment (hex-aim-prod)</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111726;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #00f2fe;
+      --border: #1e293b;
+      --success: #10b981;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+      padding: 40px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .badge-green {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+    }
+    code {
+      font-family: "JetBrains Mono", monospace;
+      background: rgba(0, 242, 254, 0.1);
+      color: var(--accent);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div style="float: right;">
+        <span class="badge-green">🟢 SUCCESS / VERIFIED</span>
+      </div>
+      <h1>Upstash Redis Provisioning & Vercel Alignment</h1>
+      <p style="color: var(--text-muted); margin: 0;">Target: <code>hex-aim-prod</code> &bull; Region: <code>iad1</code> (AWS us-east-1) &bull; Project: <code>hex-aim</code></p>
+    </div>
+
+    <div class="card">
+      <h2>1. Provisioned Infrastructure Details</h2>
+      <ul>
+        <li><strong>Database Name:</strong> <code>hex-aim-prod</code></li>
+        <li><strong>Resource ID:</strong> <code>store_4LPbv63wcRnDQZyL</code></li>
+        <li><strong>External ID:</strong> <code>66c6e3d2-e849-4909-ac14-50135c014854</code></li>
+        <li><strong>Primary Member Region:</strong> <code>us-east-1-r1</code> (co-located with Vercel <code>iad1</code>)</li>
+        <li><strong>REST Endpoint:</strong> <code>https://dear-alpaca-122296.upstash.io</code></li>
+        <li><strong>HTTP Ping:</strong> <code>{"result":"PONG"}</code> (Verified Active)</li>
+        <li><strong>Read/Write:</strong> Verified SET/GET cycle (<code>OK</code>)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>2. Production Environment Alignment</h2>
+      <ul>
+        <li><code>UPSTASH_REDIS_REST_URL</code> = <code>https://dear-alpaca-122296.upstash.io</code> (Production)</li>
+        <li><code>UPSTASH_REDIS_REST_TOKEN</code> = Bound to Vercel Production</li>
+        <li>Production Aliases: <a href="https://hex-aim.vercel.app" style="color: var(--accent);">https://hex-aim.vercel.app</a> (HTTP 200 OK) and <a href="https://aim.getvintel.com" style="color: var(--accent);">https://aim.getvintel.com</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>3. Verification Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Specification</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Project Isolation</td>
+            <td>Touch strictly only <code>hex-aim</code> (prj_uT2GDBvXddIDE8ILXS4Bx5BtM7v7)</td>
+            <td><span class="badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Dedicated Database</td>
+            <td>Named <code>hex-aim-prod</code></td>
+            <td><span class="badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Region Co-location</td>
+            <td>Vercel <code>iad1</code> == Upstash <code>us-east-1</code></td>
+            <td><span class="badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Credentials Scope</td>
+            <td>Use hex-aim's own environment</td>
+            <td><span class="badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td>HTTP REST Ping</td>
+            <td>Live Ping returns <code>{"result":"PONG"}</code></td>
+            <td><span class="badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Production Redeploy</td>
+            <td>Redeploy hex-aim to Vercel production</td>
+            <td><span class="badge-green">PASS</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

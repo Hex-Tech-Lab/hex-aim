@@ -1,4 +1,12 @@
 # HEX-AIM Complete Historical Waves Census (Waves 10 – 38)
+
+<!-- evidence-status:start -->
+> **Evidence status** (checked 2026-10-30 against AGY transcript `transcript_full.jsonl` (session 2a57ade8) and the git log).
+>
+> - **✅ VERIFIED:** The commit hashes, dates, and messages cited (4eaee18, fa7be79, bbfdffd, 5276ce6, 0db07b8, 2f773a8, 392e1d7, cb1b47e) exist in the git log.
+> - **⚠️ UNVERIFIED:** That Waves 10–13 and 15–18 were "batches" answering a request. The AGY transcript has no request for five future waves before step 3419 (2026-10-27T01:28Z). Earlier user messages about waves are progress and status checks.
+> - **ℹ️ NOTE:** Commits show when code shipped, not when a request was made. A commit-only census cannot date any request.
+<!-- evidence-status:end -->
 ## Chronological Record of All Wave Generations
 
 **Repository Path:** `hex-aim/docs/reports/WAVES_HISTORICAL_CENSUS.md`  

@@ -1,3 +1,4 @@
+import { redisKey } from '@hex-aim/core';
 import { TelegramMessagingAdapter } from '@hex-aim/adapters';
 import type { IStoragePort, IMessagingPort } from '@hex-aim/types';
 
@@ -35,7 +36,7 @@ export async function purgeAndResetSession(
 
   if (redisStorage.redis) {
     try {
-      const hist = await redisStorage.redis.lrange(`aim:chat_history:${targetChatId}`, 0, -1);
+      const hist = await redisStorage.redis.lrange(redisKey(`chat_history:${targetChatId}`), 0, -1);
       for (const h of hist || []) {
         const parsed = typeof h === 'string' ? JSON.parse(h) : h;
         if (parsed?.messageId) idsToDelete.add(parsed.messageId);
@@ -64,9 +65,9 @@ export async function purgeAndResetSession(
   // Clear Redis state
   await storage.clearBotMessages?.(targetChatId);
   if (redisStorage.redis) {
-    await redisStorage.redis.del(`aim:chat_history:${targetChatId}`);
-    await redisStorage.redis.del(`aim:strikes:guardian_${targetChatId}`);
-    const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${targetChatId}:*`);
+    await redisStorage.redis.del(redisKey(`chat_history:${targetChatId}`));
+    await redisStorage.redis.del(redisKey(`strikes:guardian_${targetChatId}`));
+    const keys = await redisStorage.redis.keys(redisKey(`seen_files:guardian_${targetChatId}:*`));
     for (const k of keys || []) {
       await redisStorage.redis.del(k);
     }
@@ -90,8 +91,8 @@ export async function resetSessionOnly(
   const redisStorage = storage as any;
 
   if (redisStorage.redis) {
-    await redisStorage.redis.del(`aim:strikes:guardian_${targetChatId}`);
-    const keys = await redisStorage.redis.keys(`aim:seen_files:guardian_${targetChatId}:*`);
+    await redisStorage.redis.del(redisKey(`strikes:guardian_${targetChatId}`));
+    const keys = await redisStorage.redis.keys(redisKey(`seen_files:guardian_${targetChatId}:*`));
     for (const k of keys || []) {
       await redisStorage.redis.del(k);
     }
@@ -113,7 +114,7 @@ export async function getChatLanguage(storage: IStoragePort, chatId: string): Pr
   const redisStorage = storage as any;
   if (redisStorage.redis) {
     try {
-      const val = await redisStorage.redis.get(`aim:user_lang:${chatId}`);
+      const val = await redisStorage.redis.get(redisKey(`user_lang:${chatId}`));
       if (val === 'ar' || val === '"ar"') return 'ar';
     } catch (err) {
       console.warn('[getChatLanguage] Error reading language from redis:', err);
@@ -129,7 +130,7 @@ export async function setChatLanguage(storage: IStoragePort, chatId: string, lan
   const redisStorage = storage as any;
   if (redisStorage.redis) {
     try {
-      await redisStorage.redis.set(`aim:user_lang:${chatId}`, lang);
+      await redisStorage.redis.set(redisKey(`user_lang:${chatId}`), lang);
     } catch (err) {
       console.warn('[setChatLanguage] Error saving language to redis:', err);
     }

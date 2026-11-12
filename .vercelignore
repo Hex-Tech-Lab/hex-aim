@@ -1,0 +1,15 @@
+/node_modules
+/.git
+/.pnpm-store
+/.turbo
+/.wrangler
+/storage
+/sources
+/downloads
+/docs/private
+*.pdf
+.claude
+.serena
+/manifest/students.json
+/.rendered_sprint_pages
+/.code-review-graph

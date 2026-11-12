@@ -126,6 +126,26 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     const lastMsg = messaging.sentMessages[messaging.sentMessages.length - 1];
     expect(lastMsg?.text).toContain('On-Demand Student Mastery & Progress');
 
+    // Seed one real Maths test uploaded three times: it must count as one test.
+    const storage = StorageFactory.getStorage();
+    for (const n of [1, 2, 3]) {
+      await storage.saveAssessment({
+        id: `sub_lara_maths_${n}`,
+        canonicalMasterId: 'master_asten-college:Y4:maths:w3',
+        studentId: 'lara',
+        subjectId: 'maths',
+        date: '2026-10-25',
+        termWeek: 3,
+        rawScore: 1,
+        totalScore: 3,
+        percentage: 33,
+        items: [
+          { qNum: '1', conceptCode: 'Y4.MATH.NPV.EMPTY_COLUMNS', studentAnswer: '24,16', correctAnswer: '24,106', status: 'fail', errorClass: 'ERR_PHANTOM_ZERO', cognitiveFactor: 'empty_column_omission' },
+        ],
+        sourceImageUrls: [`https://example.test/photos/file_${n}.jpg`],
+      });
+    }
+
     // 2. Click callback query view_progress:lara
     const reqCallbackLara = new Request('https://worker/webhook/telegram', {
       method: 'POST',
@@ -147,6 +167,9 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     const laraCard = messaging.sentMessages[messaging.sentMessages.length - 1];
     expect(laraCard?.text).toContain("Lara's Academic Mastery Snapshot");
     expect(laraCard?.text).toContain('ERR_PHANTOM_ZERO');
+    expect(laraCard?.text).toContain('Maths');
+    expect(laraCard?.text).toContain('1 · 33%');
+    expect(laraCard?.text).not.toContain('No results recorded yet');
 
     // 3. Click callback query view_progress:maya
     const reqCallbackMaya = new Request('https://worker/webhook/telegram', {
@@ -168,7 +191,9 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     expect(resCbMaya.status).toBe(200);
     const mayaCard = messaging.sentMessages[messaging.sentMessages.length - 1];
     expect(mayaCard?.text).toContain("Maya's Academic Mastery Snapshot");
-    expect(mayaCard?.text).toContain('ERR_SHARED_PREFIX_ORDERING');
+    // Maya has no stored tests in this fixture: the card must say so, not show invented errors.
+    expect(mayaCard?.text).toContain('No recorded errors yet');
+    expect(mayaCard?.text).not.toContain('ERR_SHARED_PREFIX_ORDERING');
 
     // 4. Click callback query view_progress:all (Side-by-side comparative card)
     const reqCallbackAll = new Request('https://worker/webhook/telegram', {
@@ -191,8 +216,8 @@ describe('Apps/Bot Worker & Intake Pipeline', () => {
     const allCard = messaging.sentMessages[messaging.sentMessages.length - 1];
     expect(allCard?.text).toContain('Comparative Academic Snapshot • All Children');
     expect(allCard?.text).toContain('<pre>');
-    expect(allCard?.text).toContain('Overall Mast.');
-    expect(allCard?.text).toContain('SUBJECT MASTERY BREAKDOWN');
+    expect(allCard?.text).toContain('Lara tests');
+    expect(allCard?.text).toMatch(/Maths\s+│[^\n]*1 · 33%/);
     expect(allCard?.text).toContain('Lara');
     expect(allCard?.text).toContain('Maya');
   });

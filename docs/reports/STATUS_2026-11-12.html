@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hex-aim status 12 Nov 2026</title>
+<style>
+:root { --bg: #f8fafc; --ink: #1e293b; --muted: #475569; --card: #ffffff; --line: #cbd5e1; --g: #15803d; --y: #b45309; --r: #b91c1c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f172a; --ink: #e2e8f0; --muted: #94a3b8; --card: #1e293b; --line: #334155; } }
+:root[data-theme="dark"] { --bg: #0f172a; --ink: #e2e8f0; --muted: #94a3b8; --card: #1e293b; --line: #334155; }
+body { margin: 0; padding: 16px; background: var(--bg); color: var(--ink); font-family: "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.45; }
+main { max-width: 960px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+h2 { font-size: 17px; margin: 24px 0 8px; }
+p.meta { color: var(--muted); margin: 0 0 12px; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 14px; }
+th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { background: var(--bg); }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.light { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.g { background: var(--g); } .y { background: var(--y); } .r { background: var(--r); }
+.wrap { overflow-x: auto; }
+code { font-size: 13px; word-break: break-all; }
+</style>
+</head>
+<body>
+<main>
+<h1>Hex-aim status, 12 Nov 2026</h1>
+<p class="meta">Repo: <code>/home/kellyb_dev/projects/hex-aim</code> · branch master · origin tip verified at <code>9bc14a0</code></p>
+
+<h2>1. Git state</h2>
+<div class="wrap"><table>
+<tr><th>Item</th><th>Status</th><th>Evidence (what I ran)</th></tr>
+<tr><td>Secret removed from origin master history</td><td><span class="light g"></span>Verified</td><td><code>git log origin/master -S</code> on the old secret: 0 commits add it. Tree scan of origin master: 0 files. Positive control on old commit <code>0dbec7b</code>: 1 file (so the check works).</td></tr>
+<tr><td>Env-based secret check (fails closed)</td><td><span class="light g"></span>Verified in source</td><td><code>9bc14a0:packages/core/src/school/SchoolMisSyncEngine.ts</code> reads <code>SIMS_WEBHOOK_SECRET</code> from the environment and throws if unset. Values not printed.</td></tr>
+<tr><td>git-ai notes ref on origin (<code>refs/notes/ai</code>)</td><td><span class="light y"></span>Pushed, but orphaned</td><td>Remote tip <code>8ecb965</code>. 82 notes locally; only 1 targets a commit on the new master. The rest point at commits the rewrite replaced.</td></tr>
+<tr><td>12 local-only commits</td><td><span class="light y"></span>Not pushed (correct)</td><td><code>git rev-list --left-right --count origin/master...HEAD</code> gives 0 and 12. These commits were never reviewed. Local master still holds the old history with the secret.</td></tr>
+<tr><td>Local master rebased onto origin master</td><td><span class="light r"></span>Not done</td><td>Needs your decision (section 3).</td></tr>
+</table></div>
+
+<h2>2. Lara 2025/2026 (Year 3, promoted to Year 4)</h2>
+<p class="meta">Read in the logged-in LMS session (Lara's account, SID 52). The Year 3 label on these reports explains the earlier Y3/Y4 mismatch: they are last year's records.</p>
+<div class="wrap"><table>
+<tr><th>Subject</th><th class="num">S1</th><th class="num">S2</th><th class="num">End of year</th></tr>
+<tr><td>English</td><td class="num">90.45</td><td class="num">85.61</td><td class="num">88</td></tr>
+<tr><td>Maths</td><td class="num">88.02</td><td class="num">84.61</td><td class="num">86</td></tr>
+<tr><td>Science</td><td class="num">94.39</td><td class="num">90.18</td><td class="num">92</td></tr>
+<tr><td>French</td><td class="num">88.94</td><td class="num">97.76</td><td class="num">93</td></tr>
+<tr><td>IT Coding</td><td class="num">100</td><td class="num">97</td><td class="num">98</td></tr>
+<tr><td>Humanities</td><td class="num">95.65</td><td class="num">97.08</td><td class="num">96</td></tr>
+<tr><td>Arabic</td><td class="num">88.55</td><td class="num">91.18</td><td class="num">90</td></tr>
+<tr><td>Religion</td><td class="num">84.52</td><td class="num">97.48</td><td class="num">91</td></tr>
+<tr><td>PE</td><td class="num">92.5</td><td class="num">100</td><td class="num">96</td></tr>
+<tr><td>Art</td><td class="num">99.03</td><td class="num">96.89</td><td class="num">98</td></tr>
+<tr><td>Music</td><td class="num">100</td><td class="num">93.75</td><td class="num">97</td></tr>
+</table></div>
+<p class="meta">Source PDFs: GradeReportID 73 (End of Year Report Card 2025/2026) and 63 (S1 Assessment Report 2025/2026). The report states "Promoted to Year 4, June 2026." Minor rounding differences between the two PDFs (for example Arabic 88.55 vs 88.56) are in the source.</p>
+<p class="meta">Not yet read: the 2024/2025 and 2023/2024 reports. Maya's records: no access in this session. Only Lara's login is available.</p>
+
+<h2>3. Decisions needed from you</h2>
+<div class="wrap"><table>
+<tr><th>Decision</th><th>Options</th><th>Recommendation and why</th></tr>
+<tr><td>A. Local 12 commits</td>
+<td>(1) Rebase local master onto origin master, review, then push. (2) Keep them on a feature branch and push after review. (3) Push as they are now.</td>
+<td><strong>Option 1.</strong> It removes the secret from local history too. Industry standard for a rewritten base. Option 2 is safe but leaves the secret in local master. Option 3 pushes unreviewed work and reintroduces the old base. Not recommended.</td></tr>
+<tr><td>B. Orphaned git-ai notes</td>
+<td>(1) Remap notes to the rewritten hashes with <code>git notes</code> rewrite mapping. (2) Drop the notes ref. (3) Leave as is.</td>
+<td><strong>Option 1.</strong> Keeps the AI-authorship attribution the notes record, following git's own rewrite mapping. Option 2 loses that data. Option 3 is the current state, where the notes do nothing.</td></tr>
+</table></div>
+
+<h2>4. Still open (not done)</h2>
+<ul>
+<li>LMS recon agent (still running): DNS, robots, sitemap, routes. Output to <code>docs/reports/LMS_RECON.md</code>.</li>
+<li>Security findings for the school (not acted on): a SIMS login page leaks a SQL error. The school website shows a "critical error" page and what looks like injected spam text. Both need reporting to the school, not fixing by us.</li>
+<li>Telegram family overview: snapshot not seeded to <code>hex-aim-prod</code>, worker not redeployed.</li>
+<li>Child work items (French project due 17 Nov, science 2.4 worksheet, square numbers, English practice): attribution not confirmed.</li>
+<li>Handwriting matching engine: needs about 20 labelled pages per child before it can be validated.</li>
+</ul>
+</main>
+</body>
+</html>

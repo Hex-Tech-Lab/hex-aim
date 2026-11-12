@@ -268,6 +268,22 @@ export interface CoachingGuide {
    PORTS (Hexagonal Architecture Contracts)
    ========================================================================= */
 
+/** School LMS results for the family, as recorded from LMS screenshots. */
+export interface LmsRecord {
+  subject: string;
+  item: string;
+  date: string; // YYYY-MM-DD
+  kind: 'attendance' | 'quiz' | 'exam';
+  Lara: [number, number];
+  Maya: [number, number];
+}
+
+export interface LmsSnapshot {
+  updated: string; // YYYY-MM-DD
+  subjectProgress: Record<string, { Lara?: number; Maya?: number }>; // omitted when not provided
+  records: LmsRecord[];
+}
+
 export interface IStoragePort {
   getStudent(id: string): Promise<Student | null>;
   saveStudent(student: Student): Promise<void>;
@@ -313,6 +329,8 @@ export interface IStoragePort {
   recordChatMessage?(chatId: string, message: { role: 'user' | 'assistant'; text: string; timestamp: string; messageId?: number }): Promise<void>;
   getRecentChatTurns?(chatId: string, limit?: number): Promise<Array<{ role: 'user' | 'assistant'; text: string; timestamp: string; messageId?: number }>>;
   trackBotMessage?(chatId: string, messageId: number): Promise<void>;
+  getLmsProgress?(): Promise<LmsSnapshot | null>;
+  saveLmsProgress?(snapshot: LmsSnapshot): Promise<void>;
   getBotMessages?(chatId: string): Promise<number[]>;
   clearBotMessages?(chatId: string): Promise<void>;
 
@@ -565,7 +583,6 @@ export interface SchoolMisIntegrationConfig {
   provider: SchoolMisProvider;
   syncDirection: 'two_way' | 'pull_only' | 'push_only';
   endpointUrl: string;
-  webhookSecret: string;
   realTimeActive: boolean;
   lastSyncedAt?: string;
 }

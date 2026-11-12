@@ -1,4 +1,12 @@
 # The Strategic Wave Deduction Framework
+
+<!-- evidence-status:start -->
+> **Evidence status** (checked 2026-10-30 against AGY transcript `transcript_full.jsonl` (session 2a57ade8) and the git log).
+>
+> - **⚠️ UNVERIFIED:** The framework describes a reasoning model. No step-level trace was checked against it.
+> - **⚠️ UNVERIFIED:** The domain claims, such as the UK KS2 and GL Assessment rubrics, have no source in this document.
+> - **ℹ️ NOTE:** For anything about the generations' traces, use WAVES_REASONING_PROCESS_AUDIT instead.
+<!-- evidence-status:end -->
 ## High-Level Methodology for Autonomous Roadmap Synthesis
 
 **Repository Location:** `hex-aim/docs/reports/STRATEGIC_WAVE_GENERATION_FRAMEWORK.md`  

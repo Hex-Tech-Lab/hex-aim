@@ -33,9 +33,6 @@ export class SchoolMisSyncEngine {
         provider: 'sims',
         syncDirection: 'two_way',
         endpointUrl: 'https://sims.astencollege.com/api/v1/gradebook-sync',
-        get webhookSecret(): string {
-          return requireSimsWebhookSecret();
-        },
         realTimeActive: true,
         lastSyncedAt: new Date().toISOString()
       }
