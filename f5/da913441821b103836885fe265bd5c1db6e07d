@@ -1,0 +1,28 @@
+apps/web/public/index.html
+  h_cdd764b4030252 1840-1869
+apps/web/src/server.ts
+  h_cdd764b4030252 7,378-467
+apps/web/src/ui/tabInfraGate.ts
+  h_cdd764b4030252 70-99
+apps/web/test/server.test.ts
+  h_cdd764b4030252 113-151,154
+packages/core/src/index.ts
+  h_cdd764b4030252 22
+packages/core/src/school/SchoolMisSyncEngine.ts
+  h_cdd764b4030252 1-182
+packages/core/test/schoolSync.test.ts
+  h_cdd764b4030252 1-70
+packages/types/src/index.ts
+  h_cdd764b4030252 559-616
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "926934e8970c3717db82f4d778a36449f3dad635",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
