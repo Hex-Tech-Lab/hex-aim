@@ -1,0 +1,14 @@
+apps/bot/test/worker.test.ts
+  h_cdd764b4030252 173-251
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c690e2ace3b5c49d6d724bbd15c11ed508c4c34c",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
