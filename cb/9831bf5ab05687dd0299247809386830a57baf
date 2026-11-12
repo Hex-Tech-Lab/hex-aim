@@ -1,0 +1,14 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 265-268,280-281,317-318,320
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1be04e22a744ad9588bcaf2dbb44ebae0fe5eea2",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
