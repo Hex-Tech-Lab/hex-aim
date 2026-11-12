@@ -1,0 +1,16 @@
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 13-44
+apps/web/src/ui/dashboardStyles.ts
+  h_cdd764b4030252 3,5-40,45-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "314601c10946a17c6d4151cb7bfbffc702cffe8f",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
