@@ -1,0 +1,28 @@
+apps/bot/src/jobs/processAssessment.ts
+  h_cdd764b4030252 392-411,413-414
+apps/bot/src/worker.ts
+  h_cdd764b4030252 31,69-112,414-415,515-520
+apps/bot/wrangler.jsonc
+  h_cdd764b4030252 16
+packages/adapters/src/storage/GitStateStorageAdapter.ts
+  h_cdd764b4030252 164-165
+packages/adapters/src/storage/InMemoryStorageAdapter.ts
+  h_cdd764b4030252 159-160
+packages/adapters/src/vision/OpenRouterVisionAdapter.ts
+  h_cdd764b4030252 56-78,81,86
+packages/core/test/warmPool.test.ts
+  h_cdd764b4030252 49
+packages/types/src/index.ts
+  h_cdd764b4030252 301
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d1aab93231dc92332fb1477e16b5ef9aef83dfdc",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
