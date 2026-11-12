@@ -1,0 +1,21 @@
+apps/bot/src/jobs/processAssessment.ts
+  s_6625bc67577472::t_3221960fa7a7e5 41,43-48,53-54,67,70-71,267-268,328-329,331-332,335-338,345-346,355-356,376-377,389-390
+packages/adapters/src/vision/VisionFactory.ts
+  s_6625bc67577472::t_02c4d79eb2a2cc 17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d6c8412dd515dd872cbb845179d28a2ab0a75771",
+  "prompts": {},
+  "sessions": {
+    "s_6625bc67577472": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e3d758-e9b9-4cdb-bb9d-00d9ef397297",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
