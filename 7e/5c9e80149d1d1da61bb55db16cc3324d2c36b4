@@ -1,0 +1,23 @@
+apps/web/test/server.test.ts
+  s_6625bc67577472::t_c8a5f7c3280e81 163-191,196
+packages/core/src/socratic/PeerTeachingEngine.ts
+  s_6625bc67577472::t_4b11cf03dec75d 1-211
+packages/core/test/peerTeaching.test.ts
+  s_6625bc67577472::t_f83678f48ba0cc 1-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c5d1e3247b32c7e9d8478467a964dda14d86789b",
+  "prompts": {},
+  "sessions": {
+    "s_6625bc67577472": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e3d758-e9b9-4cdb-bb9d-00d9ef397297",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
