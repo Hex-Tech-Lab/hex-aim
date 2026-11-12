@@ -1,0 +1,44 @@
+apps/bot/src/handlers/callbackHandler.ts
+  h_cdd764b4030252 4,53-54,56-57
+apps/bot/src/keyboards.ts
+  h_cdd764b4030252 1-27
+apps/bot/src/worker.ts
+  h_cdd764b4030252 9-10,216-227,231,233,242-243,245-247,258
+apps/web/package.json
+  h_cdd764b4030252 9
+apps/web/public/exam/exam_y4_math_term1.html
+  h_cdd764b4030252 1-563
+apps/web/public/exam/exam_y4_sci_term1.html
+  h_cdd764b4030252 1-563
+apps/web/public/index.html
+  h_cdd764b4030252 341-364,1483-1485,1492,1496-1499,1503-1504,1510-1511,1515-1518,1522-1523,1529-1530,1534-1537,1541-1542,1548-1549,1556-1557,1866-1873,1876-1879,1886-1893,1895,1898-1900,1902-1907,1910-1911,1914-1921,1928-1935,1937,1940-1942,1944-1949,1952-1953,1956-1963
+apps/web/public/school/asten-college.html
+  h_cdd764b4030252 1-376
+apps/web/public/school/index.html
+  h_cdd764b4030252 1-376
+apps/web/public/vercel.json
+  h_cdd764b4030252 3-12
+apps/web/src/compileStaticPages.ts
+  h_cdd764b4030252 1-41
+apps/web/src/ui/dashboardHtml.ts
+  h_cdd764b4030252 70-72,79,83-86,90-91,97-98,102-105,109-110,116-117,121-124,128-129,135-136,143-144
+apps/web/src/ui/dashboardStyles.ts
+  h_cdd764b4030252 295-318
+apps/web/src/ui/tabGapLedger.ts
+  h_cdd764b4030252 77-84,87-90,97-106,109-111,113-118,121-122,125-132,139-148,151-153,155-160,163-164,167-174
+apps/web/vercel.json
+  h_cdd764b4030252 4-8,13-28
+packages/adapters/src/messaging/TelegramMessagingAdapter.ts
+  h_cdd764b4030252 112,139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c826a8d3bd95ac250397a679ee6e925b7be7e715",
+  "prompts": {},
+  "humans": {
+    "h_cdd764b4030252": {
+      "author": "CCW <104952356+TechHypeXP@users.noreply.github.com>"
+    }
+  }
+}
